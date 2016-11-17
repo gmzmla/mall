@@ -1,0 +1,108 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>管理后台</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+	<link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+	<link rel="stylesheet" href="$basePath/js/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+			<style type="text/css">
+.ztree * {font-size: 10pt;font-family:"Microsoft Yahei",Verdana,Simsun,"Segoe UI Web Light","Segoe UI Light","Segoe UI Web Regular","Segoe UI","Segoe UI Symbol","Helvetica Neue",Arial}
+.ztree li ul{ margin:0; padding:0}
+.ztree li {line-height:30px;}
+.ztree li a {width:200px;height:30px;padding-top: 0px;}
+.ztree li a:hover {text-decoration:none; background-color: #E7E7E7;}
+.ztree li a span.button.switch {visibility:hidden}
+.ztree.showIcon li a span.button.switch {visibility:visible}
+.ztree li a.curSelectedNode {background-color:#D4D4D4;border:0;height:30px;}
+.ztree li span {line-height:30px;}
+.ztree li span.button {margin-top: -7px;}
+.ztree li span.button.switch {width: 16px;height: 16px;}
+
+.ztree li a.level0 span {font-size: 150%;font-weight: bold;}
+.ztree li span.button {background-image:url("././js/ztree/css/zTreeStyle/img/left_menuForOutLook.png");}
+.ztree li span.button.switch.level0 {width: 20px; height:20px}
+.ztree li span.button.switch.level1 {width: 20px; height:20px}
+.ztree li span.button.noline_open {background-position: 0 0;}
+.ztree li span.button.noline_close {background-position: -18px 0;}
+.ztree li span.button.noline_open.level0 {background-position: 0 -18px;}
+.ztree li span.button.noline_close.level0 {background-position: -18px -18px;}
+	</style>
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+	<script src="$basePath/js/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+	<script type="text/javascript" >
+		var setting = {
+		view: {
+				showLine: false,
+				showIcon: false,
+				selectedMulti: false,
+				dblClickExpand: false,
+				addDiyDom: addDiyDom
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				beforeClick: beforeClick
+			}
+		};
+
+		var zNodes =[
+			#foreach($m in $menus)
+			{ id:$m.id, pId:$m.parentId, name:"$m.name", url:"$basePath$!m.url", target:"mainFrame", open:true},
+			#end
+		];
+		
+		function addDiyDom(treeId, treeNode) {
+			var spaceWidth = 5;
+			var switchObj = $("#" + treeNode.tId + "_switch"),
+			icoObj = $("#" + treeNode.tId + "_ico");
+			switchObj.remove();
+			icoObj.before(switchObj);
+
+			if (treeNode.level > 1) {
+				var spaceStr = "<span style='display: inline-block;width:" + (spaceWidth * treeNode.level)+ "px'></span>";
+				switchObj.before(spaceStr);
+			}
+		}
+
+		function beforeClick(treeId, treeNode) {
+			if (treeNode.level == 0 ) {
+				var zTree = $.fn.zTree.getZTreeObj("menu");
+				zTree.expandNode(treeNode);
+				return false;
+			}
+			return true;
+		}
+
+		$(document).ready(function(){
+			var treeObj = $("#menu");
+			zNodes.shift();
+			$.fn.zTree.init(treeObj, setting, zNodes);
+			//zTree_Menu = $.fn.zTree.getZTreeObj("menu");
+			//curMenu = zTree_Menu.getNodes()[0].children[0].children[0];
+			//zTree_Menu.selectNode(curMenu);
+
+			treeObj.hover(function () {
+				if (!treeObj.hasClass("showIcon")) {
+					treeObj.addClass("showIcon");
+				}
+			}, function() {
+				treeObj.removeClass("showIcon");
+			});
+		});
+    </script>
+</head>
+<body style="overflow-x:hidden;">
+	<div class="content_wrap">
+    	<div class="zTreeDemoBackground left">
+    		<ul id="menu" class="ztree"></ul>
+    	</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,215 @@
+/*焦点图轮播*/
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+    clear: both;
+}
+.clearfix {
+    *zoom: 1;
+}
+.rslides {
+  position: relative;
+  list-style: none;
+  overflow: hidden;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  }
+
+.rslides li {
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  display: none;
+  width: 100%;
+  left: 0;
+  top: 0;
+  }
+
+.rslides li:first-child {
+  position: relative;
+  display: block;
+  float: left;
+  }
+
+.rslides img {
+  display: block;
+  height: auto;
+  float: left;
+  width: 100%;
+  border: 0;
+  }
+.slide_container {
+  position: relative;
+  float: left;
+  width: 100%;
+  }
+
+.slide {
+  position: relative;
+  list-style: none;
+  overflow: hidden;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  }
+
+.slide li {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  }
+  
+ .slide img {
+  display: block;
+  position: relative;
+  z-index: 1;
+  height: 454px;
+  width: 100%;
+  border: 0;
+  }
+  
+ .slide_nav {
+  position: absolute;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  top: 52%;
+  left: 0;
+  opacity: 0.5;
+  z-index: 3;
+  text-indent: -9999px;
+  overflow: hidden;
+  text-decoration: none;
+  height: 61px;
+  width: 38px;
+  background: transparent url("../images/themes.gif") no-repeat left top;
+  margin-top: -45px;
+  }
+
+.slide_nav:active {
+  opacity: 1.0;
+  }
+
+.slide_nav.next {
+  left: auto;
+  background-position: right top;
+  right: 0;
+  }
+  
+.banner{width:730px; height:454px; overflow:hidden;position: relative; background:#e8e4e4; left:295px;}
+
+.slide_tabs {
+    position:absolute;
+    left:50%;
+    bottom: 10px;
+    z-index: 2;
+}
+.slide_here {
+    background-color: #F70!important;
+}
+.slide_tabs li {
+    float: left;
+    width: 22px;
+    height: 22px;
+    overflow: hidden;
+    margin-right: 10px;
+    cursor: pointer;
+    font: 400 16px/22px "΢���ź�",Arial;
+    color: #FFF;
+    border-radius: 50%;
+    background-color: #444;
+    text-align: center;
+}
+
+/*floor*/
+h2, h3 { font-family: "microsoft yahei"; font-weight: normal; }
+.floor .mt { height: 36px; }
+.floor .mt .extra, .floor .mt .tab { float: right; display: inline; }
+.floor h2 { float: left; display: inline; line-height: 30px; font-size: 20px; }
+.floor .mt .tab { margin-top: 1px; }
+.style-red { color: rgb(200, 22, 35); }
+.slider-page a { position: absolute; top: 50%; margin-top: -31px; z-index: 1; display: block; width: 28px; height: 62px; line-height: 62px; background: rgba(0, 0, 0, 0.2) none repeat scroll 0% 0%; color: rgb(255, 255, 255); text-align: center; font-size: 22px; font-weight: normal; font-family: "simsun"; }
+.slider-page a:hover { text-decoration: none; color: rgb(255, 255, 255); }
+.slider-prev { left: 0px; }
+.slider-next { right: 0px; }
+.slider-nav { position: absolute; height: 9px; bottom: 10px; }
+.slider-nav ul { line-height: 1; }
+.slider-nav li { display: inline-block; width: 9px; height: 9px; margin: 0px 2px; background: rgb(62, 62, 62) none repeat scroll 0% 0%; border-radius: 50%; text-align: center; color: rgb(255, 255, 255); overflow: hidden; cursor: pointer; }
+.slider-nav .slider-selected { background: rgb(182, 27, 31) none repeat scroll 0% 0%; color: rgb(255, 255, 255); }
+.floor { margin-bottom: 30px; }
+.floor .mt { border-bottom: 1px solid rgb(200, 22, 35); overflow: visible; position: relative; }
+.floor img { vertical-align: top; }
+.floor h2 { position: relative; padding-left: 40px; color: rgb(51, 51, 51); }
+.floor h2 i { position: absolute; top: 2px; left: 0px; width: 21px; height: 25px; padding-right: 10px; background: transparent url('../images/base/sprite_floor.png') no-repeat scroll 0px -35px; font-size: 13px; color: rgb(255, 255, 255); text-align: center; overflow: hidden; }
+.floor .tab { border: solid 1px #ededed; height: 34px; border-bottom: 0 none; line-height: 34px; z-index: 1; }
+.floor .tab-item { float: left; display: inline; height: 34px; position: relative; z-index: 2; }
+.floor .tab-item a { float: left; height: 34px; padding: 0px 16px; text-decoration: none; line-height: 34px; overflow: hidden; background: rgb(255, 255, 255) none repeat scroll 0% 0%; border-left: 1px solid rgb(255, 255, 255); border-right: 1px solid rgb(255, 255, 255); white-space: nowrap; }
+.floor .tab-item span { position: absolute; width: 1px; background: rgb(204, 204, 204) none repeat scroll 0% 0%; overflow: hidden; height: 14px; top: 10px; right: 0px; }
+.floor .tab-selected a { position: absolute; white-space: nowrap; border-left: 1px solid rgb(200, 22, 35); border-right: 1px solid rgb(200, 22, 35); border-top: 3px solid rgb(200, 22, 35); top: -1px; left: -1px; height: 33px; line-height: 30px; color: rgb(200, 22, 35); text-indent: 1px; }
+.floor .tab-selected span { display: none; }
+.floor .m {  }
+.floor .mc {  }
+.floor .side { float: left; width: 330px; overflow: hidden; font-family: "microsoft yahei"; }
+.floor .side-inner { position: relative; width: 330px; background: rgb(229, 235, 235) none repeat scroll 0% 0%; overflow: hidden; }
+.floor .banner { position: relative; height: 474px; }
+.floor .banner a { display: block; height: 475px; }
+.floor .themes { position: relative; padding-left: 10px; height: 92px; margin-top: -237px; overflow: hidden; background: rgba(255, 255, 255, 0.5) none repeat scroll 0% 0%; }
+.floor .assists { position: relative; height: 48px; padding: 21px 0px 0px; font-size: 14px; line-height: 24px; overflow: hidden; background: rgba(255, 255, 255, 0.7) none repeat scroll 0% 0%; }
+.floor .assists li { float: left; width: 180px; height: 24px; padding-left: 25px; overflow: hidden; }
+.floor .assists li a { white-space: nowrap; }
+.floor .words { position: relative; height: 76px; background: rgba(255, 255, 255, 0.7) none repeat scroll 0% 0%; font-family: 宋体; }
+.floor .words li { float: left; width: 135px; height: 48px; padding: 7px 0px 0px 25px; overflow: hidden; }
+.floor .words a { float: left; margin-right: 10px; line-height: 24px; white-space: nowrap; }
+.floor .words a:link, .floor .words a:visited { color: rgb(153, 153, 153); }
+.floor .words a:hover { color: rgb(200, 22, 35); }
+.floor .themes li { float: left; width: 98px; height: 26px; padding: 10px 0px; }
+.floor .themes a { float: left; }
+.floor .themes a:hover .icon { animation: 0.2s ease 0s normal none 1 running flip; }
+.floor .themes i, .floor .themes span { float: left; height: 26px; overflow: hidden; line-height: 26px; }
+.floor .themes span { font-size: 14px; margin-right: 5px; }
+.floor .themes .icon { width: 26px; margin-right: 5px; }
+.floor .main { position: relative; float: left; width: 660px; height: 474px; overflow: hidden; }
+.floor .main-inner li { width: 220px; overflow: hidden; font-size: 0px; }
+.floor .main-inner a { display: block; border-right: 1px solid rgb(237, 237, 237); border-bottom: 1px solid rgb(237, 237, 237); overflow: hidden; }
+.floor .main-body { float: left; width: 660px; }
+.floor .main-extra { display: none; float: left; width: 220px; }
+.floor .slider { position: absolute; top: 0px; left: 0px; width: 439px; height: 236px; overflow: hidden; border-right: 1px solid rgb(237, 237, 237); border-bottom: 1px solid rgb(237, 237, 237); }
+.floor .slider .slider-item { border: medium none; }
+.floor .slider .slider-nav { width: 100%; height: 0px; line-height: 0; text-align: center; bottom: 19px; cursor: default; }
+.floor .slider .slider-nav ul { height: 0px; line-height: 0; }
+.floor .slider .slider-nav li { display: inline-block; }
+.floor .slider .slider-page { display: none; }
+.floor .slider .slider-page a { border: medium none; }
+.floor .p-list { width: 670px; height: 474px; overflow: hidden; }
+.floor .p-list li { float: left; width: 160px; height: 230px; padding: 6px 17px 0px; border-bottom: 1px solid rgb(237, 237, 237); border-right: 1px solid rgb(237, 237, 237); overflow: hidden; }
+.floor .p-list .p-img { height: 140px; margin-bottom: 4px; text-align: center; padding-top: 15px; }
+.floor .p-list .p-name { height: 3em; margin-bottom: 3px; }
+.floor .p-list .p-price { font-size: 15px; font-family: Verdana; color: rgb(228, 57, 60); }
+.floor-current h2 i { background: transparent url('../images/base/sprite_floor.png') no-repeat scroll 0px 0px; }
+.floor-current h2::before { content: ""; position: absolute; top: 2px; left: 0px; width: 31px; height: 25px; background: transparent url('sprite_floor.png') no-repeat scroll 0px -35px; }
+.floor-current h2 i { animation-name: scaleDisc; animation-duration: 1s; }
+.floor .banner a::before { content: ""; position: absolute; width: 80px; height: 350px; top: 0px; left: -150px; overflow: hidden; background: transparent -moz-linear-gradient(left center , rgba(255, 255, 255, 0) 0px, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%) repeat scroll 0% 0%; transform: skewX(-25deg); }
+.floor .banner a:hover::before { transition: left 1s ease 0s; left: 260px; }
+.root61 .floor .m {  }
+.root61 .floor .mt {  }
+.root61 .floor .mc {  }
+.root61 .floor .main { width: 880px; }
+.root61 .floor .p-list { width: 890px; }
+.root61 .floor .p-list li { width: 165px; }
+.root61 .floor .main-extra { display: block; }
+.elevator { width: 30px; overflow: hidden; display: none; }
+.elevator ul { overflow: hidden; background-color: rgba(255, 255, 255, 0.8); }
+.elevator li { width: 30px; height: 30px; line-height: 30px; text-align: center; overflow: hidden; margin-top: -1px; cursor: pointer; }
+.elevator li a { display: block; width: 30px; height: 30px; margin: 0px auto; color: rgb(98, 83, 81); font-size: 14px; font-family: Arial; background: transparent url('../images/base/dot.png') no-repeat scroll 0px 0px; }
+.elevator li a:hover { color: rgb(255, 255, 255); text-decoration: none; background: rgb(200, 22, 35) none repeat scroll 0% 0%; }
+.elevator li .etitle { display: none; width: 30px; height: 30px; color: rgb(255, 255, 255); font-size: 12px; }
+.elevator li.current a { display: none; }
+.elevator li.current .etitle { display: block; color: rgb(200, 22, 35); }
+.elevator li.current .etitle:hover { color: rgb(255, 255, 255); }
+.elevator li.hover a, .elevator li:hover a { display: none; }
+.elevator li.hover .etitle, .elevator li:hover .etitle { display: block; color: rgb(255, 255, 255); }
+
+#mobiles .p-list li{
+	width: 185px;
+}

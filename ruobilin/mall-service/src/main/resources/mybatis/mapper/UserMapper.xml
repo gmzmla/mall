@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.UserMapper">
+    <sql id="query">
+        <if test="id != null ">
+            and ID = #{id,jdbcType=NUMERIC,javaType=long}
+        </if>
+        <if test="email != null ">
+            and EMAIL = #{email,jdbcType=VARCHAR,javaType=string}
+        </if>
+        <if test="name != null">
+            and NAME = #{name,jdbcType=VARCHAR,javaType=string}
+        </if>
+    </sql>
+    
+
+    <!--查找用户列表 -->
+    <select id="list" resultType="User">
+        select *
+		from user
+    </select>
+
+    <!--添加用户 -->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="User">
+        <selectKey resultType="long" keyProperty="id" order="AFTER">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+        insert into user(name,email,password,photoUrl,smallUrl,registerTime,
+        	updateTime,lastTime,userType,userStatus,cityId,sex,phone,birthday,qq,shopId
+        )
+        values(
+        	#{name},#{email},#{password},#{photoUrl},#{smallUrl},now(),
+			now(),now(),#{userType},#{userStatus},#{cityId},#{sex},#{phone},#{birthday},#{qq},#{shopId}
+        )
+    </insert>
+
+    <!--修改用户 -->
+    <update id="update" parameterType="User">
+        update
+            user
+        set
+            name = #{name},email = #{email},updateTime = now(), userType = #{userType}, userStatus = #{userStatus}
+        where
+            id = #{id}
+    </update>
+
+    <!--根据用户名查询用户角色信息 -->
+    <select id="getUser" parameterType="java.util.Map" resultType="User">
+        select
+         *
+        from user
+        <where>
+          <include refid="query"/>
+        </where>
+    </select>
+
+	<select id="getByEmail" parameterType="java.lang.String" resultType="User">
+        select * from user
+        where email=#{value}
+    </select>
+    
+    <select id="getById" parameterType="java.lang.Long" resultType="User">
+        select * from user
+        where id=#{value}
+    </select>
+    
+    <select id="findAll" resultType="User" parameterType="java.lang.String">
+        select *
+		from user 
+		where 1=1 
+		<if test="value != null">
+			and name=#{value}
+		</if>
+    </select>
+    
+    <delete id="deleteById" parameterType="java.lang.Long">
+    	delete from user where id=#{value} 
+    </delete>
+</mapper>

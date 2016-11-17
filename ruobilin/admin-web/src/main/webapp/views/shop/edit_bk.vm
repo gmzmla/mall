@@ -1,0 +1,60 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+    <link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="ex-panel">
+		#if(!$shop.id)<h3>编辑商铺</h3>#else<h3>添加商铺</h3>#end
+		<form class="form-horizontal" role="form" method="post">
+			<input type="hidden" name="id" value="$!shop.id" />
+			<div class="form-group">
+				<label for="name" class="col-sm-2 control-label">名称</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="name" name="name" placeholder="名称" value="$!shop.name">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="phone" class="col-sm-2 control-label">电话</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="phone" name="phone" placeholder="电话" value="$!shop.phone">
+              	</div>
+            </div>
+            <div class="form-group">
+				<label for="email" class="col-sm-2 control-label">邮箱</label>
+				<div class="col-sm-6">
+					<input type="email" class="form-control" id="email" name="email" placeholder="邮箱" value="$!shop.email">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="userId" class="col-sm-2 control-label">店长</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="userId" name="userId" placeholder="店长" value="$!shop.userId">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="status" class="col-sm-2 control-label">状态</label>
+				<div class="col-sm-6">
+					<select name="status" class="form-control">
+						<option value="0" #if($shop.status == 0) selected #end>可用</option>
+						<option value="1" #if($shop.status == 1) selected #end>未审核</option>
+						<option value="2" #if($shop.status == 2) selected #end>禁用</option>
+                    </select>
+              	</div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-6">
+                <button type="submit" class="btn btn-default">保存</button>
+              </div>
+            </div>
+      </form>
+	</div>
+</body>
+</html>

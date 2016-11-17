@@ -1,0 +1,71 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+	<link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+	<script src="$basePath/js/jquery-page.js"></script>
+	<script type="text/javascript" >
+		$(function(){
+			$("#pager").paging($shops.paginator.totalCount,20,$page - 1,function(p) {
+				document.location.href="$basePath/shop/list?page=" + (p + 1);
+			});
+		});
+	
+    </script>
+</head>
+<body>
+	<div>
+		
+		<div class="ex-panel">
+			<div class="ex-href"><a href="$basePath/shop/edit">添加</a></div>
+			<div><h3>商户列表</h3></div>
+    		<table class="table table-striped">
+    			<thead>
+    				<tr>
+    					<th>#</th>
+    					<th>名称</th>
+    					<th>邮箱</th>
+    					<th>电话</th>
+    					<th>创建时间</th>
+    					<th>状态</th>
+						<th>店长名称</th>
+    					<th>操作</th>
+    				</tr>
+    			</thead>
+    			<tbody>
+        		#foreach($s in $shops)
+    				<tr>
+    					<td>$s.id</td>
+						<td>$s.name</td>
+    					<td>$s.email</td>
+    					<td>$s.phone</td>
+    					<td>$date.format("yyyy-MM-dd", $s.created)</td>
+    					<td>#if($s.status == 0) 可用 #elseif($s.status == 1) 未审核 #elseif($s.status == 2) 禁用  #end</td>
+						<td>$!s.shopKeeper</td>
+    					<td>
+    						<a href="$basePath/shop/edit?id=$s.id">编辑</a>&nbsp;
+    						<a href="$basePath/shop/del?id=$s.id" onclick="javascript:return confirm('确认删除？');">删除</a>&nbsp;
+							<a href="$basePath/product/list?shopId=$s.id">管理产品</a>
+    					</td>
+    				</tr>
+    			#end
+    			</tbody>
+               
+    		</table>
+		</div>
+		<div id="pager">
+		<form method="post" id="pageFromId" action="$basePath/list?id=$id">
+			#pagebar($shops.getPaginator(),'pageFromId')
+            </form>
+	</div>
+
+	
+    </div>
+</body>
+</html>

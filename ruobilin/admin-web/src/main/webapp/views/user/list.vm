@@ -1,0 +1,60 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+	<link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+	<script src="$basePath/js/jquery-page.js"></script>
+	<script type="text/javascript" >
+		$(function(){
+			$("#pager").paging($staffs.paginator.totalCount,20,$page - 1,function(p) {
+				document.location.href="$basePath/user/list?page=" + (p + 1);
+			});
+		});
+    </script>
+</head>
+<body>
+	<div>
+		
+		<div class="ex-panel">
+			<div class="ex-href"><a href="$basePath/user/edit">添加</a></div>
+			<div><h3>用户列表</h3></div>
+    		<table class="table table-striped">
+    			<thead>
+    				<tr>
+    					<th>#</th>
+    					<th>姓名</th>
+    					<th>邮箱</th>
+    					<th>类型</th>
+    					<th>创建时间</th>
+    					<th>状态</th>
+    					<th>操作</th>
+    				</tr>
+    			</thead>
+    			<tbody>
+        		#foreach($s in $users)
+    				<tr>
+    					<td>$s.id</td>
+						<td>$s.name</td>
+    					<td>$s.email</td>
+    					<td>#if($s.userType == 0) 普通用户 #elseif($s.userType == 8) 操作员 #elseif ($s.userType == 9) 管理员 #end</td>
+    					<td>$date.format("yyyy-MM-dd", $s.registerTime)</td>
+    					<td>#if($s.userStatus == 0) 可用 #elseif($s.userStatus == 1) 未激活 #elseif ($s.userStatus == 2) 禁用 #end</td>
+    					<td>
+    						<a href="$basePath/user/edit?id=$s.id">编辑</a>&nbsp;
+    					</td>
+    				</tr>
+    			#end
+    			</tbody>
+    		</table>
+		</div>
+		<div id="pager">
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.CategoryMapper">
+    <select id="findAll" resultType="Category">
+        select *
+		from category 
+		order by parentId,id
+    </select>
+    
+    <select id="getByCode" resultType="Category" parameterType="java.lang.String">
+        select *
+		from category 
+		where code=#{code}
+    </select>
+    
+    <select id="getById" resultType="Category" parameterType="java.lang.Long">
+        select *
+		from category 
+		where id=#{value}
+    </select>
+    
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="Category">
+    	<selectKey resultType="long" keyProperty="id" order="AFTER">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+        insert into category(parentId,name,productCount,created,userId,code) 
+		values(#{parentId},#{name},#{productCount},now(),#{userId},#{code})
+    </insert>
+    <update id="update" parameterType="Category">
+        update category 
+        set parentId=#{parentId},name=#{name},productCount=#{productCount},code=#{code}
+		where id=#{id}
+    </update>
+    <delete id="deleteById" parameterType="java.lang.Integer">
+    	delete from category where id=#{value} 
+    </delete>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.FrontRecommendedMapper">
+	<!-- 查询所有 -->
+	<select id="findAllLevel"  resultType="com.ruobilin.mall.entity.Recommended">
+		SELECT * FROM recommended
+	</select>
+	
+	<!-- 根据传入的父级id获取其所属 -->
+	<select id="findRecommendedByParentId" parameterType="java.lang.String" resultType="com.ruobilin.mall.entity.Recommended">
+		SELECT id,parentId,name,status,level,createTime,endTime
+		FROM recommended
+		WHERE
+		parentId=#{parentId}
+	</select>
+	
+	<!-- 根据id获取其所属所有商品 -->
+	<select id="findRecommendedGoodsById" parameterType="java.lang.Integer" resultType="com.ruobilin.mall.entity.RecommendedGoods">
+		SELECT id,productId,recommendedId,goodsName,type
+		FROM recommendedGoods
+		WHERE
+		recommendedId=#{recommendedId}
+	</select>
+	
+	<select id="getHomeProducts" parameterType="java.lang.Integer" resultType="java.util.Map">
+		select 
+			CASE WHEN a.id is null THEN b.id ELSE a.id END as id,
+			CASE WHEN a.name is null THEN b.`name` ELSE a.name END as name,
+			CASE WHEN a.price is null THEN b.price ELSE a.price END as price,
+			CASE WHEN d.imageUrl is null THEN e.imageUrl ELSE d.imageUrl END as imageUrl,
+			c.tableName
+		from commodityTable a 
+		RIGHT JOIN commodityBasicInfo b on a.commodityBasicId=b.id
+		RIGHT JOIN recommendedGoods c on (c.productId=b.id or a.id=c.productId)
+		LEFT JOIN commodityImage d on a.id=d.commodityId and d.type=0
+		LEFT JOIN commodityBasicImage e on b.id=e.commodityBasicId and e.type=0
+		WHERE
+		c.recommendedId=#{recommendedId}
+		
+<!-- 		SELECT a.*,c.* FROM  product a -->
+<!-- 		RIGHT JOIN recommendedGoods b on a.id=b.productId -->
+<!-- 		left JOIN productimage c on a.id=c.productId and c.type=0 -->
+<!-- 		where b.recommendedId=#{recommendedId} -->
+	</select>
+</mapper>

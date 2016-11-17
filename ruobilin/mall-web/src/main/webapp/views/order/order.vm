@@ -1,0 +1,211 @@
+#set($basePath=$request.contextPath)
+#set($page_title="购物车")
+	<div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-xs-12 col-sm-9">
+			<div class="row row-offcanvas row-offcanvas-right">
+				<div class="col-xs-12 col-sm-9" id="contacts">
+					<a href="javascript:void(0)" onclick="showContact()">添加</a><br />
+				#if ($contacts && $contacts.size()>0)
+					#foreach ($c in $contacts)
+					<input type="radio" name="contact" value="$c.id" #if($c.status==0) checked #end/>$c.name - $c.address <a href="javascript:void(0)" onclick="showContact($c.id)">修改</a><br /> 
+					#end
+				#end
+				</div>
+				<div id="contactPanel" class="col-xs-12 col-sm-9 #if($contacts && $contacts.size()>0)hidden#end">
+        			<form role="form" onsubmit="return false;">
+                      <div class="form-group">
+                        <label for="name">姓名</label>
+						<input type="hidden" id="cid" value="" />
+                        <input type="text" class="form-control" id="name" name="name" placeholder="姓名">
+                      </div>
+                      <div class="form-inline">
+						<div class="form-group">
+                        <label for="address">地址</label>
+						<select id="provinceId" name="provinceId" onchange="loadCities(this)">
+						</select>
+						<select id="cityId" name="cityId" onchange="loadAreas(this)">
+						</select>
+						<select id="areaId" name="areaId">
+						</select>
+						</div>
+                        <div class="form-group">
+							<input type="text" class="form-control" id="address" name="address" placeholder="地址">
+						</div>
+                      </div>
+					  <div class="form-group">
+                        <label for="mobile">手机</label>
+                        <input type="text" class="form-control" id="mobile" name="mobile" placeholder="手机">
+                      </div>
+					  <div class="form-group">
+                        <label for="phone">电话</label>
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="电话">
+                      </div>
+					  <div class="form-group">
+                        <label for="mail">邮箱</label>
+                        <input type="text" class="form-control" id="mail" name="mail" placeholder="邮箱">
+                      </div>
+                      <div class="text-center">
+							<button type="submit" class="btn btn-default" onclick="addContact()">添加收件人</button>
+					  </div>
+                    </form>
+                </div>
+			</div>
+		</div>
+	</div>
+	<div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-xs-12 col-sm-9">
+			<hr />
+		</div>
+	</div>
+	<div class="row row-offcanvas row-offcanvas-right">
+		#foreach($sp in $products)
+		<div class="col-xs-12 col-sm-9">
+			$sp.shop.name
+		</div>
+        <div class="col-xs-12 col-sm-9">
+			<table class="table table-striped products">
+    			<thead>
+    				<tr>
+    					<th>商品</th>
+    					<th>价格</th>
+    					<th>数量</th>
+    				</tr>
+    			</thead>
+    			<tbody>
+        		#foreach($p in $sp.products)
+    				<tr>
+    					<td><img src="$!p.smallUrl" /><a href="$basePath/p/$p.productId">$p.name &nbsp;&nbsp; $p.priceGroup</a></td>
+						<td>$price.format($p.price)</td>
+						<td>$p.count</td>
+    				</tr>
+    			#end
+    			</tbody>
+			</table>
+        </div>
+		<div class="col-xs-12 col-sm-9">
+			配送费<span class="expressFee">$price.format($sp.expressFee)</span>
+		</div>
+		#end
+		<div class="col-xs-12 col-sm-9">
+			<br />
+			总计<span id="sumPrice">0</span>
+			<button class="btn btn-primary" onclick="pay()"><i class="icon-upload icon-white"></i>去支付</button>
+		</div>
+      </div>
+<script type="text/javascript" >
+function loadAreas(obj) {
+	jQuery.getJSON("$basePath/other/areas", {cityId:$(obj).val()}, function(json) {
+		if (json == null || json.length < 1)
+			return;
+		var str = "";
+		for (var i=0; i<json.length; i++) {
+			str += '<option value="'+json[i].id+'">'+json[i].cnName+'</option>';
+		}
+		$("#areaId").html(str);
+	});
+}
+function loadCities(obj) {
+	jQuery.getJSON("$basePath/other/cities", {provinceId:$(obj).val()}, function(json) {
+		if (json == null || json.length < 1)
+			return;
+		var str = "";
+		for (var i=0; i<json.length; i++) {
+			str += '<option value="'+json[i].id+'">'+json[i].cnName+'</option>';
+		}
+		$("#cityId").html(str);
+		loadAreas($("#cityId")[0]);
+	});
+}
+function loadProvinces() {
+	jQuery.getJSON("$basePath/other/provinces", {countryId:1}, function(json) {
+		if (json == null || json.length < 1)
+			return;
+		var str = "";
+		for (var i=0; i<json.length; i++) {
+			str += '<option value="'+json[i].id+'">'+json[i].cnName+'</option>';
+		}
+		$("#provinceId").html(str);
+		loadCities($("#provinceId")[0]);
+	});
+}
+function sumPrice() {
+	var sum = 0;
+	$(".products tr").each(function(i) {
+		var tds = $(this).find("td");
+		if (tds != null && tds.length > 2) {
+			sum += parseFloat($(tds[1]).html()) * parseFloat($(tds[2]).html());
+		}
+	});
+	$(".expressFee").each(function(i) {
+		sum += parseFloat($(this).html());
+	});
+	$("#sumPrice").html(sum.toFixed(2));
+}
+function addContact() {
+	var c = new Object();
+	c.id = $("#cid").val();
+	c.name = $("#name").val();
+	c.mobile = $("#mobile").val();
+	c.phone = $("#phone").val();
+	c.countryId = 1;
+	c.provinceId = $("#provinceId").val();
+	c.cityId = $("#cityId").val();
+	c.areaId = $("#areaId").val();
+	c.address = $("#address").val();
+	c.mail = $("#mail").val();
+	jQuery.post("$basePath/u/addContact", c, function(json) {
+		if (json.success) {
+			$("#contacts").append('<input type="radio" name="contact" value="'+json.data+'" checked/>'+c.name+' - '+c.address+' <br />');
+			$("#contactPanel").addClass("hidden");
+		} else {
+			alert("保存失败。");
+		}
+	}, "json");
+}
+function fillContact(c) {
+	if (c.id != null && c.id != "") {
+		$("#cid").val(c.id);
+	}
+	if (c.name != null && c.name != "") {
+		$("#name").val(c.name);
+	}
+	if (c.mobile != null && c.mobile != "") {
+		$("#mobile").val(c.mobile);
+	}
+	if (c.phone != null && c.phone != "") {
+		$("#phone").val(c.phone);
+	}
+	if (c.provinceId != null && c.provinceId != "") {
+		$("#provinceId").val(c.provinceId);
+	}
+	if (c.cityId != null && c.cityId != "") {
+		$("#cityId").val(c.cityId);
+	}
+	if (c.areaId != null && c.areaId != "") {
+		$("#areaId").val(c.areaId);
+	}
+	if (c.address != null && c.address != "") {
+		$("#address").val(c.address);
+	}
+	if (c.mail != null && c.mail != "") {
+		$("#mail").val(c.mail);
+	}
+}
+function showContact(id) {
+	if (id != null) {
+		jQuery.getJSON("$basePath/u/getContact", {id:id}, function(c) {
+			fillContact(c);
+			$("#contactPanel").removeClass("hidden");
+		});
+	} else {
+		var c = new Object();
+    	fillContact(c);
+		$("#contactPanel").removeClass("hidden");
+	}
+}
+$().ready(function() {
+	loadProvinces();
+	sumPrice();
+});
+</script>
+<script src="$basePath/js/order.js"></script>

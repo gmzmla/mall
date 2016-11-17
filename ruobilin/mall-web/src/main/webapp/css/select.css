@@ -1,0 +1,32 @@
+
+.baseBg{background-image:url(../images/base_bg.png);background-repeat: no-repeat;}
+.settleup-2013{height:34px;position:fixed;right:45px;bottom:0px;z-index:900;}
+*html .settleup-2013{position:absolute;top:expression(eval(document.documentElement.scrollTop));margin:500px 0 0 0;}
+.settleup-2013-item{position:relative;padding:0px 6px;height:34px;}
+.settleup-2013-pos{position:absolute;width:6px;height:34px;z-index:920;top:-3px;}
+.J-L-ico{background-position:-55px -84px;left:0px;}
+.J-R-ico{background-position:-66px -84px;right:0px;}
+.settleup-2013-main{position:relative;}
+.settleup-2013-title{height:27px;cursor:pointer;line-height:27px;padding:0px 10px 4px 10px;position:relative;z-index:920;background:url(../images/bg5.png) repeat-x 0px 0px;}
+.settleup-2013-title .J-go{color:#fff;display:block;float:left;}
+.settleup-2013-title .J-go em{display:inline-block;width:17px;height:14px;vertical-align:middle;margin:-2px 10px 0px 0px;margin-top:0px\9;background-position:-56px -124px;}
+.settleup-2013-num{width:14px;height:14px;background-position:-28px -88px;text-align:center;overflow:hidden;line-height:14px;display:block;position:absolute;left:70px;top:2px;color:#fff;font-size:10px;}
+.settleup-2013-body{width:255px;display:none;border:solid 1px #d6d6d6;box-shadow:0px 0px 5px #8b8b8b;behavior: url(js/pie.htc);padding:10px 10px 35px 10px;position:absolute;bottom:5px;left:0px;background:url(../images/p-bg.png) repeat;z-index:910;}
+.settleup-2013-list{padding:5px;color:#999;border:solid 1px #e3e3e3;background:#fff;height:50px;margin-bottom:10px;position:relative;}
+.settleup-2013-list-remove{background:#ffd2d3;}
+.settleup-2013-list img{float:left;}
+.settleup-2013-list-a{float:right;width:185px;}
+.settleup-2013-list-a p{height:25px;line-height:25px;}
+.settleup-2013-list-a p em{color:#0363BD;font-weight:bold;margin-right:3px;}
+.settleup-2013-close{position:absolute;cursor:pointer;right:5px;top:5px;width:11px;height:11px;background-position:-32px -147px;overflow:hidden;}
+.settleup-2013-close:hover{background-position:-41px -147px;}
+.settleup-2013-buy{height:26px;}
+.settleup-2013-buy span{float:left;color:#555;}
+.settleup-2013-buy a{width:112px;height:26px;background-position:-3px -249px;display:block;float:right;}
+.settleup-2013-buy a:hover{background-position:-3px -277px;}
+.settleup-2013-px{width:275px;border:solid 1px #d6d6d6;display:none;box-shadow:0px 0px 5px #8b8b8b;behavior: url(js/pie.htc);height:28px;position:absolute;bottom:5px;left:0px;background:url(../images/p-bg.png) repeat;z-index:905;}
+.settleup-2013-mx{width:113px;position:absolute;left:-3px;top:-3px;height:3px;background-position:-4px -187px;z-index:921;}
+.settleup-2013-small{width:119px;}
+#floatOrder{width:50px;height:50px;padding:2px;background:#fff;border:solid 5px #e54144;overflow:hidden;position:absolute;z-index:890;}
+.Q-online{width:28px;height:20px;display:block;background-position:-78px -130px;position:fixed;right:10px;bottom:13px;}
+*html .Q-online{position:absolute;top:expression(eval(document.documentElement.scrollTop));margin:500px 0 0 0;}

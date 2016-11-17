@@ -1,0 +1,224 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+	<link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+	<script src="$basePath/js/uploader/fineuploader-3.0.js"></script>
+	<script type="text/javascript" >
+		function showImport(id) {
+			$("#importModal").modal();
+		}
+		function showEdit(id) {
+			if (id != null) {
+    			jQuery.getJSON("$basePath/area/ip/" + id, function(json) {
+    				$("#id").val(json.id);
+					$("#areaId").val(json.areaId);
+					$("#begin").val(json.begin);
+					$("# end").val(json.end);
+					$("#remark").val(json.remark);
+    			});
+			}
+			
+			$("#editModal").modal();
+		}
+		function deleteById(id) {
+			if (!confirm("是否删除？"))
+				return;
+			jQuery.post("$basePath/area/ip/del", {id:id},function(data) {
+				if (data == "0") {
+					document.location.reload();
+				}
+			});
+		}
+		function save() {
+			var id = $("#id").val();
+			var areaId = $("#areaId").val();
+			var begin = $("#begin").val();
+			var end = $("# end").val();
+			var remark = $("#remark").val();
+			if (begin == "" || end == "" || areaId == "") {
+				alert("必须填写。");
+				return;
+			}
+			jQuery.post(
+				"$basePath/area/ip/save", 
+				{id:id, areaId:areaId, begin:begin, end:end, remark:remark},
+				function(data) {
+				if (data == "0") {
+					alert("成功。");
+					document.location.reload();
+				}
+				else {
+					alert("失败。");
+				}
+			});
+		}
+		var uploader = null;
+        $().ready(function() {
+            uploader = new qq.FineUploader({
+              	element: document.getElementById('fine-uploader'),
+        		request: {
+        			endpoint: '/area/ip/upload'
+        		},
+        		text: {
+                    uploadButton: '<i class="icon-upload icon-white"></i>选择文件',
+                    failUpload: '上传失败。'
+                },
+                template: '<div class="qq-uploader">' +
+                              '<pre class="qq-upload-drop-area span5"><span>拖拽到此区域上传。</span></pre>' +
+                              '<div class="qq-upload-button btn btn-success control-label offset1" style="width: auto;">{uploadButtonText}</div>' +
+                              '<ul class="qq-upload-list" style="margin-top: 10px; text-align: center;"></ul>' +
+                            '</div>',
+                fileTemplate: '<li id="{id}">' +
+                            '<div class="qq-progress-bar"></div>' +
+                            '<span class="qq-upload-spinner"></span>' +
+                            '<span class="qq-upload-finished"></span>' +
+                            '<span class="qq-upload-file"></span>&nbsp;' +
+                            '<span class="qq-upload-size"></span>' +
+                            '<span class="qq-upload-status-text">{statusText}</span>' +
+                            '<a class="qq-upload-cancel" href="#">{cancelButtonText}</a>' +
+                            '</li>',
+                classes: {
+                    success: 'alert alert-success',
+                    fail: 'alert alert-error'
+                },
+                validation: {
+                    sizeLimit: 22971520
+                },
+                messages: {
+                    sizeError: "只能上传{sizeLimit}大小的文件。"
+                },
+                callbacks: {
+                	onSubmit: function(id, fileName) {
+                		if (this.uploaded == null) {
+                			this.uploaded = 0;
+                		}
+                		if (this.uploaded > 5) {
+                			return false;
+                		}
+                		if (this.uploaded == 5) {
+                			this.uploaded ++;
+                			alert('最多能上传5张图片。');
+                			return false;
+                		}
+                		this.uploaded ++;
+                		return true;
+                	},
+                    onComplete: function(id, fileName, responseJSON) {
+        				if (responseJSON.success) {
+    						alert("导入成功。");
+							document.location.reload();
+        				}
+                    }
+                },
+        		debug: true
+            });
+        });
+    </script>
+</head>
+<body>
+	<div>
+		<div class="ex-panel">
+			<div class="ex-href"><a href="javascript:void(0)" onclick="showImport()">导入</a>&nbsp;<a href="javascript:void(0)" onclick="showEdit()">添加</a></div>
+			<div><h3>地区IP列表</h3></div>
+    		<table class="table table-striped">
+    			<thead>
+    				<tr>
+    					<th>#</th>
+    					<th>地区</th>
+    					<th>开始IP</th>
+    					<th>结束IP</th>
+						<th>备注</th>
+    					<th>操作</th>
+    				</tr>
+    			</thead>
+    			<tbody>
+        		#foreach($c in $ip)
+    				<tr>
+    					<td>$c.id</td>
+						<td>$!c.areaId</td>
+    					<td>$c.start</td>
+    					<td>$c.end</td>
+						<td>$c.remark</td>
+    					<td>
+    						<a href="javascript:void(0)" onclick="showEdit($c.id)">编辑</a>&nbsp;
+    						<a href="javascript:void(0)" onclick="deleteById($c.id)">删除</a>&nbsp;
+    					</td>
+    				</tr>
+    			#end
+    			</tbody>
+    		</table>
+		</div>
+	</div>
+	<div id="editModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">编辑</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+    					<div class="col-md-offset-1 col-sm-2">名称</div>
+    					<div class="col-sm-3">
+							<input type="hidden" id="id" />
+    						<input type="text" id="cnName" />
+    					</div>
+					</div>
+					<div class="row">
+    					<div class="col-md-offset-1 col-sm-2">英文名</div>
+    					<div class="col-sm-3">
+    						<input type="text" id="enName" />
+    					</div>
+					</div>
+					<div class="row">
+    					<div class="col-md-offset-1 col-sm-2">编码</div>
+    					<div class="col-sm-3">
+    						<input type="text" id="ecode" />
+    					</div>
+					</div>
+					<div class="row">
+    					<div class="col-md-offset-1 col-sm-2">数字编码</div>
+    					<div class="col-sm-3">
+    						<input type="text" id="code" />
+    					</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" onclick="save()">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="importModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">导入</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+    					<div class="col-md-offset-1 col-sm-2">文件</div>
+    					<div class="col-sm-3">
+    						<div id="fine-uploader"></div>
+							<div id="uploaded" class="upload-panel"></div>
+    					</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" onclick="import()">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

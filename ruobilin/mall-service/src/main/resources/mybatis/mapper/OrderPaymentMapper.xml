@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.OrderPaymentMapper">
+    <insert id="insert" parameterType="OrderPayment">
+        insert into orderPayment(orderId,paymentOrderId,status,price,created) 
+		values(#{orderId},#{paymentOrderId},#{status},#{price},now())
+    </insert>
+    
+    <select id="findByOrderId" resultType="OrderPayment" parameterType="java.lang.String">
+        select *
+		from orderPayment 
+		where orderId=#{value}
+    </select>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.admin.mapper.CategoryBasicPropertyMapper">
+	<insert id="insertCategoryBasicProperty" parameterType="com.ruobilin.mall.admin.entity.CategoryBasicProperty">
+		insert into categoryBasicProperty (id,commodityBasicId,propertyId,valueId)
+		values (<![CDATA[replace(uuid(),'-','')]]>,#{commodityBasicId},#{propertyId},#{valueId})
+	</insert>
+	
+	<insert id="insertListCategoryBasicProperty" parameterType="java.util.Map">
+		insert into categoryBasicProperty (id,commodityBasicId,propertyId,valueId)
+		values
+		<foreach collection="list" item="cbp" separator=",">
+			 (
+			 <![CDATA[replace(uuid(),'-','')]]>,
+			 #{commodityBasicId},
+			 #{cbp.propertyId},
+			 #{cbp.valueId}
+			 )
+		</foreach>
+	</insert>
+	
+	<update id="updateCategoryBasicProperty" parameterType="com.ruobilin.mall.admin.entity.CategoryBasicProperty">
+	</update>
+	<delete id="delCategoryBasicProperty" parameterType="String">
+		delete from CategoryBasicProperty
+		where id=#{id}
+	</delete>
+	<delete id="delListCategoryBasicProperty" parameterType="String">
+		delete from categoryBasicProperty
+		where commodityBasicId=#{commodityBasicId}
+	</delete>
+	<select id="queryListCategoryBasicProperty" parameterType="String" resultType="com.ruobilin.mall.admin.entity.CategoryBasicProperty">
+		select a.*,b.property,c.name as value from  categoryBasicProperty a
+		LEFT JOIN categoryProperty b on a.propertyId=b.id
+		LEFT JOIN categoryPropertyValue c on a.valueId=c.id
+		where a.commodityBasicId=#{commodityBasicId}
+	</select>
+</mapper>

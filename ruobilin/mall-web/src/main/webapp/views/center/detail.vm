@@ -1,0 +1,353 @@
+#set($basePath=$request.contextPath)
+<link href="$basePath/css/myCenter/orderdetail2012.css" rel="stylesheet" type="text/css">
+
+<div class="w">
+	<div class="breadcrumb">
+		<strong><a href="http://home.jd.com/">我的比邻</a></strong><span>&nbsp;&gt;&nbsp;<a
+			href="$basePath/center/list">订单中心</a>&nbsp;&gt;&nbsp;订单：$orderTable.orderNumber<span></span></span>
+	</div>
+
+	<div class="m" id="orderstate">
+		<div class="mt">
+			<strong>订单号：${orderTable.orderNumber}&nbsp;&nbsp;&nbsp;&nbsp;状态：
+				<span class="ftx14">
+				#if("01"==${orderTable.orderStatus})
+					等待付款
+				#elseif("02"==${orderTable.orderStatus}||"03"==${orderTable.orderStatus}||"04"==${orderTable.orderStatus})
+					等待收货
+				#else
+					已完成
+				#end
+				</span>
+				<span id="pay-button-9898829485"></span> 
+				<span class="thirdpop"></span>
+			</strong>
+			<div class="fr">
+				<div class="toolbar">
+					<input class="btn-img btn-inst" onclick="window.open('')" value="订单打印" type="button">
+					<input class="btn-img btn" onclick="javascript:location.href=''" id="btn_Comment" value="评价" type="button">
+				</div>
+			</div>
+		</div>
+
+		<div class="mc" style="display: show">
+			订单已经完成，感谢您在比邻商城购物，欢迎您对本次交易及所购商品进行评价。
+			<span class="flk13">
+				<a href="">发表评价</a>
+			</span>
+		</div>
+
+		<div class="mc" id="zxzf" style="display: none">
+			<div>
+				<p style="text-align: left;">尊敬的客户，您的订单商品已经从库房发出，请您做好收货准备。</p>
+				<p style="text-align: left;">
+					<span class="ftx-01">由比邻提供</span> <s class="icon-bao"></s> <a
+						target="_blank"
+						href="http://help.jd.com/help/question-56.html#help1995">在线交易保障</a>
+					<span>如果您已收到货，请确认收货，比邻将与卖家结算。如果您对购买的商品不满意，您可在确认收货后发起返修/退换货申请!</span>
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="ml10 mb10" style="font-family: 宋体;">
+		重要提醒：比邻平台及销售商不会以<strong class="ftx04">订单异常、系统升级</strong>为由，要求您点击任何网址链接进行退款操作。烦请关注比邻平台<a
+			class="ftx13" href="#">“谨防诈骗公告声明”</a>
+	</div>
+
+	<div id="process" class="section4">
+		<div class="node fore ready">
+			<ul>
+				<li class="tx1">&nbsp;</li>
+				<li class="tx2">提交订单</li>
+				<li id="track_time_0" class="tx3">
+					$!{orderTable.submitTime} <br> 
+				</li>
+			</ul>
+		</div>
+		<div class="proce ready">
+			<ul>
+				<li class="tx1">&nbsp;</li>
+			</ul>
+		</div>
+		#set($intString = ${orderTable.orderStatus})
+		#set($Integer = 0)
+		<div class="node #if($Integer.parseInt($intString) > 1) ready #else wait #end ">
+			<ul>
+				<li class="tx1">&nbsp;</li>
+				<li class="tx2">付款成功</li>
+				<li id="track_time_4" class="tx3"></li>
+			</ul>
+		</div>
+		<div class="proce #if($Integer.parseInt($intString) > 1) ready #else wait #end">
+			<ul>
+				<li class="tx1">&nbsp;</li>
+			</ul>
+		</div>
+		<div class="node #if($Integer.parseInt($intString) > 2) ready #else wait #end">
+			<ul>
+				<li class="tx1">&nbsp;</li>
+				<li class="tx2">商品出库</li>
+				<li id="track_time_1" class="tx3">
+					$!{orderTable.outTime}<br>
+				</li>
+			</ul>
+		</div>
+		<div class="proce #if($Integer.parseInt($intString) > 2) ready #else wait #end">
+			<ul>
+				<li class="tx1">&nbsp;</li>
+			</ul>
+		</div>
+		<div class="node #if($Integer.parseInt($intString) > 3) ready #else wait #end">
+			<ul>
+				<li class="tx1">&nbsp;</li>
+				<li class="tx2">等待收货</li>
+				<li id="track_time_5" class="tx3">
+					$!{orderTable.waitTime}<br>
+				</li>
+			</ul>
+		</div>
+		<div class="proce #if($Integer.parseInt($intString) > 3) ready #else wait #end">
+			<ul>
+				<li class="tx1">&nbsp;</li>
+			</ul>
+		</div>
+		<div class="node #if($Integer.parseInt($intString)> 4) ready #else wait #end">
+			<ul>
+				<li class="tx1">&nbsp;</li>
+				<li class="tx2">完成</li>
+				<li id="track_time_6" class="tx3">
+					$!{orderTable.completeTime}<br>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<!--跟踪、付款信息、gis-->
+	<div class="m" id="ordertrack">
+		<ul class="tab">
+			<li class="curr">
+				<h2>订单跟踪</h2>
+			</li>
+			<li>
+				<h2>付款信息</h2>
+			</li>
+			<li id="orderlocustab" style="display: block;">
+				<h2>订单轨迹</h2>
+			</li>
+			<li style="display: none;">
+				<h2>安装跟踪</h2>
+			</li>
+		</ul>
+
+		<div class="mc tabcon">
+			<!--订单跟踪-->
+
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tbody id="tbody_track">
+					<tr>
+						<th width="15%"><strong>处理时间</strong></th>
+						<th width="50%"><strong>处理信息</strong></th>
+						<th width="35%"><strong>操作人</strong></th>
+					</tr>
+
+				</tbody>
+				<tbody>
+					<tr>
+						<td>2015-08-15 22:10:30</td>
+						<td>您提交了订单，请等待系统确认</td>
+						<td>客户</td>
+					</tr>
+					<tr>
+						<td>2015-08-15 22:10:59</td>
+						<td>您的订单已经进入北京2号库准备出库</td>
+						<td>系统</td>
+					</tr>
+					<tr>
+						<td>2015-08-16 13:03:41</td>
+						<td>感谢您在比邻购物，欢迎您再次光临！</td>
+						<td>孔凡亮</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div class="extra">
+				<span id="jdshfs"> 送货方式：普通快递 </span><span>承运人：比邻快递</span><span>货运单号：$!{orderTable.courierNumber}</span>
+			</div>
+		</div>
+
+		<div class="i-ordertrack">
+			<s></s><a href="http://app.jd.com/" target="_blank"
+				clstag="click|keycount|orderinfo|i-ordertrack">手机查订单，更方便</a>
+		</div>
+		<div id="im"></div>
+	</div>
+	<!--留言-->
+	<!--订单信息-->
+	<div class="m" id="orderinfo">
+		<div class="mt">
+			<strong>订单信息</strong>
+		</div>
+		<div class="mc">
+			<!-- 节能补贴信息 -->
+
+			<!--顾客信息-->
+			<dl class="fore">
+				<dt>收货人信息</dt>
+				<dd>
+					<ul>
+						<li>收&nbsp;货&nbsp;人：$!{orderTable.consignee}</li>
+						<li>地&nbsp;&nbsp;&nbsp;&nbsp;址：$!{orderTable.consigneeAddress}</li>
+						<li>手机号码：$!{orderTable.phoneNumber}</li>
+					</ul>
+				</dd>
+			</dl>
+			<!-- 礼品购订单展示送礼人信息 -->
+
+			<!--配送、支付方式-->
+			<dl>
+				<dt>支付及配送方式</dt>
+				<dd>
+					<ul>
+						<li>支付方式：
+							#if($!{orderTable.modePayment}==1)
+								货到付款
+							#elseif($!{orderTable.modePayment}==2)
+								在线支付
+							#else
+								$!{orderTable.modePayment}
+							#end
+						</li>
+						<li>运&nbsp;&nbsp;&nbsp;&nbsp;费：$!{orderTable.expressCharge}</li>
+						<li>送货日期：$!{orderTable.deliveryDate}</li>
+						<li>配送时间：$!{orderTable.deliveryTime}</li>
+					</ul>
+				</dd>
+			</dl>
+			<!--发票-->
+			<dl>
+				<dt>发票信息</dt>
+				<dd>
+					<ul>
+						<li>发票类型：电子发票 
+							<span id="order-eleInvoice-href">（
+								<a href="" style="color: #0000FF;">电子发票下载</a>）
+							</span>
+						</li>
+						<li>发票抬头：个人</li>
+						<li>发票内容：明细</li>
+					</ul>
+				</dd>
+			</dl>
+
+			<!--商品-->
+			<dl>
+				<dt>
+					<span class="i-mt">商品清单</span>
+
+					<div id="fquan" class="fquan">
+						<div id="eventName" onmouseover="showCoupon()" onmouseout="hideCoupon()"></div>
+
+						<div class="prompt p-fquan" id="couponListShow">
+							<div class="pc" id="couponList"></div>
+						</div>
+					</div>
+
+					<div class="clr"></div>
+
+				</dt>
+
+				<dd class="p-list">
+					<table cellpadding="0" cellspacing="0" width="100%">
+						<tbody>
+							<tr>
+								<th width="10%">商品编号</th>
+								<th width="12%">商品图片</th>
+								<th width="42%">商品名称</th>
+								<th width="10%">比邻价</th>
+								<th width="8%">京豆数量</th>
+								<th width="7%">商品数量</th>
+								<th width="11%">
+									#if("01"==${orderTable.orderStatus})
+                    					库存状态
+                    				#else
+                    					 操作
+                    				#end
+								</th>
+							</tr>
+							#foreach($listOfGoods in $orderTable.listOfGoodsList)
+							<tr>
+								<td>683129</td>
+
+								<td>
+									<div class="img-list">
+										<a class="img-box" target="_blank"
+											href="$basePath/${listOfGoods.tableName}/${listOfGoods.commodityId}"> 
+											<img src="${listOfGoods.imgUrl}"
+											title="${listOfGoods.name}" height="50"
+											width="50">
+										</a>
+									</div>
+								</td>
+
+								<td>
+									<div class="al fl">
+										<a class="flk13" target="_blank" href="$basePath/${listOfGoods.tableName}/${listOfGoods.commodityId}" >
+											${listOfGoods.name}
+										</a>
+									</div>
+									<div class="clr"></div>
+									<div id="coupon_683129" class="fl"></div>
+								</td>
+
+								<td><span class="ftx04"> ￥${listOfGoods.price}</span></td>
+
+								<td>0</td>
+
+								<td>${listOfGoods.Number}</td>
+								<td>
+									#if("01"==${orderTable.orderStatus})
+                    					有货
+									#elseif("02"==${orderTable.orderStatus})
+										等待发货
+                    				#elseif("03"==${orderTable.orderStatus}||"04"==${orderTable.orderStatus})
+										<a href="$basePath/center/updateOrderStatus?id=$orderTable.id&orderStatus=05">
+											确认收货
+                                        </a>
+									#elseif("05"==${orderTable.orderStatus})	
+										<a href="$basePath/center/updateOrderStatus?id=$orderTable.id&orderStatus=07">
+											退换货
+                                        </a>
+									#elseif("07"==${orderTable.orderStatus})
+										已退换
+									#end
+								</td>
+								#end
+							</tr>
+						</tbody>
+					</table>
+				</dd>
+			</dl>
+
+			<!--条形码-->
+			<div id="barcode">
+				<span class="ftx13 fl">查看条形码</span>
+
+			</div>
+			<!-- 商家运费险  -->
+			<div id="yunFeiXian"></div>
+		</div>
+		<!--金额-->
+		<div class="total">
+			<ul>
+				<li><span>总商品金额：</span>$number.currency("${orderTable.total}")</li>
+				<li><span>- 返现：</span>¥0.00</li>
+				<li><span>+ 运费：</span>¥0.00</li>
+			</ul>
+			<span class="clr">ad</span> <span style="color: #EDEDED;"></span>
+			<div class="extra">
+				应付总额：<span class="ftx04"><b>$number.currency("${orderTable.total}")</b></span>
+			</div>
+		</div>
+	</div>
+</div>

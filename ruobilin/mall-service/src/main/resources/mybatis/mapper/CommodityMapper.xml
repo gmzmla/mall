@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.CommodityMapper">
+    <select id="getById" resultType="Commodity" parameterType="java.lang.Long">
+        select *
+		from commodity 
+		where id=#{value}
+    </select>
+    
+     <select id="findAll" resultType="Commodity" >
+        select *
+		from commodity 
+    </select>
+      <select id="list" resultType="Commodity">
+        select *
+		from commodity
+    </select>
+    <insert id="insert" parameterType="Commodity">
+        insert into commodity(dityid,name,tableName,ordet) 
+		values(#{dityid},#{name},#{tableName},#{ordet})
+    </insert>
+    <update id="update" parameterType="Commodity">
+        update commodity 
+        set dityid=#{dityid},name=#{name},tableName=#{tableName},ordet=#{ordet}
+		where id=#{id}
+    </update>
+    <delete id="deleteById" parameterType="java.lang.Long">
+    	delete from commodity where id=#{value} 
+    </delete>
+  	<delete id="delete" parameterType="Commodity">
+		delete from commodity
+		where 
+		dityid=#{dityid}
+    </delete>
+</mapper>

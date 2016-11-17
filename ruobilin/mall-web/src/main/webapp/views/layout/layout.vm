@@ -1,0 +1,207 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$!page_title - Mall</title>
+    <link rel="shortcut icon" href="$basePath/img/favicon.ico" mce_href="$basePath/img/favicon.ico" type="image/x-icon"/>
+	<link href="$basePath/css/base.css" rel="stylesheet" type="text/css">
+    <script src="$basePath/js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" >
+	var basePath='$basePath';
+	function search(){
+	var keyWord=$("#keyWord").val();
+	if(keyWord =="" ||keyWord==null){
+		return ;
+	}
+	window.location.href="$basePath/solrSearch/display?keyWord="+keyWord;
+	}
+    </script>
+	<script type="text/javascript" src="$basePath/js/solrSearch/solrQueryList.js"></script>
+	<script src="$basePath/js/cart.js"></script>
+</head>
+<body class="root61">
+<div id="shortcut-2013">
+	<div class="w">
+		<ul class="fl lh">
+			<li class="fore1 ld"><b></b><a href="javascript:addToFavorite()" rel="nofollow">收藏</a></li>
+		</ul>
+		<ul class="fr lh">
+			<!-- javascript:login();-->
+			<li class="fore1" id="loginbar">
+				#if($!session.getAttribute("userInfo"))
+					$!session.getAttribute("userInfo").name
+					&nbsp;&nbsp;<a href="$basePath/u/logout">退出</a>
+				#else
+					<a href="$basePath/u/login" class="link-login">你好，请登录</a>
+					&nbsp;&nbsp;<a href="$basePath/u/register" class="link-regist style-red">免费注册</a>
+				#end
+					</li>
+			<li class="fore2 ld">
+				<s></s>
+				<a href="$basePath/center/list" rel="nofollow">我的订单</a>
+			</li>
+			<li style="padding-left: 12px;" class="fore2-1 ld" id="jd-vip"><s></s><a target="_blank" rel="nofollow" href="javascript:void(0)">商城会员</a></li>
+		</ul>
+		<span class="clr"></span>
+	</div>
+</div>
+<div class="o-header-2013">
+<div class="w" id="header-2013">
+		<div id="logo-2013" class="ld">
+			<a href="#" hidefocus="true"><b></b>
+				<img src="$basePath/images/base/logo-201305.jpg" alt="商城" height="60" width="226">
+			</a>
+		</div>
+		<!--logo end-->
+		<div id="search-2013">
+			<div class="i-search ld">
+				<ul style="display: none;" id="shelper" class="hide"></ul>
+				<div class="form">
+					<input class="text" type="text" id="keyWord" name="keyWord" value="$!keyWord" onkeydown="javascript:if(event.keyCode==13) search();" autocomplete="off" accesskey="s" onchange="showList()">
+					<input value="搜索" class="button" onclick="search()" type="button" >
+				</div>
+			</div>
+			<div id="hotwords">
+				<strong>热门搜索：</strong>
+				<a href="#" target="_blank">玩具大促</a>
+				<a href="#" target="_blank">智能玩具</a>
+				<a href="#" target="_blank">智能玩具</a>
+				<a href="#" target="_blank">智能玩具</a>
+			</div>
+		</div>
+		<!--search end-->
+		<div id="my360buy-2013">
+			<dl>
+				<dt class="ld"><s></s><a href="javascript:void(0);">我的商城</a><b></b></dt>
+				<dd>
+					<!-- div class="loading-style1"><b></b>加载中，请稍候...</div -->
+				</dd>
+			</dl>
+		</div>
+		
+		<!--my360buy end-->
+		<div id="settleup-2013" onmouseover="MM_over()" onmouseout="MM_out()" style="width:126px;position:relative;">
+			<script  type="text/javascript">
+            	function MM_over() {
+					if($("#shopping-amount").html() <1){
+						$(".prompt").show();
+					}else{
+						$("#settleup-content").show();
+					}
+                }
+                function MM_out() {
+					$("#settleup-content").hide();
+					$(".prompt").hide();
+                }
+            </script>
+			<dl>
+				<dt class="ld">
+					<s></s><span class="shopping"><span id="shopping-amount">#if($!munCart) $!munCart #else 0 #end</span></span>
+					<a href="$basePath/account" id="settleup-url">去购物车结算</a> <b></b> </dt>
+				<dd>
+					<div class="prompt" style="display:none"><div class="nogoods"><b></b>购物车中还没有商品，赶紧选购吧！</div></div>
+					<div id="settleup-content" style="display:none">
+    					<div class="smt">
+    						<h4 class="fl">最新加入的商品</h4>
+    					</div>
+    					<div class="smc" id="smc">
+    					</div>
+    					<div class="smb sumPrice">共<b id="munCart">$!munCart</b>件商品　共计
+    						￥<em>419.00</em>
+    						<br>
+    						<a href="$basePath/account" title="去购物车结算" id="btn-payforgoods">去购物车结算</a>
+    					</div>
+    				</div>
+				</dd>
+			</dl>
+			
+			
+		</div>
+		<!--settleup end-->
+	</div>
+	<div class="w">
+	<div id="nav-2013">
+			<div id="categorys-2013">
+				<div class="mt ld">
+					<h2><a href="$basePath/p/list/0">全部商品分类<b></b></a></h2>
+				</div>
+				<div class="mc">
+					#foreach($c in $categories)
+					<div class="item fore$velocityCount">    
+						<span>
+							<h3>
+								#foreach($d in $c.children)
+									<a href="$basePath/list/$d.code">$d.name</a>#if($c.children.size() >$velocityCount)、#end
+								#end
+							</h3><s></s>
+						</span>
+						<div class="i-mc">        
+							<!-- div onclick="$(this).parent().parent().removeClass('hover')" class="close">×</div-->     
+							<div class="subitem">
+								#foreach($d in $c.children)
+									#foreach($e in $d.children)
+								<dl class="fore1">
+									<dt>
+										<a style="" href="$basePath/list/$e.code">$e.name</a>
+									</dt>
+									<dd>
+												#foreach($f in $e.children)
+													<em><a style="" href="$basePath/list/$f.code">$f.name</a></em>
+												#end
+									</dd>
+								</dl>
+									#end
+								#end
+							</div>
+						</div>
+					</div>
+					#end
+				</div>
+			</div>
+			<div id="treasure"></div>
+			<ul id="navitems-2013">
+				<li class="fore1" id="nav-home"><a href="$basePath/">首页</a></li>
+				<li class="fore2" id="nav-fashion"><a href="$basePath/">服装城</a></li>
+			</ul>
+		</div>
+	</div>
+	<!--<div style="border-bottom: solid 2px rgb(177, 25, 26);margin-top: -15px;position: absolute;height: 2px;width: 100%;"></div>-->
+</div>
+    <div class="container">
+		$screen_content
+      <hr>
+    </div>
+<div class="w">
+	<div id="footer-2013">
+		<div class="links">
+			<!--
+			<a href="javascript:void(0);" target="_blank" rel="nofollow">关于我们</a>|<a href="javascript:void(0);" target="_blank" rel="nofollow">联系我们</a>
+			-->
+		</div>
+		<div class="copyright">
+			&copy; Drizzt 2014
+		</div>
+		<div class="authentication">
+			<a href="javascript:void(0);" rel="nofollow">
+				<img src="http://img10.360buyimg.com/da/20110329/108_40_zZOKnl.gif" alt="经营性网站备案中心" height="40" width="108"></a>
+					</div>
+	</div>
+</div>
+<script type="text/javascript">
+	function left(){
+		var left = $("#nav-2013").offset().left;
+		$(".banner").css("left",(left + 224)+"px");
+		$("#focus-extra").css("left",(left + 962)+"px");
+	}
+	$(function(){
+	$(".p-price").find("strong").each(function(){
+		
+	});
+	left();});
+	window.onresize=function(){left()};
+</script>
+<script src="$basePath/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+#set($layout = "/layout/nolayout.vm")
+#set($page_title="订单结算页面")
+#set($basePath=$request.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$!page_title - Mall</title>
+	<link href="$basePath/css/getOrderInfo.css" rel="stylesheet" type="text/css">
+	<link href="$basePath/css/dialog.css" rel="stylesheet" type="text/css">
+	<SCRIPT src="$basePath/js/jquery-2.1.0.js"></SCRIPT>
+	<script type="text/javascript">
+	var basePath='$basePath';
+    </script>
+	<SCRIPT src="$basePath/js/common.js"></SCRIPT>
+	<script src="$basePath/js/address/list.js"></script>
+	<SCRIPT src="$basePath/js/getOrderInfo.js"></SCRIPT>
+</head>
+<body id="mainframe">
+<div id="shortcut-2014">
+	<div class="w">
+		<ul class="fl lh">
+			<li class="fore1 ld"><b></b><a href="javascript:addToFavorite()" rel="nofollow">收藏</a></li>
+		</ul>
+		<ul class="fr lh">
+			<!-- javascript:login();-->
+			<li class="fore1" id="loginbar">
+				#if($!session.getAttribute("org.apache.shiro.subject.support.DefaultSubjectContext_PRINCIPALS_SESSION_KEY"))
+					$!session.getAttribute("org.apache.shiro.subject.support.DefaultSubjectContext_PRINCIPALS_SESSION_KEY")
+					&nbsp;&nbsp;<a href="$basePath/u/logout">退出</a>
+				#else
+					<a href="$basePath/u/login" class="link-login">你好，请登录</a>
+					&nbsp;&nbsp;<a href="$basePath/u/register" class="link-regist style-red">免费注册</a>
+				#end
+					</li>
+			<li class="fore2 ld">
+				<s></s>
+				<a href="$basePath/center/list" rel="nofollow">我的订单</a>
+			</li>
+			<li style="padding-left: 12px;" class="fore2-1 ld" id="jd-vip"><s></s><a target="_blank" rel="nofollow" href="javascript:void(0)">商城会员</a></li>
+		</ul>
+		<span class="clr"></span>
+	</div>
+</div>
+
+	<div class="w w1 header clearfix">
+        <div id="logo">
+            <a href="#" class="link1" target="_blank">
+				<img src="$basePath/images/base/logo-201305.jpg" alt="比邻商城">
+			</a>
+            <a href="#none" class="link2"><b></b>"结算页"
+			</a>
+        </div>
+
+        <div class="stepflex" id="#sflex03">
+            <dl class="first done">
+                <dt class="s-num">1</dt>
+                <dd class="s-text">1.我的购物车<s></s><b></b></dd>
+            </dl>
+            <dl class="normal doing">
+                <dt class="s-num">2</dt>
+                <dd class="s-text">2.填写核对订单信息<s></s><b></b></dd>
+            </dl>
+            <dl class="normal last">
+                <dt class="s-num">3</dt>
+                <dd class="s-text">3.成功提交订单<s></s><b></b></dd>
+            </dl>
+        </div>
+    </div>
+	
+<div id="container">
+    <div id="content" class="w">
+        <div class="m">
+			<div class="checkout-tit">
+                <span class="tit-txt">填写并核对订单信息</span>
+            </div>
+			<div class="mc">
+				<div class="checkout-steps">
+					<div class="step-tit">
+                        <h3>收货人信息</h3>
+                        <div class="extra-r">
+                            <a href="javascript:void(0)" class="ftx-05" onclick="use_NewConsignee()">新增收货地址</a>
+                        </div>
+                    </div>
+					<div class="step-cont">
+    					<div id="consignee-addr" class="consignee-addr">
+    						<div class="consignee-cont ui-switchable-panel-body consignee-off" style="position: relative; height: 40px;" id="consignee1">
+                              <ul class="ui-switchable-panel-main" id="consignee-list">
+    							#foreach($mailingAddress in $settleMap.listMailingAddress)
+								<li class="ui-switchable-panel" id="consignee_index_$!mailingAddress.id" #if($velocityCount==1)selected="selected" #end>
+                                	<div class="consignee-item #if($velocityCount==1)item-selected  #end" consigneeid="$!mailingAddress.id" id="consignee_index_div_137794070">
+                                		<span title="" limit="3">$!mailingAddress.name $!mailingAddress.area</span><b></b>
+                                	</div>
+                                	<div class="addr-detail">
+                                		<span title="" class="addr-name" limit="6">$!mailingAddress.name</span>
+                                		<span title="$!{mailingAddress.area} $!mailingAddress.detailed" class="addr-info" limit="32">$!{mailingAddress.area} $!mailingAddress.detailed</span>
+                                		<span class="addr-tel">$!mailingAddress.cellphone</span>
+                                	</div>
+                                	<div class="op-btns" consigneeid="137794070">
+                                		<a href="#none" class="ftx-05 setdefault-consignee" fid="137794070">设为默认地址</a>		
+    									<a href="#none" class="ftx-05 edit-consignee" fid="137794070">编辑</a>
+                                		<a href="#none" class="ftx-05 del-consignee" fid="137794070">删除</a>
+                                	</div>
+    							</li>
+								#end
+    						  </ul>
+    						</div>
+    					</div>
+    					<div class="addr-switch switch-on" id="consigneeItemAllClick" onclick="show_ConsigneeAll()">
+    						<span>更多地址</span><b></b>
+    					</div>
+    					<div class="addr-switch switch-off hide" id="consigneeItemHideClick" onclick="hide_ConsigneeAll()">
+    						<span>收起地址</span><b></b>
+    					</div>
+    				</div>
+					<div class="hr"></div>
+					<div id="shipAndSkuInfo">
+						<div id="payShipAndSkuInfo">
+							<div class="step-tit">
+                              <h3>支付方式</h3>
+                            </div>
+							<div class="step-cont">
+                              <div class="payment-list">
+                                <div class="list-cont">
+                                  <ul id="payment-list">
+									<li style="cursor: pointer;">
+										<div class="payment-item online-payment" for="pay-method-1" payname="货到付款" payid="1"><b></b>
+					    					货到付款
+                                        </div>
+									</li>
+									<li style="cursor: pointer;">
+										<div class="payment-item online-payment" for="pay-method-4" payname="在线支付" payid="2"><b></b>
+											在线支付 
+                                        </div>
+									</li>
+    									<script>
+                                            $('.online-payment').hover(function(){	
+                                            	$(this).addClass('payment-item-hover');
+                                            },function(){
+                                            	$(this).removeClass('payment-item-hover');
+                                            }); 
+                                      	</script>
+           						  </ul>
+								</div>
+							  </div>
+							</div>
+							<div class="hr"></div>
+							<div class="step-tit">
+								<h3>送货清单</h3>
+								<div class="extra-r">
+									<a href="http://cart.jd.com/cart/cart.html" id="cartRetureUrl" class="return-edit ftx-05">返回修改购物车</a>
+								</div>
+                            </div>
+							<div class="step-cont" id="skuPayAndShipment-cont">
+								<div class="shopping-lists" id="shopping-lists">
+									<div class="shopping-list ABTest">
+										#set($cartTotal=0)
+										#set($totalNumber=0)
+										#foreach($product in $settleMap.productList)
+											#set($totalNumber=$math.add($totalNumber,$product.productCount))
+											#set($cartTotal=$math.add($cartTotal,$math.mul($product.productCount,$product.price)))
+										<div class="goods-list">
+                                        	<!-- div class="goods-tit">
+                                        		<h4 class="vendor_name_h" id="0">商家：$!product.shopName</h4>
+                                        	</div -->
+                                        	<div class="goods-items"></div>
+                                        	<div class="goods-items">
+                                        		<div class="goods-suit goods-last">
+                                        			<div class="goods-item goods-item-extra">
+                                        				<div class="p-img">
+                                        					<a target="_blank" href="$basePath/${product.typeName}/${product.id}">
+																<img src="$product.imageUrl" alt="$product.name">
+															</a>
+                                        				</div>
+                                        				<div class="goods-msg">
+                                        					<div class="goods-msg-gel">
+                                        						<div class="p-name">
+                                        							<a href="$basePath/${product.typeName}/${product.id}" target="_blank">
+                                        								$product.name </a>
+                                        						</div>
+                                        						<div class="p-price">
+                                        							<strong class="jd-price">￥
+																		$product.price
+																	</strong>
+                                        							<span class="p-num"> x$product.productCount </span> 
+																	<span class="p-state">
+																		#if($math.toNumber($product.inventory)< $math.toNumber($product.productCount)) 
+																			无货
+																		#else 
+																			有货
+																		#end
+																	</span>
+                                        						</div>
+                                        					</div>
+                                        				</div>
+                                        				<div class="clr"></div>
+                                        			</div>
+                                        		</div>
+                                        	</div>
+                                        </div>
+										#end
+										<div class="dis-modes">
+                                        	<div class="mode-item mode-tab">
+                                        		<div class="mode-item-tit">
+                                        			<h4>配送方式</h4>
+                                        			<div class="extral-r">
+                                        				<!-- a id="jd-goods-item" class="cor-goods" href="#none"><i></i>对应商品</a-->
+                                        			</div>
+                                        		</div>
+                                        		<div class="mode-tab-nav">
+                                        			<ul>
+                                        				<li class="mode-tab-item curr" id="jd_shipment_item" onclick="doSwithTab('pay')">
+															<span id="jdShip-span-tip" class="m-txt">快速运输
+																<i class="qmark-icon qmark-tip" data-tips="由商家选择合作快递为您配送">
+																</i>
+															</span>
+															<b></b>
+														</li>
+                                        			</ul>
+                                        		</div>
+                                        		<div class="mode-tab-con " id="jd_shipment">
+													<div class="freight-cont">			   
+														<strong class="ftx-01" style="color:#666" freightbyvenderid="75516" popjdshipment="false">免运费</strong>
+													</div>
+                                        		</div>
+                                        	</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					<div class="hr"></div>
+                </div>
+            </div>
+			
+        </div>
+		
+		<div class="order-summary">
+        	<!--  预售 计算支付展现方式 begin -->
+        	<div class="statistic fr">
+        		<div class="list">
+        			<span><em class="ftx-01">$!totalNumber</em> 件商品，总商品金额：</span> 
+					<em class="price" id="warePriceId">￥$cartTotal </em>
+        		</div>
+        		<div class="list">
+        			<span>返现：</span> <em class="price" id="cachBackId" v="0"> -￥0.00</em>
+        		</div>
+        		<div class="list">
+        			<span>运费：</span> <em class="price" id="freightPriceId"><font
+        				color="#000000"> ￥0.00</font></em>
+        		</div>
+        		<div class="list" id="showUsedOrderBalance" style="display: none;">
+        			<span>余额：</span><em class="price" id="usedBalanceId">-￥0.00</em>
+        		</div>
+        		<div class="list" id="showPeriodFee" style="display: none;">
+        			<span>分期手续费(由分期银行收取)：</span><em class="price" id="periodFee">￥0.00</em>
+        		</div>
+        		<div class="list">
+        			<span>应付总额：</span> <em class="price" id="sumPayPriceId">￥$cartTotal </em>
+        		</div>
+        	</div>
+        	<div class="clr"></div>
+        </div>
+		<div class="hr"></div>
+		<div class="trade-foot">
+        	<div id="checkout-floatbar" class="group">
+        		<div class="ui-ceilinglamp checkout-buttons">
+        			<div class="sticky-placeholder hide" style="display: none;"></div>
+        			<div class="sticky-wrap">
+        				<div class="inner">
+        					<button type="submit" class="checkout-submit btn-1" id="order-submit" onclick="javascript:submit_Order('$basePath','$cartTotal');">
+        						提交订单<b></b>
+        					</button>
+        					<span class="total">应付总额：<strong id="payPriceId">￥$cartTotal</strong>
+        						<label class="noShowMoney hide" id="giftBuyHidePriceDiv">
+        							<input id="giftBuyHidePrice" checked="" type="checkbox">隐藏礼品价格
+        					</label>
+        					</span> <span id="checkCodeDiv"></span>
+        
+        					<div class="checkout-submit-tip" id="changeAreaAndPrice" style="display: none;">由于价格可能发生变化，请核对后再提交订单</div>
+        				</div>
+        				<span id="submit_message" style="display: none" class="submit-error"></span>
+        
+        				<div class="submit-check-info" id="submit_check_info_message"
+        					style="display: none"></div>
+        			</div>
+        		</div>
+        	</div>
+        </div>
+    </div>
+</div>
+<!-- 新增收货地址的弹出层-->
+	<div style="width: 690px; position: absolute; z-index: 10000; display: none; overflow: hidden; top: 0.5px; left: 294.5px;" class="ui-dialog">
+		<div style="width: 670px;" class="ui-dialog-title">      
+			<span>新增收货人信息</span>     
+		</div>    
+		<form id="consigneeForm" name="consigneeFormName" action="$basePath" >
+			<input type="hidden" name="saveType" id="saveType"/>
+    		<div style="height: 318px; width: 670px; overflow: hidden;" class="ui-dialog-content">
+    			<div class="form" id="consignee-form" name="consignee-form">
+                	<div class="item" id="name_div">
+                		<span class="label"><span style="color:red">*</span>&nbsp;收货人：</span>
+                		<div class="fl">
+                			<input tabindex="1" class="itxt" id="consignee_name" name="name" maxlength="20" value="" type="text" onblur="check_Consignee('name_div')">
+                			<span class="error-msg" id="name_div_error"></span>
+                		</div>
+                	</div>
+                	<div class="item" id="area_div">
+                		<span class="label"><span style="color:red">*</span>&nbsp;所在地区：</span>
+                		<div class="fl">
+                			<span id="span_area">
+    							<input type="hidden" name="area" id="area"/>
+                			  <span id="span_province">
+								<select tabindex="2" class="selt" id="consignee_province" name="provinceId" onchange="loadCitys()">
+									<option value="">请选择：</option>
+								</select>
+							  </span>
+                			   <span id="span_city"><select tabindex="3" class="selt" id="consignee_city" name="cityId"><option value="">请选择：</option></select></span>
+                			   <span id="span_county"><select tabindex="4" class="selt" id="consignee_county" name="countyId"><option value="">请选择：</option></select></span>
+                			   <span id="span_town" style="display:none"><select tabindex="5" class="selt" id="consignee_town" name="townId"><option value="">请选择：</option></select></span>
+                	        </span>
+                			<span class="error-msg" id="area_div_error"></span>
+                			<!--div class="ftx-03">标“*”的为支持货到付款的地区，<a href="" target="_Blank" class="ftx-05" id="codHelpUrl">查看货到付款地区</a></div-->
+                		</div>
+                	</div>
+                	<div class="item">
+                		<span class="label" id="address_div"><span style="color:red">*</span>&nbsp;详细地址：</span>
+                		<div class="fl">
+                			<!--span id="areaNameTxt"></span-->
+                			<input tabindex="6" class="itxt itxt02" id="consignee_address" name="detailed" maxlength="50" onblur="check_Consignee('address_div')" value="" type="text">
+                			<span class="error-msg" id="address_div_error"></span>
+                		</div>
+                	</div>
+                	<div class="item" id="call_div">
+                		<span class="label"><span style="color:red">*</span>&nbsp;手机号码：</span>
+                		<div class="fl">
+                			<input tabindex="7" class="itxt " id="consignee_mobile" name="cellphone" onblur="check_Consignee('call_mobile_div')" onfocus="if(value == defaultValue){value='';}" maxlength="11" value="" type="text">
+                		</div>
+                		<div class="fl">
+                			<span class="label">固定电话：</span>
+                			<input tabindex="8" class="itxt " id="consignee_phone" name="phone" onblur="check_Consignee('call_phone_div')" onfocus="if(value == defaultValue){value='';}" maxlength="20" value="" type="text">
+                		</div>
+                		<span class="error-msg" id="call_div_error"></span>
+                	</div>
+                	<div class="item" id="email_div">
+                		<span class="label">邮箱：</span>
+                		<div class="fl">
+                			<input tabindex="9" class="itxt" id="consignee_email" name="email" maxlength="50" onblur="check_Consignee('email_div')" value="" onfocus="if(value == defaultValue){value='';}" type="text">
+                			<span class="error-msg" id="email_div_error"></span>
+                			<div class="ftx-03">用来接收订单提醒邮件，便于您及时了解订单状态</div>
+                		</div>
+                	</div>
+                	<div class="item">
+                		<span class="label">&nbsp;</span>
+                		<div class="fl">
+                			<a href="javascript:void(0)" class="btn-9" onclick="save_Consignee('0')"><span id="saveConsigneeTitleDiv">保存收货人信息</span></a>
+                		</div>
+                	</div>
+                </div>
+    		</div>
+		</form>
+		<a class="ui-dialog-close" title="关闭">
+			<span class="ui-icon ui-icon-delete"></span>
+		</a>
+	</div>
+<!-- 新增收货地址的弹出层结束-->
+	<div class="w"> 
+        <div id="footer-2013">
+            <div class="links">
+			</div>
+            <div class="copyright">Copyright©2004-2015&nbsp;&nbsp;商城SC.com&nbsp;版权所有</div>
+        </div>
+    </div>
+</body>
+</html>
+

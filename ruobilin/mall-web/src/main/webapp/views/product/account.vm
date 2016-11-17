@@ -1,0 +1,256 @@
+#set($layout = "/layout/nolayout.vm")
+#set($basePath=$request.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gbk">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>购物车</title>
+    <link href="$basePath/css/base.css" rel="stylesheet" type="text/css">
+    <link href="$basePath/css/cart.css" rel="stylesheet" type="text/css">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+	<script >
+		var basePath='$basePath';
+    </script>
+    <SCRIPT src="$basePath/js/cart.js"></SCRIPT>
+</head>
+<body>
+<div id="shortcut-2013">
+	<div class="w">
+		<ul class="fl lh">
+			<li class="fore1 ld"><b></b><a href="javascript:addToFavorite()" rel="nofollow">收藏</a></li>
+		</ul>
+		<ul class="fr lh">
+			<!-- javascript:login();-->
+			<li class="fore1" id="loginbar">
+				#if($!session.getAttribute("org.apache.shiro.subject.support.DefaultSubjectContext_PRINCIPALS_SESSION_KEY"))
+					$!session.getAttribute("org.apache.shiro.subject.support.DefaultSubjectContext_PRINCIPALS_SESSION_KEY")
+					&nbsp;&nbsp;<a href="$basePath/u/logout">退出</a>
+				#else
+					<a href="$basePath/u/login" class="link-login">你好，请登录</a>
+					&nbsp;&nbsp;<a href="$basePath/u/register" class="link-regist style-red">免费注册</a>
+				#end
+					</li>
+			<li class="fore2 ld">
+				<s></s>
+				<a href="$basePath/center/list" rel="nofollow">我的订单</a>
+			</li>
+			<li style="padding-left: 12px;" class="fore2-1 ld" id="jd-vip"><s></s><a target="_blank" rel="nofollow" href="javascript:void(0)">商城会员</a></li>
+		</ul>
+		<span class="clr"></span>
+	</div>
+</div>
+<div class="w w1 header clearfix">
+	<div id="logo">
+		<a href="http://www.jd.com/" class="link1" target="_blank">
+			<img clstag="clickcart|keycount|xincart|cart_logo" src="$basePath/images/base/logo-201305.jpg" alt="京东商城">
+		</a>
+		<a href="#none" class="link2">
+			<b></b>
+			"购物车"
+		</a>
+	</div>
+	<div class="cart-search">
+		<div class="form">
+			<input style="color: rgb(153, 153, 153);" id="key" class="itxt" autocomplete="off" accesskey="s" type="text">
+			<input class="button" value="搜索" clstag="clickcart|keycount|xincart|cart_search" onclick="javascript:void(0);" type="button">
+		</div>
+	</div>
+</div>
+<div id="container" class="cart">
+	<div class="w">
+		<div class="cart-filter-bar ui-switchable-tab">
+        	<ul class="switch-cart">
+        		<li class="switch-cart-item curr ui-switchable-selected">
+        				<em>全部商品</em>
+        				<span class="number"></span>
+        		</li>
+        	</ul>
+			<form>
+            	<div class="clr"></div>
+            	<div class="w-line">
+            		<div class="floater"></div>
+            	</div>
+            	<div class="tab-con"></div>
+			</form>
+        </div>
+    </div>
+	<!-- 购物车商品列表-->
+	<div class="cart-warp">
+		<div class="w">	
+			<div id="jd-cart">
+				<div class="cart-main">
+					<div class="cart-thead">
+                		<div class="column t-checkbox">
+                			<div class="cart-checkbox">
+                				<input checked="checked" id="toggle-checkboxes_up" name="toggle-checkboxes" class="jdcheckbox" type="checkbox">
+                				<label class="checked" for="">勾选全部商品</label>
+                			</div>
+                				全选
+                			</div>
+                			<div class="column t-goods">商品</div>
+							<div class="column t-props"></div>
+                			<div class="column t-price">单价(元)</div>
+                			<div class="column t-quantity">数量</div>
+                			<div class="column t-sum">小计(元)</div>
+                			<div class="column t-action">操作</div>
+					</div>
+						
+					<div class="cart-list">
+						<div class="cart-item-list">
+							<div class="cart-tbody" id="vender_8888">
+    							<!-- div class="shop">
+                            		<div class="cart-checkbox">
+                            			<input checked="checked" name="checkShop" class="jdcheckbox" type="checkbox">
+                            			<label for="">勾选店铺内全部商品</label>
+                            		</div>
+                            		<span class="shop-txt">
+                            			<a class="shop-name self-shop-name" href="javascript:;" id="venderId_8888"">京东自营</a>
+                            		</span>
+                            	</div>
+							
+    							<div class="item-list">
+    								<div class="item-header">
+    									<div class="f-txt">
+    										活动
+                                        </div>
+    									<div class="f-price">
+                                        </div>
+                                    </div>
+                                </div -->
+							
+							#foreach($p in $list)
+								#set($ppPrice=$!math.div($p.product.prices[0].price,'100'))
+								<div class="item-give item-full">
+    							<div class=" item-last item-item item-selected  ">
+    								<div class="item-form">
+    									<div class="cell p-checkbox">
+                            				<div class="cart-checkbox">
+                            					<input name='checkItem' value="${p.delP}" type="checkbox" checked="checked">
+                            					<label for="" class="checked">勾选商品</label>
+                            				</div>
+                            			</div>
+    									
+    									<div class="cell p-goods">
+                            				<div class="goods-item">
+                            					<div class="p-img">
+    												<a href="$basePath/p/$!p.product.id" target="_blank">
+														<img alt="$!p.product.name" src="$!p.product.images[0].imageUrl" width="82px" height="82px"></a>
+                                                </div>
+    											<div class="item-msg">
+    												<div class="p-name">
+                                                        <a href="$basePath/p/$!p.product.id">$!p.product.name</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+										<div class="cell p-props p-props-new">
+    									#foreach($pp in $p.product.propertis)
+        									<div class="props-txt" title="$pp.value">$pp.property：$pp.value</div>
+										#end
+										</div>
+    									<div class="cell p-price">
+    										<strong>
+												$!ppPrice
+											</strong>
+    									</div>
+    									
+    									<div class="cell p-quantity">
+											<div class="quantity-form">
+                        						<a href="javascript:void(0);"class="decrement #if($p.pCount == 1) disabled #end" id="decrement_${p.product.id}_$!p.product.prices[0].id" onclick="onDecrement('${p.product.id}_$!{p.product.prices[0].id}','$ppPrice','${p.delP}','$basePath','$!{p.cartProductId}')">-</a>
+                        						<input autocomplete="off" class="itxt" value="$p.pCount" id="changeQuantity_${p.product.id}_$!{p.product.prices[0].id}" type="text" readonly >
+                        						<a href="javascript:void(0);" class="increment 
+													#if($!{p.pCount}>$!{p.product.prices[0].inventory}) disabled #end
+														" onclick="onIncrement('${p.product.id}_$!{p.product.prices[0].id}','$ppPrice','${p.delP}','$basePath','$!{p.cartProductId}')" id="increment_${p.product.id}_$!{p.product.prices[0].id}" >+</a>
+                        					</div>
+											
+    										<div class="ac ftx-03 quantity-txt">
+												#if($p.product.prices[0].inventory>0)
+													有货 
+												#else
+													无货 
+												#end
+											</div>
+                                        </div>
+    									
+    									<div class="cell p-sum" id="priceSum_${p.product.id}_$p.product.prices[0].id">
+    										<strong>$!math.mul($ppPrice,$p.pCount)</strong>
+    									</div>
+    									<div class="cell p-ops">
+                                            <a href="javascript:void(0);" onclick="onDeleteP(this,'${p.delP}','$basePath','$!{p.cartProductId}')"> 删除</a>
+    										<a href="javascript:void(0);">移到我的关注</a>
+                                        </div>
+                                    </div>
+									<div class="item-extra"></div>
+                                </div>
+                               </div>
+							#end
+							</div>
+						</div>
+					</div>
+				</div>
+            </div>
+			
+			<!-- 购物车结算位置-->
+        	<div id="cart-floatbar">
+        		<div class="ui-ceilinglamp-1">
+        			<div class="cart-toolbar">
+        				<div class="toolbar-wrap">
+        					<div class="options-box">
+        						<!-- div class="select-all">
+                					<div class="cart-checkbox">
+                						<input checked="checked" id="toggle-checkboxes_down" name="toggle-checkboxes" class="jdcheckbox" clstag="clickcart|keycount|xincart|cart_allCheckDown" type="checkbox">
+                						<label class="checked" for="">勾选全部商品</label>
+                					</div>
+        							全选
+        						</div>
+        						
+        						<div class="operation">
+        							<a href="#none" clstag="clickcart|keycount|xincart|cart_somesku_del" class="remove-batch">删除选中的商品</a>
+        							<a href="#none" class="follow-batch" clstag="clickcart|keycount|xincart|cart_somesku_guanzhu">移到我的关注</a>
+        						</div -->
+        						<div class="toolbar-right">
+        							<div class="normal">
+        								<div class="comm-right">
+                    						<div class="btn-area">
+                    						<a data-bind="1" href="$basePath/o/settle" class="submit-btn ">
+                    							去结算<b></b></a>
+                    						</div>
+        										
+                    						<div class="price-sum">
+                    							<div>
+                    								<span class="txt">总价（不含运费）：</span>
+                    								<span class="price sumPrice"><em>￥35.90</em></span>
+                    								<br>
+                    								<span class="txt">已节省：</span>
+                    								<span class="price totalRePrice">-￥0.00</span>
+                    							</div>
+                    						</div>
+        										
+                    						<div class="amount-sum">
+                    							已选择<em id="munCart">${munCart}</em>件商品<b class="up"></b>
+                    						</div>
+        								</div>
+        							</div>
+        						</div>
+        					</div>
+        				</div>
+                    </div>
+                </div>
+            </div>
+	
+		</div>
+    </div>
+</div>
+<div class="w"> 
+        <div id="footer-2013">
+            <div class="links">
+				<!--
+				<a rel="nofollow" target="_blank" href="http://www.jd.com/intro/about.aspx">关于我们</a>|<a rel="nofollow" target="_blank" href="http://www.jd.com/contact/">联系我们</a>|<a rel="nofollow" target="_blank" href="http://zhaopin.jd.com/">人才招聘</a>|<a rel="nofollow" target="_blank" href="http://www.jd.com/contact/joinin.aspx">商家入驻</a>|<a rel="nofollow" target="_blank" href="http://www.jd.com/intro/service.aspx">广告服务</a>|<a rel="nofollow" target="_blank" href="http://app.jd.com/">手机商城</a>|<a target="_blank" href="http://club.jd.com/links.aspx">友情链接</a>|<a target="_blank" href="http://cps.jd.com/">销售联盟</a>|<a href="http://club.jd.com/" target="_blank">商城社区</a>|<a href="http://gongyi.jd.com/" target="_blank">商城公益</a>
+				-->
+			</div>
+            <div class="copyright">Copyright©2004-2015&nbsp;&nbsp;商城SC.com&nbsp;版权所有</div>
+        </div>
+    </div>
+</body>
+</html>

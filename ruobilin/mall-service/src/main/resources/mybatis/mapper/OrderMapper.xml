@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.OrderMapper">
+    <insert id="insert" parameterType="Order">
+        insert into `order`(id,productId,productCount,userId,price,expressFee,coupon,created,status,remark) 
+		values(#{id},#{productId},#{productCount},#{userId},#{price},#{expressFee},#{coupon},now(),#{status},#{remark})
+    </insert>
+    <select id="findAll" resultType="Order" parameterType="java.util.Map">
+        select *
+		from `order` 
+		where 1=1 
+		<if test="value != null">
+			and userId=#{value}
+		</if>
+    </select>
+    <select id="queryCartList" resultType="java.util.HashMap" parameterType="String">
+    	SELECT 
+		CASE WHEN c.id is null THEN d.id ELSE c.id END as id,
+		CASE WHEN c.name='' or c.name is null THEN (CASE WHEN d.name='' or d.name is null THEN cc.name ELSE d.name END) ELSE c.name END as name,
+		CASE WHEN c.price is null THEN d.price ELSE c.price END as price,
+		CASE WHEN c.stock is null THEN d.stock ELSE c.stock END as stock,
+		CASE WHEN cimage.imageUrl is null THEN dimage.imageUrl ELSE cimage.imageUrl END as imageUrl,
+		CASE WHEN c.id is null THEN 'commodityBasicInfo' ELSE 'commodityTable' END as tableName,
+		b.productCount
+		from  cart a
+		LEFT JOIN cartProduct b on a.id=b.cartId
+		LEFT JOIN commodityTable c on b.productId=c.id
+		LEFT JOIN commodityBasicInfo cc on c.commodityBasicId=cc.id
+		LEFT JOIN commodityImage cimage on c.id=cimage.commodityId and cimage.type='0'
+		LEFT JOIN commodityBasicInfo  d on b.productId=d.id
+		LEFT JOIN commodityBasicImage dimage on d.id=dimage.commodityBasicId and dimage.type='0'
+		where a.userId=#{userId}
+    </select>
+    
+    <select id="queryCommodityProperty" resultType="java.util.HashMap" parameterType="String">
+    	SELECT b.`name`,c.`value` FROM commodityProperty a
+		LEFT JOIN propertyInfo b on a.propertyId=b.id
+		LEFT JOIN propertyValueInfo c on a.propertyValue=c.id
+		where a.commodityId=#{commodityId}
+    </select>
+</mapper>

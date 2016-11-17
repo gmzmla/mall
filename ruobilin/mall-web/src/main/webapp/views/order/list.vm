@@ -1,0 +1,38 @@
+#set($basePath=$request.contextPath)
+#set($page_title="我的订单")
+
+	<div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-xs-12 col-sm-9">
+          <table class="table table-striped">
+    			<thead>
+    				<tr>
+    					<th>商品</th>
+						<th>收货人</th>
+    					<th>价格</th>
+    					<th>时间</th>
+						<th>状态</th>
+    					<th>操作</th>
+    				</tr>
+    			</thead>
+    			<tbody>
+        		#foreach($o in $orders)
+    				<tr>
+    					<td>
+							#foreach ($p in $o.products)
+							<img src="$!p.smallUrl" />$p.name<br />
+							#end
+						</td>
+						<td>$o.address.name</td>
+						<td>$o.price</td>
+						<td>$date.format("yyyy-MM-dd HH:mm", $o.created)</td>
+						<td>#if($o.status==0) 完成 #elseif($o.status==1) 未付款 #elseif($o.status==2) 已付款 #elseif($o.status==3) 已发货 #elseif($o.status==4) 取消 #elseif($o.status==5) 退货 #end </td>
+    					<td>
+    						查看 | 删除 | 评价 | 申请返修/退换货 
+    					</td>
+    				</tr>
+    			#end
+    			</tbody>
+    		</table>
+        </div>
+      </div>
+<script src="/js/order.js"></script>

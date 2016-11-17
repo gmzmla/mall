@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <setting name="cacheEnabled" value="false"/>
+        <setting name="useGeneratedKeys" value="true"/>
+        <setting name="defaultExecutorType" value="REUSE"/>
+        <setting name="autoMappingBehavior" value="FULL"/>
+        <setting name="defaultStatementTimeout" value="20000" />
+        <setting name="logImpl" value="LOG4J" />
+    </settings>
+    <typeAliases>
+    	<package name="com.ruobilin.mall.admin.entity"/>
+    </typeAliases>
+    <plugins>
+        <plugin interceptor="com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor">
+            <property name="dialectClass" value="com.github.miemiedev.mybatis.paginator.dialect.MySQLDialect"/>
+        </plugin>
+    </plugins>
+    <mappers>
+    	<mapper resource="mybatis/mapper/MenuMapper.xml"/>
+    	<mapper resource="mybatis/mapper/CommodityBasicMapper.xml"/>
+    	<mapper resource="mybatis/mapper/CommodityImageMapper.xml"/>
+    	<mapper resource="mybatis/mapper/CommodityPropertyMapper.xml"/>
+    	<mapper resource="mybatis/mapper/CommodityTableMapper.xml"/>
+    	<mapper resource="mybatis/mapper/PropertyInfoMapper.xml"/>
+    	<mapper resource="mybatis/mapper/PropertyValueInfoMapper.xml"/>
+    	<mapper resource="mybatis/mapper/GoodsMapper.xml"/>
+    	<mapper resource="mybatis/mapper/RecommendedGoodsMapper.xml"/>
+    	<mapper resource="mybatis/mapper/RecommendedMapper.xml"/>
+    	<mapper resource="mybatis/mapper/AdminOrderMapper.xml"/>
+    	<mapper resource="mybatis/mapper/CategoryBasicPropertyMapper.xml"/>
+    	<mapper resource="mybatis/mapper/CommodityBasicImageMapper.xml"/>
+    	<!-- <mapper resource="mybatis/mapper/BrandMapper.xml"/> -->
+    </mappers>
+</configuration>

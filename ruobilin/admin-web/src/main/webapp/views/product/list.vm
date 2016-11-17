@@ -1,0 +1,93 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+	<link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+	<script src="$basePath/js/jquery-page.js"></script>
+	<script type="text/javascript" >
+		$(function(){
+			$("#pager").paging($products.paginator.totalCount,20,$page - 1,function(p) {
+				document.location.href="$basePath/product/list?shopId=$shopId&page=" + (p + 1);
+			});
+		}); 
+		function delSubmit(id,shopId){
+			if(confirm('确认删除？')){
+    			$("#formId").attr("action","$basePath/product/del?id="+id+"&shopId="+shopId);
+    			$("#formId").submit();
+			}
+		}
+    </script>
+</head>
+<body>
+	<div>
+		
+		<div class="ex-panel">
+			<div class="ex-href">
+				#if ($shopId)
+				<a href="$basePath/product/add?shopId=$shopId">添加</a>
+				<a href="$basePath/product/downloadexcel?shopId=$shopId">下载excel</a>
+				#end
+			</div>
+			<div><h3>产品列表</h3></div>
+    		<table class="table table-striped">
+    			<thead>
+    				<tr>
+    					<th>#</th>
+    					<th>分类</th>
+    					<th>商铺</th>
+    					<th>标题</th>
+						<th>售出数</th>
+						<th>原价</th>
+						<th>评价</th>
+    					<th>创建时间</th>
+						<th>过期时间</th>
+    					<th>状态</th>
+						<th>创建人</th>
+    					<th>操作</th>
+    				</tr>
+    			</thead>
+    			<tbody>
+        		#foreach($p in $products)
+    				<tr>
+    					<td>$!p.id</td>
+						<td>$!p.categoryText</td>
+						<td>$!p.shopName</td>
+						<td>$!p.name</td>
+    					<td>$!p.saled</td>
+    					<td>$!price.format($p.originalPrice)</td>
+						<td>$!p.grade</td>
+    					<td>$date.format("yyyy-MM-dd", $p.created)</td>
+						<td>$!date.format("yyyy-MM-dd", $!p.expiryDate)</td>
+    					<td>
+							#foreach($status in $PRODUCT_STATUS)
+								#set($i=$math.sub($velocityCount,1))
+								#if($p.status ==$i)
+									$status
+								#end
+							#end
+						</td>
+						<td>$!p.userName</td>
+    					<td>
+    						<a href="$basePath/product/add?id=$p.id&shopId=$p.shopId">编辑</a>&nbsp;
+    						<a href="$basePath/product/del?id=$p.id&shopId=$p.shopId" onclick="javascript:return confirm('确认删除？');">删除</a>&nbsp;
+    					</td>
+    				</tr>
+    			#end
+    			</tbody>
+    		</table>
+			<form method="post" id="formId"></form>
+		</div>
+		<div id="pager">
+			<form method="post" id="pageFromId" action="$basePath/product/list?shopId=$shopId">
+			#pagebar($products.getPaginator(),'pageFromId')
+            </form>
+		</div>
+	</div>
+</body>
+</html>

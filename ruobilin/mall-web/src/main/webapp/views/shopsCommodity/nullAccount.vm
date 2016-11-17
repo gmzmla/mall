@@ -1,0 +1,105 @@
+#set($layout = "/layout/nolayout.vm")
+#set($basePath=$request.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gbk">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>购物车</title>
+    <link href="$basePath/css/base.css" rel="stylesheet" type="text/css">
+    <link href="$basePath/css/cart.css" rel="stylesheet" type="text/css">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+	<script >
+		var basePath='$basePath';
+    </script>
+    <SCRIPT src="$basePath/js/cart.js"></SCRIPT>
+</head>
+<body>
+<div id="shortcut-2013">
+	<div class="w">
+		<ul class="fl lh">
+			<li class="fore1 ld"><b></b><a href="javascript:addToFavorite()" rel="nofollow">收藏</a></li>
+		</ul>
+		<ul class="fr lh">
+			<!-- javascript:login();-->
+			<li class="fore1" id="loginbar">
+				#if($!session.getAttribute("org.apache.shiro.subject.support.DefaultSubjectContext_PRINCIPALS_SESSION_KEY"))
+					$!session.getAttribute("org.apache.shiro.subject.support.DefaultSubjectContext_PRINCIPALS_SESSION_KEY")
+					&nbsp;&nbsp;<a href="$basePath/u/logout">退出</a>
+				#else
+					<a href="$basePath/u/login" class="link-login">你好，请登录</a>
+					&nbsp;&nbsp;<a href="$basePath/u/register" class="link-regist style-red">免费注册</a>
+				#end
+					</li>
+			<li class="fore2 ld">
+				<s></s>
+				<a href="$basePath/center/list" rel="nofollow">我的订单</a>
+			</li>
+			<li style="padding-left: 12px;" class="fore2-1 ld" id="jd-vip"><s></s><a target="_blank" rel="nofollow" href="javascript:void(0)">商城会员</a></li>
+		</ul>
+		<span class="clr"></span>
+	</div>
+</div>
+<div class="w w1 header clearfix">
+	<div id="logo">
+		<a href="#" class="link1" target="_blank">
+			<img src="$basePath/images/base/logo-201305.jpg" alt="京东商城">
+		</a>
+		<a href="#none" class="link2">
+			<b></b>
+			"购物车"
+		</a>
+	</div>
+	<div class="cart-search">
+		<div class="form">
+			<input style="color: rgb(153, 153, 153);" id="key" class="itxt" autocomplete="off" accesskey="s" type="text">
+			<input class="button" value="搜索" clstag="clickcart|keycount|xincart|cart_search" onclick="javascript:void(0);" type="button">
+		</div>
+	</div>
+</div>
+<div id="container" class="cart">
+	<div class="w">
+		<div class="cart-filter-bar ui-switchable-tab">
+        	<ul class="switch-cart">
+        		<li class="switch-cart-item curr ui-switchable-selected">
+        				<em>全部商品</em>
+        				<span class="number"></span>
+        		</li>
+        	</ul>
+			<form>
+            	<div class="clr"></div>
+            	<div class="w-line">
+            		<div class="floater"></div>
+            	</div>
+            	<div class="tab-con"></div>
+			</form>
+        </div>
+    </div>
+	<div class="cart-warp">
+    	<div class="w">	
+        	<div class="cart-empty">
+        		<div class="message">
+        			<ul>
+        				<li class="txt">
+        					购物车空空的哦~，去看看心仪的商品吧~
+        				</li>
+        				<li>
+        					<a href="#" class="ftx-05">
+        						去购物&gt;
+        					</a>
+        				</li>
+        			</ul>
+        		</div>	
+        	</div>
+		</div>
+	</div>
+</div>
+<div class="w"> 
+        <div id="footer-2013">
+            <div class="links">
+			</div>
+            <div class="copyright">Copyright©2004-2015&nbsp;&nbsp;商城SC.com&nbsp;版权所有</div>
+        </div>
+    </div>
+</body>
+</html>

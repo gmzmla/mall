@@ -1,0 +1,100 @@
+#set($layout = "/layout/nolayout.vm")
+#set($basePath=$request.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$!page_title - Mall</title>
+	<link href="$basePath/css/base.css" rel="stylesheet" type="text/css">
+	<link href="$basePath/css/register.css" rel="stylesheet" type="text/css">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+	<script src="$basePath/js/main.js"></script>
+</head>
+<script type="text/javascript">
+function onSubmit(){
+	$("#personRegForm").attr("action","$basePath/u/register");
+	$("#personRegForm").submit();
+}
+</script>
+<body>
+<div id="shortcut-2013">
+<div class="w">
+		<ul class="fl lh">
+			<li class="fore1 ld"><b></b><a href="javascript:addToFavorite()" rel="nofollow">收藏商城</a></li>
+		</ul>
+		<ul class="fr lh">
+			<!-- javascript:login();-->
+			<li class="fore1" id="loginbar">
+				#if($!session.getAttribute("org.apache.shiro.subject.support.DefaultSubjectContext_PRINCIPALS_SESSION_KEY"))
+					$!session.getAttribute("org.apache.shiro.subject.support.DefaultSubjectContext_PRINCIPALS_SESSION_KEY")
+					&nbsp;&nbsp;<a href="$basePath/u/logout">退出</a>
+				#else
+					<a href="$basePath/u/login" class="link-login">你好，请登录</a>
+					&nbsp;&nbsp;<a href="$basePath/u/register" class="link-regist style-red">免费注册</a>
+				#end
+					</li>
+			<li class="fore2 ld">
+				<s></s>
+				<a href="$basePath/center/list" rel="nofollow">我的订单</a>
+			</li>
+			<li style="padding-left: 12px;" class="fore2-1 ld" id="jd-vip"><s></s><a target="_blank" rel="nofollow" href="javascript:void(0)">商城会员</a></li>
+		</ul>
+		<span class="clr"></span>
+	</div>
+</div>
+<div class="w" id="logo">
+    <div><a href="#"><img src="$basePath/images/base/logo-201305.png" alt="商城" height="60" width="226"></a> <b></b>
+    </div>
+</div>
+<div class="w" id="regist">
+	<div class="mt">
+		<ul class="tab">
+            <li class="curr">个人用户</li>
+        </ul>
+	</div>	
+	<div class="mc">
+		<form id="personRegForm" method="POST">
+			<div class="form">
+				<div class="item" id="select-regName">
+    				<span class="label"><b class="ftx04">*</b>邮箱：</span>
+                    <input id="email" name="email" maxlength="20" class="text" type="text" placeholder="邮箱">
+				</div>
+				<div class="item">
+                      <span class="label"><b class="ftx04">*</b>用户名：</span>
+					<input type="text" class="text" id="name" name="name" placeholder="用户名">
+                </div>
+				<div class="item">
+                      <span class="label"><b class="ftx04">*</b>密码：</span>
+					<input type="password" class="text" id="password" name="password" placeholder="密码">
+                </div>
+				<div class="item">
+                      <span class="label"><b class="ftx04">*</b>手机：</span>
+					<input type="text" class="text" id="phone" name="phone" placeholder="手机">
+                </div>
+				<div class="item item-new">
+                    <span class="label">&nbsp;</span>
+                    <div class="fl item-ifo">
+                        <input class="checkbox" checked="checked" id="readme" type="checkbox">
+                        <label for="protocol">我已阅读并同意<a href="#" class="blue" id="protocol">《用户注册协议》</a></label>
+                        <span class="clr"></span>
+                        <label id="protocol_error" class="error hide">请接受服务条款</label>
+                    </div>
+                </div>
+				<div class="item">
+                    <span class="label">&nbsp;</span>
+                    <input class="btn-img btn-regist" onclick="onSubmit()" value="立即注册" type="button" >
+                </div>
+			</div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+<div class="w"> 
+        <div id="footer-2013">
+            <div class="links">
+			</div>
+            <div class="copyright">Copyright©2004-2015&nbsp;&nbsp;商城SC.com&nbsp;版权所有</div>
+        </div>
+    </div>

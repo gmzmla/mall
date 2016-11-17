@@ -1,0 +1,141 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+	<link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+	<script src="$basePath/js/jquery-page.js"></script>
+	<script type="text/javascript" >
+		function showEdit(id) {
+			if (id != null) {
+    			jQuery.getJSON("$basePath/area/country/" + id, function(json) {
+    				$("#id").val(json.id);
+					$("#cnName").val(json.cnName);
+					$("#enName").val(json.enName);
+					$("#code").val(json.code);
+					$("#ecode").val(json.ecode);
+    			});
+			}
+			
+			$("#editModal").modal();
+		}
+		function deleteById(id) {
+			if (!confirm("是否删除？"))
+				return;
+			jQuery.post("$basePath/area/country/del", {id:id},function(data) {
+				if (data == "0") {
+					document.location.reload();
+				}
+			});
+		}
+		function save() {
+			var id = $("#id").val();
+			var enName = $("#enName").val();
+			var cnName = $("#cnName").val();
+			var code = $("#code").val();
+			var ecode = $("#ecode").val();
+			if (enName == "" || cnName == "" || code == "" || ecode == "") {
+				alert("必须填写。");
+				return;
+			}
+			jQuery.post(
+				"$basePath/area/country/save", 
+				{id:id, enName:enName, cnName:cnName, code:code, ecode:ecode},
+				function(data) {
+				if (data == "0") {
+					alert("成功。");
+					document.location.reload();
+				}
+				else {
+					alert("失败。");
+				}
+			});
+		}
+		$(function(){
+
+		});
+    </script>
+</head>
+<body>
+	<div>
+		<div class="ex-panel">
+			<div class="ex-href"><a href="javascript:void(0)" onclick="showEdit()">添加</a></div>
+			<div><h3>国家列表</h3></div>
+    		<table class="table table-striped">
+    			<thead>
+    				<tr>
+    					<th>#</th>
+    					<th>名称</th>
+    					<th>英文名</th>
+    					<th>编码</th>
+						<th>数字编码</th>
+    					<th>操作</th>
+    				</tr>
+    			</thead>
+    			<tbody>
+        		#foreach($c in $countries)
+    				<tr>
+    					<td>$c.id</td>
+						<td>$c.cnName</td>
+    					<td>$c.enName</td>
+    					<td>$c.ecode</td>
+						<td>$c.code</td>
+    					<td>
+    						<a href="javascript:void(0)" onclick="showEdit($c.id)">编辑</a>&nbsp;
+    						<a href="javascript:void(0)" onclick="deleteById($c.id)">删除</a>&nbsp;
+							<a href="$basePath/area/province?countryId=$c.id">省列表</a>
+    					</td>
+    				</tr>
+    			#end
+    			</tbody>
+    		</table>
+		</div>
+	</div>
+	<div id="editModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">编辑</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+    					<div class="col-md-offset-1 col-sm-2">名称</div>
+    					<div class="col-sm-3">
+							<input type="hidden" id="id" />
+    						<input type="text" id="cnName" />
+    					</div>
+					</div>
+					<div class="row">
+    					<div class="col-md-offset-1 col-sm-2">英文名</div>
+    					<div class="col-sm-3">
+    						<input type="text" id="enName" />
+    					</div>
+					</div>
+					<div class="row">
+    					<div class="col-md-offset-1 col-sm-2">编码</div>
+    					<div class="col-sm-3">
+    						<input type="text" id="ecode" />
+    					</div>
+					</div>
+					<div class="row">
+    					<div class="col-md-offset-1 col-sm-2">数字编码</div>
+    					<div class="col-sm-3">
+    						<input type="text" id="code" />
+    					</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" onclick="save()">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

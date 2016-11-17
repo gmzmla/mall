@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="com.ruobilin.mall.admin.mapper.RecommendedGoodsMapper">
+
+<!-- 根据传入节点id查询所属信息 -->
+<select id="findAllByRecommendedId"  parameterType="String" resultType="com.ruobilin.mall.admin.entity.RecommendedGoods">
+ SELECT goodsName,type
+ FROM recommendedgoods
+ WHERE recommendedId=#{recommendedId}
+</select>
+
+<!-- 根据id删除 -->
+<delete id="deleteById" parameterType="java.lang.Integer"  >
+  DELETE 
+  FROM recommendedGoods 
+  WHERE
+  id=#{id}
+</delete>
+
+
+<!-- 增加推荐商品 -->
+<insert id="addRecommendedGoods" parameterType="com.ruobilin.mall.admin.entity.RecommendedGoods">
+  INSERT INTO 
+  recommendedGoods(productId,recommendedId,goodsName,type)
+  VALUES(#{productId},#{recommendedId},#{goodsName},#{type})
+</insert>
+</mapper>

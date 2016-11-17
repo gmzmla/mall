@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.ProductPropertyMapper">
+    <select id="findByProductId" resultType="ProductProperty" parameterType="java.lang.Long">
+        select *
+		from productProperty 
+		where productId=#{value} 
+		order by type,property
+    </select>
+    <insert id="insert" parameterType="ProductProperty">
+        insert into productProperty(productId,categoryPropertyId,property,value,extend,type) 
+		values(#{productId},#{categoryPropertyId},#{property},#{value},#{extend},#{type})
+    </insert>
+    <delete id="deleteByProductId" parameterType="java.lang.Long">
+    	delete from productProperty where productId=#{value} 
+    </delete>
+    <select id="queryShoppingCarProductProperty" parameterType="map" resultType="ProductProperty">
+    	SELECT * from productproperty
+		where 1=1
+		<if test="ids !=null">
+			and id in (${ids})
+		</if>
+		and productId=#{pid}
+    </select>
+</mapper>

@@ -1,0 +1,398 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+	<link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+	<link rel="stylesheet" href="$basePath/js/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+	<script src="$basePath/js/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+	<script type="text/javascript" >
+		var zTreeObj;
+		var selected;
+		var mode;
+		var pcount = 0;
+		function removeProperty(obj) {
+			$(obj).parent().parent().remove();
+		}
+		function addProperty() {
+			if($("#propertyPId").val().indexOf("sgp")>-1){
+				alert("此节点下无法添加子节点，请重新选择");
+				return;
+			}
+			if(!$("#propertyPId").val()){
+				$('#categoryValueModal').modal('hide');
+				$('#categoryModal').modal();
+				return ;
+			}
+			$('#categoryModal').modal('hide');
+			$('#categoryValueModal').modal();
+		}
+		function saveProperty(){
+			var propertyPId=$("#propertyPId").val()
+			if(propertyPId.indexOf("sgp")>0||propertyPId==""){
+				$. ajax({
+				url:"$basePath/category/saveCategoryProperty",
+				data:{id:$("#propertyId").val(),ptype:$("#ptype").val(),propertie:$("#property").val(),dataType:$("#dataType").val(),pextend:$("#extend").val(),pId:"PID_"+selected.id,mode:mode},
+				type: "POST",
+				success:function(date){
+					if($("#propertyId").val()!=null&&$("#propertyId").val()!=""&&$("#propertyId").val()!=undefined){
+						var zTreeGen=zTreeObj.getNodeByParam("id",date.id);
+						zTreeGen.name=date.property;
+						zTreeObj.updateNode(zTreeGen);
+					}else{
+    					var zTreeGen=zTreeObj.getNodeByParam("id","PID_"+selected.id);
+    					var zTreeDate="[{ id:'"+date.id+"', pId:'PID_"+selected.id+"', name:'"+date.property+"', open:true}]";
+    					zTreeObj.addNodes( zTreeGen,eval(zTreeDate),false);
+					}
+				}});
+				$('#categoryModal').modal('hide');
+				return ;
+			}
+			$. ajax({
+				url:"$basePath/category/saveCategoryPropertyValue",
+				data:{id:$("#propertyValueId").val(),propertyPId:propertyPId,name:$("#pValueName").val()},
+				type: "POST",
+				success:function(data){
+					if(data.categoryPropertyId==null){
+						var zTreeGen=zTreeObj.getNodeByParam("id","sgp_"+data.id);
+						zTreeGen.name=data.name;
+						zTreeObj.updateNode(zTreeGen);
+					}else{
+    					var zTreeGen=zTreeObj.getNodeByParam("id",propertyPId);
+    					var zTreeDate="[{ id:'sgp_"+data.id+"', pId:'"+propertyPId+"', name:'"+data.name+"', open:true}]";
+    					zTreeObj.addNodes( zTreeGen,eval(zTreeDate),false);
+					}
+				}});
+			$('#categoryValueModal').modal('hide');
+		}
+		function deleteProperty(){
+			if(!$("#propertyPId").val()){
+				alert("请选择要删除的节点");
+				return ;
+			}
+			var url="$basePath/category/delCategoryPropertyValue";
+			if($("#propertyPId").val().indexOf("sgp")<0){
+				url="$basePath/category/delCategoryProperty";
+			}
+			$. ajax({
+				url:url,
+				data:{id:$("#propertyPId").val()},
+				type: "POST",
+				success:function(date){
+					var zTreeStr=zTreeObj.getNodeByParam("id",date);
+					zTreeObj.removeNode(zTreeStr,false);
+				}});
+			
+		}
+		function editProperty(){
+			var id=$("#propertyPId").val();
+			if(!id){
+				alert("请选择节点");
+				return;
+			}
+			if(id.indexOf("sgp_")<0){
+				$. ajax({
+				url:"$basePath/category/findCategoryProperty",
+				data:{id:$("#propertyPId").val()},
+				type: "POST",
+				success:function(data){
+					$("#propertyId").val(data.id);
+					$("#ptype").val(data.type);
+					$("#property").val(data.property);
+					$("#dataType").val(data.dataType);
+					$("#extend").val(data.extend);
+					$('#categoryModal').modal();
+				}});
+				return ;
+			}
+			$. ajax({
+				url:"$basePath/category/findCategoryPropertyValue",
+				data:{id:id},
+				type: "POST",
+				success:function(data){
+					$("#propertyValueId").val(data.id);
+					$("#pValueName").val(data.name);
+					$('#categoryValueModal').modal();
+				}});
+		}
+		function onClick(event, treeId, treeNode, clickFlag) {
+			if (clickFlag == 1) {
+				selected = new Object();
+				selected.id = treeNode.id;
+				selected.pid = treeNode.pId;
+				selected.name = treeNode.name;
+				
+				$("#pname").val(selected.name);
+			}
+			else {
+				selected = null;
+				$("#pname").val("");
+			}
+		}
+		function onQueryListP(event, treeId, treeNode, clickFlag){
+    		if(treeNode.pId != null){
+				$("#propertyPId").val(treeNode.id);
+    		}else{
+				$("#propertyPId").val(null);
+			}
+		}
+		function onExpandListP(event, treeId, treeNode, clickFlag){
+			if(treeNode.id.indexOf("PID")<0){
+				$.  ajax({
+				url:"$basePath/category/queryCategoryPropertyValueList",
+				data:{propertyPId:treeNode.id,name:$("#pValueName").val()},
+				type: "POST",
+				success:function(data){
+					var zTreeGen=zTreeObj.getNodeByParam("id",treeNode.id);
+					var zTreeDate="[";
+					for(var i=0;i<data.length;i++){
+						zTreeDate +="{ id:'sgp_"+data[i].id+"', pId:'"+treeNode.id+"', name:'"+data[i].name+"', open:true},";
+					}
+					zTreeDate +="]";
+					zTreeObj.addNodes( zTreeGen,eval(zTreeDate),false);
+				}});
+			}
+		}
+		function onCollapseP(event, treeId, treeNode, clickFlag){
+			zTreeObj.removeChildNodes(treeNode);
+		}
+		function addNode() {
+			if (selected == null) {
+				alert("先选择节点。");
+				return;
+			}
+			mode = 0;
+			var znodesp="[{ id:'PID_"+selected.id+"', pId:'null', name:'分类属性', open:true,isParent:'true'}]";
+			
+			zTreeObj=$.fn.zTree.init($("#categoryP"), settingP, eval(znodesp));
+			$("#edit-panel input[type='text']").each(function(i) {
+				$(this).val("");
+			});
+			$("#edit-panel").show();
+		}
+		function fillProperties(c) {
+			if (category.categoryProperties == null || category.categoryProperties.length < 1)
+				return;
+				
+			for (var i=0; i<category.categoryProperties.length; i++) {
+				var cp = category.categoryProperties[i];
+				addProperty(cp.type, cp.property, cp.dataType, cp.extend);
+			}
+		}
+		function editNode() {
+			if (selected == null) {
+				alert("先选择节点。");
+				return;
+			}
+			mode = 1;
+			jQuery.getJSON("$basePath/category/item/" + selected.id, function(category) {
+					$("#name").val(category.name);
+					$("#code").val(category.code);
+					var list=category.categoryProperties;
+					var znodesp="[{ id:'PID_"+selected.id+"', pId:'null', name:'分类属性', open:false,isParent:'true'},";
+					for(var i=0;i<list.length;i++){
+						var properties=list[i];
+						znodesp +="{ id:'"+properties.id+"', pId:'PID_"+selected.id+"', name:'"+properties.property+"', open:false ,isParent:'true'},";
+					}
+					znodesp +="]";
+					zTreeObj=$.fn.zTree.init($("#categoryP"), settingP, eval(znodesp));
+					fillProperties(category);
+					$("#edit-panel").show();
+				}
+			);
+		}
+		function deleteNode() {
+			if (confirm("确定删除？"))
+			{
+			
+				$("#delId").attr("href","$basePath/category/del?id=" + selected.id);
+				return true;
+			}else{
+				return;
+			}
+		}
+		function saveNode() {
+			var name = $("#name").val();
+			var code = $("#code").val();
+			if (name == null || name == "" || code == null || code == "") {
+				alert("必须全部输入。");
+				return;
+			}
+			var pid = mode == 0 ? selected.id : selected.pid;
+			var data = {name:name, code:code, parentId:pid};
+			if (mode == 1) {
+				data.id = selected.id;
+			}
+			
+			jQuery.post(
+				"$basePath/category/edit",
+                data,
+				function(data) {
+					if (data == "0") {
+						alert("保存成功。");
+						selected = null;
+						$("#edit-panel").hide();
+						location.reload() ;
+					}
+					else {
+						alert("保存失败。");
+					}
+				}
+			);
+		}
+		var setting = {
+			data: {
+				key: {
+					title:"name"
+				},
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				onClick: onClick
+			}
+		};
+		
+		var zNodes =[
+			#foreach($c in $categories)
+			{ id:$c.id, pId:$c.parentId, name:"$c.name", open:true},
+			#end
+		];
+		
+		var settingP={
+			data: {
+				key: {
+					title:"name"
+				},
+				keep: {
+					parent: true
+				},
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				onClick: onQueryListP,
+				onExpand:onExpandListP,
+				onCollapse:onCollapseP
+			}
+		};
+		
+		$(document).ready(function(){
+			 $.fn.zTree.init($("#category"), setting, zNodes);
+		});
+    </script>
+</head>
+<body>
+	<div class="content_wrap">
+    	<div class="ex-panel zTreeDemoBackground left col-sm-4">
+    		<ul id="category" class="ztree"></ul>
+    	</div>
+		<div class="ex-panel col-sm-6">
+			<div class="col-sm-6">父节点<input type="text" id="pname" readonly /></div>
+			<div class="col-sm-4"><a href="javascript:void(0)" onclick="addNode()">添加</a>&nbsp;<a href="javascript:void(0)" onclick="editNode()">修改</a>&nbsp;<a href="javascript:void(0)" id="delId" onclick="deleteNode()">删除</a></div>
+			<div id="edit-panel" class="ex-panel" style="display:none;margin-top: 40px;">
+				<h4>分类信息</h4>
+				<form class="form-horizontal" role="form" method="post" onsubmit="return false;">
+        			<div class="form-group">
+        				<label for="name" class="col-sm-2 control-label">名称</label>
+        				<div class="col-sm-6">
+        					<input type="text" class="form-control" id="name" name="name" placeholder="名称">
+                      	</div>
+                    </div>
+                    <div class="form-group">
+        				<label for="code" class="col-sm-2 control-label">代码</label>
+        				<div class="col-sm-6">
+        					<input type="text" class="form-control" id="code" name="code" placeholder="代码">
+                      	</div>
+                    </div>
+					<div class="form-group">
+                      <div class="col-sm-offset-2 col-sm-6">
+                        <button type="submit" class="btn btn-default" onclick="saveNode()">保存</button>
+                      </div>
+                    </div>
+        			<div class="form-group">
+						<ul id="categoryP" class="ztree"></ul>
+						<div class="col-sm-4"><a href="javascript:void(0)" onclick="addProperty()">添加</a>&nbsp;<a href="javascript:void(0)" onclick="editProperty()">修改</a>&nbsp;<a href="javascript:void(0)" id="delId" onclick="deleteProperty()">删除</a></div>
+					</div>
+				<!-- 属性分类开始-->
+					<input type="hidden" id="propertyPId">
+					<div id="categoryModal" class="modal fade">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title">添加</h4>
+                              </div>
+                              <div class="modal-body">
+									<input type="hidden" id="propertyId"/>
+                    				<div class="form-group">
+                                        <label for="name" class="col-sm-2 control-label">类型</label>
+                                        <div class="col-sm-6">
+                                        	<input type="text" class="form-control" id="ptype" name="ptype" placeholder="类型">
+                                         </div>
+                                    </div>
+                    				<div class="form-group">
+                                        <label for="name" class="col-sm-2 control-label">属性名</label>
+                                        <div class="col-sm-6">
+                                        	<input type="text" class="form-control" id="property" name="property" placeholder="属性名">
+                                         </div>
+                                    </div>
+                    				<div class="form-group">
+                                        <label for="name" class="col-sm-2 control-label">数据类型</label>
+                                        <div class="col-sm-6">
+                                        	<input type="text" class="form-control" id="dataType" name="dataType" placeholder="数据类型">
+                                         </div>
+                                    </div>
+                    				<div class="form-group">
+                                        <label for="name" class="col-sm-2 control-label">扩展分类</label>
+                                        <div class="col-sm-6">
+                                        	<input type="text" class="form-control" id="extend" name="extend" placeholder="扩展分类">
+                                         </div>
+                                    </div>
+                    				<div class="form-group">
+                                       <div class="col-sm-offset-2 col-sm-6">
+                                         <button type="submit" class="btn btn-default" onclick="saveProperty()">保存</button>
+                                        </div>
+                                     </div>
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                    <div id="categoryValueModal" class="modal fade">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title">添加</h4>
+                              </div>
+                              <div class="modal-body">
+									<input type="hidden" id="propertyValueId"/>
+                    				<div class="form-group">
+                                        <label for="name" class="col-sm-2 control-label">属性值名称</label>
+                                        <div class="col-sm-6">
+                                        	<input type="text" class="form-control" id="pValueName" placeholder="类型">
+                                         </div>
+                                    </div>
+                    				<div class="form-group">
+                                       <div class="col-sm-offset-2 col-sm-6">
+                                         <button type="submit" class="btn btn-default" onclick="saveProperty()">保存</button>
+                                        </div>
+                                     </div>
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+					<!-- 属性分类结束-->
+              </form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

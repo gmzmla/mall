@@ -1,0 +1,89 @@
+#set($layout = "/layout/nolayout.vm")
+#set($basePath=$request.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gbk">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>欢迎登录</title>
+    <link rel="stylesheet" type="text/css" href="$basePath/css/base.css">
+	<link rel="stylesheet" type="text/css" href="$basePath/css/login.css">
+	<script src="$basePath/js/jquery-1.9.1.min.js"></script>
+</head>
+<script type="text/javascript">
+
+function aSubmit(){   
+	$("#formlogin").attr("action","$basePath/u/login");
+	$("#formlogin").submit();
+}
+</script>
+<body>
+<div class="w">
+    <div id="logo"><a href="javascript:void(0);" clstag="pageclick|keycount|20150112ABD|45">
+			<img src="$basePath/images/base/logo-201305.jpg" alt="商城" height="60" width="226">
+</a><b></b></div>
+</div>
+<div class="login-wrap">
+	<!-- 登录 框体-->
+	<div class="w">
+		<div class="login-form">
+            <div class="login-box">
+				<div class="mt">
+                        <h1>商城会员</h1>
+                        <div class="extra-r">
+                            <div class="regist-link"><a href="$basePath/u/register" target="_blank"><b></b>立即注册</a></div>
+                        </div>
+				</div>
+				<div class="msg-wrap">
+                     <div style="display: none;" class="msg-warn hide"><b></b>公共场所不建议自动登录，以防账号丢失</div>
+					 <div style="display: none;" class="msg-error hide"><b></b>账户名与密码不匹配，请重新输入</div>
+                 </div>
+				   <div class="mc">
+                        <div class="form">
+                            <form id="formlogin" method="post">
+								<div class="item item-fore1">
+                                    <label for="loginname" class="login-label name-label"></label>
+                                    <input id="email" class="itxt" name="email" tabindex="1" placeholder="邮箱" type="text">
+                                    <span class="clear-btn"></span>
+                                </div>
+								<div id="entry" class="item item-fore2">
+                                    <label class="login-label pwd-label" for="nloginpwd"></label>
+									<input type="password" class="itxt" id="password" name="password" placeholder="密码">
+								</div>
+								
+								<div class="item item-fore3">
+                                    <div class="safe">
+                                        <span>
+                                            <input id="autoLogin" name="chkRememberMe" class="jdcheckbox" tabindex="3" type="checkbox">
+                                            <label for="">记住我</label>
+                                        </span>
+                                         <span class="forget-pw-safe">
+                                            <!-- a href="javascript:void(0);" class="" target="_blank" >忘记密码?</a -->
+                                        </span>
+                                    </div>
+                                </div>
+								
+								<div class="item item-fore5">
+                                    <div class="login-btn">
+                                        <a class="btn-img btn-entry" href="javascript:void(0)" onclick="aSubmit()" id="loginsubmit">登&nbsp;&nbsp;&nbsp;&nbsp;录</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                   </div>
+			</div>
+		</div>
+	</div>
+	<!-- 登录 框体结束-->
+	
+	<!-- 背景开始-->
+	<div class="login-banner" style="">	
+		<div class="w">			         
+			<div id="banner-bg"  class="i-inner" style="background: rgb(238, 39, 67)  no-repeat scroll 0px 0px;">
+				<img src="$basePath/images/base/denglu.jpg" >
+			</div>		              
+		</div>		           
+	</div>
+	<!-- 背景结束-->
+</div>
+</body>
+</html>

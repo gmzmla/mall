@@ -1,0 +1,34 @@
+#set($basePath=$request.contextPath)
+#set($page_title="购物车")
+
+	<div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-xs-12 col-sm-9">
+          <table class="table table-striped">
+    			<thead>
+    				<tr>
+    					<th>商品</th>
+    					<th>价格</th>
+    					<th>数量</th>
+    					<th>操作</th>
+    				</tr>
+    			</thead>
+    			<tbody>
+        		#foreach($p in $products)
+    				<tr>
+    					<td><img src="$!p.smallUrl" /><a href="$basePath/p/$p.productId">$p.name &nbsp;&nbsp; $p.priceGroup</a></td>
+						<td>$price.format($p.price)</td>
+						<td>$p.count</td>
+    					<td>
+    						<a href="javascript:void(0)" onclick="removeToCart($velocityCount - 1, this)">删除</a>&nbsp;
+    					</td>
+    				</tr>
+    			#end
+    			</tbody>
+    		</table>
+        </div>
+		<div class="col-xs-12 col-sm-9">
+			总计<span>0</span>
+			<button class="btn btn-primary" onclick="order()"><i class="icon-upload icon-white"></i>去结算</button>
+		</div>
+      </div>
+<script src="$basePath/js/order.js"></script>

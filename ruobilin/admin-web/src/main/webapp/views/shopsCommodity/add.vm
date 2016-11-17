@@ -1,0 +1,168 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+    <link href="$basePath/css/content.css" rel="stylesheet">
+	<link href="$basePath/js/diyUpload/css/webuploader.css" rel="stylesheet">
+	<link href="$basePath/js/diyUpload/css/diyUpload.css" rel="stylesheet">
+	<link href="$basePath/js/ztree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+	<script src="$basePath/js/bootstrap.min.js"></script>
+	<script src="$basePath/js/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+	<script src="$basePath/js/ke/kindeditor-min.js"></script>
+	<script src="$basePath/js/diyUpload/js/webuploader.html5only.js"></script>
+	<script src="$basePath/js/diyUpload/js/diyUpload.js"></script>
+	<script src="$basePath/js/UUID.js"></script>
+	<script type="text/javascript" >
+		var basePath='$basePath';
+    </script>
+	<script src="$basePath/js/shopsCommodity/edit.js"></script>
+</head>
+<body>
+	<div class="ex-panel">
+		#if($commodity.id)<h3>编辑商品</h3>#else<h3>添加商品</h3>#end
+		<form class="form-horizontal" role="form" method="post" action="$basePath/shopsCommodity/saveCommodity">
+			<div class="form-group">
+				<label for="name" class="col-sm-2 control-label">所属类目</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="categoryName" name="categoryName" onclick="categoryModel()">
+					<input type="hidden" class="form-control" id="categoryId" name="categoryId">
+					<p class="help-block">点击文本框进行选择</p>
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="name" class="col-sm-2 control-label">商品名称</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="name" name="name">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="name" class="col-sm-2 control-label">商品推广词</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="promotionWord" name="promotionWord">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="name" class="col-sm-2 control-label">商品价格</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="price" name="price">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="name" class="col-sm-2 control-label">商品库存</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="stock" name="stock">
+              	</div>
+            </div>
+			<div id="dynamicText">
+				
+            </div>
+			
+			<!-- 销售属性开始-->
+			<div class="form-group">
+    			<div class="ex-panel" id="xiaoshoushuxing">
+    				<h5>销售属性 <a href="javascript:void(0)" onclick="addProperty()">添加属性</a></h5>
+    				<div class="ex-panel" id="property-panel">
+    					<!-- 动态添加属性-->
+                    </div>
+				</div>
+			</div>
+			<!-- 销售属性结束-->
+			<!-- 图片商城开始-->
+			<div class="form-group">
+    		   <div class="ex-panel">
+    				<h5>图片管理</h5>
+    				<table class="table table-striped" id="imgTableId">
+    					<tr>
+    						<td>商品图片:</td>
+                            <td><img src="$basePath/img/zhu.png" height="72" width="72"/><div class="deleteImg" onclick="closeImg(this)" style="display:none;"></div></td>
+    						<td><img src="$basePath/img/xi.png" height="72" width="72"/><div class="deleteImg" onclick="closeImg(this)" style="display:none;"></div></td>
+    						<td><img src="$basePath/img/xi.png" height="72" width="72"/><div class="deleteImg" onclick="closeImg(this)" style="display:none;"></div></td>
+    						<td><img src="$basePath/img/xi.png" height="72" width="72"/><div class="deleteImg" onclick="closeImg(this)" style="display:none;"></div></td>
+    						<td><img src="$basePath/img/xi.png" height="72" width="72"/><div class="deleteImg" onclick="closeImg(this)" style="display:none;"></div></td>
+    						<td><img src="$basePath/img/xi.png" height="72" width="72"/><div class="deleteImg" onclick="closeImg(this)" style="display:none;"></div></td>
+                            <td><input type="button" onclick="uploadImgClick(this)" value="图片上传"/></td>
+    					</tr>
+                    </table>
+				</div>
+			</div>
+			<!-- 图片商城结束-->
+			<!-- 商品描述开始 -->
+			<div class="form-group">
+				<label for="content" class="col-sm-2 control-label">商品描述</label>
+				<div class="col-sm-8">
+					<textarea id="content" name="content" rows="20" style="width:680px;height:40px"></textarea>
+                </div>
+            </div>
+			<!-- 商品描述结束-->
+			
+			<div class="form-group">
+              <div class="col-sm-offset-2 col-sm-6">
+                <button type="button" class="btn btn-default" onclick="addCommodity()">保存</button>
+              </div>
+            </div>
+      </form>
+	</div>
+	<!-- 上传图片 层-->
+	<div id="uploadDivModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">上传图片</h4>
+          </div>
+          <div class="modal-body">
+				<div id="imageDivId" ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+	<!-- 上传图片 层结束-->
+	<!-- 选择类目层-->
+	<div id="categoryModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">选择分类</h4>
+          </div>
+          <div class="modal-body">
+				<ul id="category" class="ztree"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+	<!-- 选择类目层结束-->
+	<!-- 类目属性值 -->
+	<div id="onPvaluesModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">选择属性值</h4>
+          </div>
+          <div class="modal-body">
+			<table class="table table-striped">
+    			<thead>
+        			<tr>
+        				<th>属性名称</th>
+        			</tr>
+                </thead>
+				<tbody id="tableTRId">
+					
+                </tbody>
+			</table>
+          </div>
+		  <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+          </div>
+        </div>
+      </div>
+    </div>
+	<!-- 类目属性值结束 -->
+	
+</body>
+</html>

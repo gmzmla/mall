@@ -1,0 +1,279 @@
+#set($basePath=$request.contextPath)
+<link href="$basePath/css/lrtk.css" rel="stylesheet" type="text/css">
+
+<div class="warpper">
+<!-- banner -->
+	<div class="banner">
+		<div class="slide_container">
+			<ul class="rslides" id="slider">
+				#foreach($h in $homeList)
+					<li>
+						<a href="$basePath/$!{h.tableName}/$!h.id" title="$h.name">
+                        <img src="$h.imageUrl"></a>
+					</li>
+    			#end
+			</ul>
+			<!-- div class="btn"><a href="">1</a></div -->
+		</div>	
+	</div>
+<!-- banner -->
+<br>
+<!--首页公告 -->
+<div id="focus-extra">
+
+        <div id="news" class="m">
+        <div class="mt">
+            <h2>商城快报</h2>
+            <div class="extra"><a href="#" clstag="h|keycount|2015|09a">更多 &gt;</a></div>
+        </div>
+        <div class="mc">
+        <ul>
+            
+                    <li clstag="h|keycount|2015|09b1"><a href="#"><span>[特惠]</span>1元能抢到这个？！</a></li>
+                    <li clstag="h|keycount|2015|09b2"><a href="#"><span>[公告]</span>2015比邻好客服活动全面启动</a></li>
+                    <li clstag="h|keycount|2015|09b3"><a href="#"><span>[特惠]</span>中秋“出柜”十万月饼免费送</a></li>
+                    <li clstag="h|keycount|2015|09b4"><a href="#"><span>[公告]</span>Apple Watch在比邻正式发售</a></li>
+                    <li clstag="h|keycount|2015|09b5"><a href="#"><span>[特惠]</span>美的冰箱超级优惠 超值好礼</a></li>
+        </ul>
+        </div>
+    </div><!--index_ok-->
+    <div id="lifeserv" class="m">
+    <div class="mt">
+        <h2>生活服务</h2>
+        <div class="extra"></div>
+    </div>
+    <div class="mc">
+		<ul class="">
+				
+			<li class="fore1" data-iframe="http://chongzhi.jd.com/jd-index-ifame.htm" clstag="h|keycount|2015|10b01" data-idx="0">
+				<a class="cw-icon" href="#" style="padding-top: 41px;">
+					<i class="ci-left" style="top: 13px; background-image: url(http://img30.360buyimg.com/da/jfs/t1756/41/654798993/8078/9a6e9a7f/55d6949dNf8cd4de5.png);"></i><span>话费</span>
+				</a>
+			</li>	
+			<li class="fore2" data-iframe="http://jipiao.jd.com/htm/iframeTrip.html" clstag="h|keycount|2015|10b02" data-idx="1">
+				<a class="cw-icon" href="#" style="padding-top: 41px;">
+					<i class="ci-left" style="top: 13px; background-image: url(http://img30.360buyimg.com/da/jfs/t1756/41/654798993/8078/9a6e9a7f/55d6949dNf8cd4de5.png);"></i><span>机票</span>
+				</a>
+			</li>	
+			<li class="fore3" data-iframe="http://movie.jd.com/jdmovie.html" clstag="h|keycount|2015|10b03" data-idx="2">
+				<a class="cw-icon" href="#" style="padding-top: 41px;">
+					<i class="ci-left" style="top: 13px; background-image: url(http://img30.360buyimg.com/da/jfs/t1756/41/654798993/8078/9a6e9a7f/55d6949dNf8cd4de5.png);"></i><span>电影票</span>
+				</a>
+			</li>	
+			<li class="fore4" data-iframe="http://card.jd.com/html/card-jdIndex2015.html" clstag="h|keycount|2015|10b04" data-idx="3">
+				<a class="cw-icon" href="#" style="padding-top: 41px;">
+					<i class="ci-left" style="top: 13px; background-image: url(http://img30.360buyimg.com/da/jfs/t1756/41/654798993/8078/9a6e9a7f/55d6949dNf8cd4de5.png);"></i><span>游戏</span>
+				</a>
+			</li>	
+			<li class="fore5" clstag="h|keycount|2015|10b05">
+				<a class="cw-icon" href="#">
+					<i class="ci-left" style="background-image: url(http://img30.360buyimg.com/da/jfs/t1756/41/654798993/8078/9a6e9a7f/55d6949dNf8cd4de5.png);"></i><span>彩票</span>
+				</a>
+			</li>	
+			<li class="fore6" clstag="h|keycount|2015|10b06">
+				<a class="cw-icon" href="#">
+					<i class="ci-left" style="background-image: url(http://img30.360buyimg.com/da/jfs/t1756/41/654798993/8078/9a6e9a7f/55d6949dNf8cd4de5.png);"></i><span>团购</span>
+				</a>
+			</li>	
+			<li class="fore7" clstag="h|keycount|2015|10b07">
+				<a class="cw-icon" href="#">
+					<i class="ci-left" style="background-image: url(http://img30.360buyimg.com/da/jfs/t1756/41/654798993/8078/9a6e9a7f/55d6949dNf8cd4de5.png);"></i><span>酒店</span>
+				</a>
+			</li>	
+			<li class="fore8" clstag="h|keycount|2015|10b08">
+				<a class="cw-icon" href="#">
+					<i class="ci-left" style="background-image: url(http://img30.360buyimg.com/da/jfs/t1756/41/654798993/8078/9a6e9a7f/55d6949dNf8cd4de5.png);"></i><span>水电煤</span>
+				</a>
+			</li>	
+			<li class="fore11" clstag="h|keycount|2015|10b11">
+				<a class="cw-icon" href="#">
+					<i class="ci-left" style="background-image: url(http://img30.360buyimg.com/da/jfs/t1756/41/654798993/8078/9a6e9a7f/55d6949dNf8cd4de5.png);"></i><span>众筹</span>
+				</a>
+			</li>	
+			<li class="fore9" clstag="h|keycount|2015|10b09">
+				<a class="cw-icon" href="#">
+					<i class="ci-left" style="background-image: url(http://img30.360buyimg.com/da/jfs/t1756/41/654798993/8078/9a6e9a7f/55d6949dNf8cd4de5.png);"></i><span>理财</span>
+				</a>
+			</li><li class="fore12" clstag="h|keycount|2015|10b12">
+				<a class="cw-icon" href="#">
+					<i class="ci-left" style="background-image: url(http://img30.360buyimg.com/da/jfs/t1756/41/654798993/8078/9a6e9a7f/55d6949dNf8cd4de5.png);"></i><span>礼品卡</span>
+				</a>
+			</li>	
+				
+			<li class="fore10" clstag="h|keycount|2015|10b10">
+				<a class="cw-icon" href="#">
+					<i class="ci-left" style="background-image: url(http://img30.360buyimg.com/da/jfs/t1756/41/654798993/8078/9a6e9a7f/55d6949dNf8cd4de5.png);"></i><span>白条</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div><!--index_ok-->
+
+</div>
+<!--<div id="focus-extra">
+    <div class="m" id="news">
+       <div class="mt">
+         <h2>商城快报</h2>
+          <div class="extra"><a target="_blank" href="http://www.jd.com/moreSubject.aspx" clstag="h|keycount|2015|09a">更多 &gt;</a></div>
+       </div>
+       <div class="mc" style="width=164px">
+         <ul>
+           <li clstag="h|keycount|2015|09b1"><a href="javascript:void(0)"><span>[特惠]</span>店庆趴 爆品嗨抢购疯啦</a></li>
+             <li clstag="h|keycount|2015|09b2"><a href="javascript:void(0)"><span>[公告]</span> “让爱飘香”公益活动首站举行</a></li>
+              <li clstag="h|keycount|2015|09b5"><a href="javascript:void(0)"><span>[特惠]</span>大减价！赶紧囤货！</a></li>
+          </ul>
+       </div>
+    </div>
+	<div class="m" id="lifeserv"> 
+		<div class="mt">
+			<h2>生活服务</h2>
+		</div>
+		<div class="mc">
+    			<ul class="lifeserv-current">
+    			<li class="fore1 current" data-idx="0">
+    				<a class="cw-icon" >
+    					<i class="ci-left" ></i><span>话费</span>
+    				</a>
+    			</li>	
+				</ul>
+			<div class="mc-inner" style="top: 28px;">
+				<div class="" data-idx="0">
+				</div>
+			</div>
+		</div>
+    </div>
+</div>-->
+<!--首页公告 结束-->
+  <!-- 各类型商品推荐列表-->
+#foreach($recommended in $recoList)
+<div class="w floor" data-idx="$recommended.level">
+<div id="mobiles" class="m">
+	<div class="mt">
+		<h2>
+			<i>$velocityCount F</i>
+					<a target="_blank" href="" name="tag$!{recommended.level}">$recommended.name</a>	
+		</h2>
+        <ul class="tab">
+			#foreach($thirdRecommendeds  in $recommended.children)
+				<li class="tab-item">
+					<a href="javascript:void(0)">$thirdRecommendeds.name</a>
+					<span>◆</span>
+				</li>
+			#end
+		</ul>
+	</div>
+			
+			
+	<div class="mc" >
+		<div class="side">
+			<div class="side-inner">
+				<div class="banner_sgp">
+					<img src="$basePath/img/559938f3Naa673c64.jpg" height="475" width="330">
+				</div>
+			</div>
+		</div>
+		#foreach($thirdRecommendeds  in $recommended.children) 
+		<div class="main hide"> 
+			<ul class="p-list">
+				#foreach($homeProducts  in $thirdRecommendeds.homeProducts)
+				<li class="fore1" clstag="">       
+					<div class="p-img">        
+						<a target="_blank" href="$basePath/${homeProducts.tableName}/${homeProducts.id}" title="$homeProducts.name">         
+							<img width="130" height="130" alt="$homeProducts.name" src="$homeProducts.imageUrl">
+                         </a>
+                    </div>
+            		<div class="p-name">
+            			<a target="_blank" href="$basePath/${homeProducts.tableName}/${homeProducts.id}" title="$homeProducts.name">$homeProducts.name</a>
+            		</div>
+            		<div class="p-price">$number.currency(${homeProducts.price})
+            		</div>
+       			</li>
+				#end
+            </ul>
+		</div>
+		#end
+	</div>
+</div>
+<div id="elevator" class="elevator" style="z-index: 5; position: fixed; display: none;">
+	<ul>
+		#foreach($recommended in $recoList)
+		<li class="handler" data-idx="$recommended.level">
+			<a href="javascript:void(0)" onclick="this.setAttribute('disabled','disabled')">$recommended.level F</a>
+			<a href="#tag$!{recommended.level}" class="etitle">$recommended.name</a>
+		</li>
+		#end
+	</ul>
+</div>
+</div>
+#end
+<script src="$basePath/js/responsiveslides.min.js"></script> 
+<script type="text/javascript">
+$(function () {
+	$("#categorys-2013").find(".mt").css("background","#B1191A");
+	$("#categorys-2013").find(".mt").find("h2").find("b").remove();
+	$("#categorys-2013").find(".mc").attr("class","homemc");
+	 
+    $("#slider").responsiveSlides({
+    auto: true,	// 图像是否自动滑动 
+    pager: true,
+    nav: true,
+    speed: 500,
+	timeout:3000,
+    // 对应外层div的class : slide_container
+    namespace: "slide"
+    });
+	
+	//设置焦点图居中
+	$(".slide_tabs").css("margin-left","-" + ($(".slide_tabs").width()/2) + "px");
+	
+	//楼层事件
+	$("#elevator .handler").click(function(){
+		$(this).siblings().removeClass("current");
+		$(this).addClass("current");
+	});
+	var changeFloor = function(elm){
+        var win_h = $(window).height(),
+        	win_t = $(window).scrollTop(),
+        	span_t = $(elm).offset().top;
+        if( win_h/2 + win_t >= span_t ){
+			$(elm).addClass("floor-current");
+			$("#elevator .handler[data-idx='"+$(elm).attr("data-idx")+"']").click();
+		}else
+			$(elm).removeClass("floor-current");
+  	}
+    $(window).on("scroll resize load", function(){
+    	$(".floor").each(function(i,e) {
+    		changeFloor(e);
+    	});
+		var win_h = $(window).height(),
+        	win_t = $(window).scrollTop(),
+			fFloor = $(".floor:first"),
+        	span_t = fFloor.offset().top,
+			span_l = fFloor.offset().left,
+			elevator = $("#elevator");
+		if( win_h/2 + win_t >= span_t && span_l > 33 && span_t > 319){
+			elevator.css("left",(span_l - 33) + "px");
+			elevator.css("top",(span_t - 319)/2 + "px");
+			elevator.show();
+		}else{
+			elevator.hide();
+		}
+    });
+	
+	//标签页事件
+	$(".floor .tab-item").each(function(){
+		var width=$(this).find("a").outerWidth();
+		$(this).css("width",width+"px");
+	}).mouseenter(function(){
+		$(this).siblings().removeClass("tab-selected");
+		$(this).addClass("tab-selected");
+		var panel = $(this).parent().parent().next();
+		panel.children(".main").addClass("hide");
+		panel.children(":eq("+($(this).index()+1)+")").removeClass("hide");
+	});
+	$(".floor .tab").each(function(){
+		$(this).find(".tab-item:first").mouseenter();
+		$(this).find(".tab-item:last span").remove();
+	});
+});
+</script>

@@ -1,0 +1,68 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+	<html lang="en">
+		<head >
+		<meta  charset="utf-8">
+			<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+	<link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+	 <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+	<script src="$basePath/js/jquery-page.js"></script>
+
+	<script type="text/javascript" >
+		$(function(){
+			$("#pager").paging($commoditys.paginator.totalCount,20,$page - 1,function(p) {
+				document.location.href="$basePath/commodity/list?page=" + (p + 1);
+			});
+		});
+	
+    </script>
+		</head>
+		<body >
+        </body>
+		<div class="ex-panel">
+            <div class="ex-href"><a href="$basePath/commodity/edit">添加</a>
+            </div>
+            <div><h3 >商品列表
+            </h3></div>
+			<table class="table table-striped">
+    			<thead>
+    				<tr>
+    					<th>#</th>
+    					<th>商品ID</th>
+						<th>商品名称</th>
+    					<th>显示顺序</th>
+						<th>商品所在表</th>
+    					<th>操作</th>
+    				</tr>
+    			</thead>
+    			<tbody>
+        		#foreach($s in $commoditys)
+    				<tr>
+    					<td>$velocityCount</td>
+						<td>$s.dityid</td>
+    					<td>$s.name</td>
+						<td>$s.ordet</td>
+						<td>$s.tableName</td>
+    					<td>
+    						<a href="$basePath/commodity/edit?id=$s.id">编辑</a>&nbsp;
+    						<a href="$basePath/commodity/del?id=$s.id" onclick="javascript:return confirm('确认删除？');">删除</a>&nbsp;
+    					</td>
+    				</tr>
+    			#end
+    			</tbody>
+               
+    		</table>
+		</div>
+		<div id="pager">
+			<form method="post" id="pageFromId" action="list">
+			#pagebar($commoditys.getPaginator(),'pageFromId')
+            </form>
+		</div>
+		
+	
+        </div>
+		
+    </html>

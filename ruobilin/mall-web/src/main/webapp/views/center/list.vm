@@ -1,0 +1,223 @@
+#set($layout = "/layout/centerLayout.vm")
+#set($page_title="我的订单")
+#set($basePath=$request.contextPath)
+<script >
+var basePath=$basePath;
+</script>
+<SCRIPT src="$basePath/js/center/list.js"></SCRIPT>
+
+<div class="mod-main mod-comm mod-order" id="order01">
+	<div class="mt">
+		<h3>我的订单</h3>
+		<div class="extra-r"></div>
+	</div>
+</div>
+
+<div class="safety-box hide"></div>
+
+<div class="mod-main mod-comm lefta-box" id="order02">
+	<div class="mt">
+		<ul class="extra-l">
+			<li class="fore1"><a href="$basePath/center/list" class="txt curr">全部订单</a></li>
+			<!-- li>
+				<a href="http://order.jd.com/center/list.action?s=1" id="ordertoPay" class="txt">待付款</a>
+			</li -->
+		</ul>
+		<div class="extra-r">
+			<div class="search">
+				<input id="ip_keyword" class="itxt" value="" type="text"> 
+					<a href="javascript:void(0);" class="search-btn" >搜索<b></b></a> 
+			</div>
+		</div>
+	</div>
+
+	<div class="mc">
+		<div class="top-search hide">
+			<!-- 高级查询-->
+		</div>
+
+		<table class="td-void order-tb">
+			<colgroup>
+				<col class="number-col">
+				<col class="consignee-col">
+				<col class="amount-col">
+				<col class="status-col">
+				<col class="operate-col">
+			</colgroup>
+			<thead>
+				<tr>
+					<th>订单详情</th>
+					<th>收货人</th>
+					<th>总计</th>
+					<th>
+						<div class="deal-state-cont" id="orderState">
+							<div class="state-txt">
+								全部状态<b></b><span class="blank"></span>
+							</div>
+							<div class="state-list">
+								<ul>
+									<li value="4096"><a href="#none" class="curr"><b></b>全部状态</a>
+									</li>
+									<li value="1"><a href="#none"><b></b>等待付款</a></li>
+									<li value="128"><a href="#none"><b></b>等待收货</a></li>
+									<li value="1024"><a href="#none"><b></b>已完成</a></li>
+									<li value="-1"><a href="#none"><b></b>已取消</a></li>
+								</ul>
+							</div>
+						</div>
+					</th>
+					<th>操作</th>
+				</tr>
+
+			</thead>
+			<tr class="sep-row">
+				<td colspan="5"></td>
+			</tr>
+			</tbody>
+			
+			#foreach($orderTable in $listOrderTable)
+			<tr class="tr-th">
+				<td colspan="5"><span class="gap"></span> 
+					<span class="dealtime" title="$orderTable.submitTime">$orderTable.submitTime</span> 
+					<spanclass="number">订单号：
+					<a href="$basePath/center/detail?id=$orderTable.id">$orderTable.orderNumber</a> </span>
+					<!-- div class="tr-operate">
+						<span class="order-shop"> 
+							<a href="http://mall.jd.com/index-55925.html" target="_blank" class="shop-txt venderName59896">双诺品牌旗舰店</a> 
+							<a class="btn-im venderChat59896" href="http://chat.jd.com/index.action?venderId=59896"></a>
+						</span> <span class="tel"> <i class="tel-icon venderTel59896"></i>400-610-1360转120329
+						</span> <a href="#none" class="order-del"></a>
+					</div -->
+				</td>
+			</tr>
+				#foreach($ofGoods in ${orderTable.listOfGoodsList})
+    			<tr class="tr-bd" id="track9626701953">
+					<td>
+            			<div class="goods-item">
+            				<div data-lazy-img-install="1" class="p-img">
+            					<a href="$basePath/p/${ofGoods.commodityId}" target="_blank">
+            						<img class="err-product" src="$ofGoods.imgUrl" height="60" width="60">
+            					</a>
+            				</div>
+            			<div class="p-msg">
+            				<div class="p-name">
+            					<a href="$basePath/p/${ofGoods.commodityId}" class="a-link">
+        										$ofGoods.name
+								</a>
+            				</div>
+							</div>
+            			</div>
+            			<div class="goods-number">x$ofGoods.number</div>
+            			<!-- div class="goods-repair">
+            				<a href="" target="_blank">返修/退换货</a>
+            			</div -->
+            			<div class="clr"></div>
+            			</td>
+						#if($velocityCount ==1)
+							<td rowspan="${orderTable.listOfGoodsList.size()}">
+            					<div class="consignee tooltip">
+            						<span class="txt">$orderTable.consignee</span><b></b>
+            						<div class="prompt-01 prompt-02">
+            							<div class="pc">
+            								<strong>$orderTable.consignee</strong>
+            								<p>$orderTable.consigneeAddress</p>
+            								<p>$orderTable.phoneNumber</p>
+            							</div>
+            							<div class="p-arrow p-arrow-left"></div>
+            						</div>
+            					</div>
+            				</td>
+            				<td rowspan="${orderTable.listOfGoodsList.size()}">
+            					<div class="amount">
+            						<strong>¥$orderTable.total</strong> <br> <span class="ftx-13">在线支付</span><br>
+            					</div>
+            				</td>
+            				<td rowspan="${orderTable.listOfGoodsList.size()}">
+            					<div class="status">
+            						<span class="order-status ftx-03">
+										#if("01"==${orderTable.orderStatus})
+											等待付款
+										#elseif("02"==${orderTable.orderStatus}||"03"==${orderTable.orderStatus}||"04"==${orderTable.orderStatus})
+											等待收货
+										#elseif("06"==${orderTable.orderStatus})
+											已取消
+										#elseif("07"==${orderTable.orderStatus})
+											已退换
+										#else
+											已完成
+										#end
+									</span> 
+									<br> 
+									<a href="$basePath/center/detail?id=$orderTable.id" target="_blank">订单详情</a>
+            					</div>
+            				</td>
+            				<td rowspan="${orderTable.listOfGoodsList.size()}" >
+            					<div class="operate">
+									#if("01"==${orderTable.orderStatus})
+										<a href="$basePath/center/cancelOrderTable?id=$orderTable.id" onclick="return confirm('您确定要取消订单吗?')" class="btn-again" >
+											取消订单
+                                        </a>
+									#elseif("02"==${orderTable.orderStatus})
+										等待发货
+										<br>
+										<a href="$basePath/center/cancelOrderTable?id=$orderTable.id" onclick="return confirm('您确定要取消订单吗?')" class="btn-again" >
+											取消订单
+                                        </a>
+									#elseif("03"==${orderTable.orderStatus}||"04"==${orderTable.orderStatus})
+										<a href="$basePath/center/updateOrderStatus?id=$orderTable.id&orderStatus=05" onclick="return confirm('确认收货后比邻将与卖家结算,您确认收到了吗?')" class="btn-again" >
+											确认收货
+                                        </a>
+										<br>
+										<a href="$basePath/center/cancelOrderTable?id=$orderTable.id" onclick="return confirm('您确定要取消订单吗?')" class="btn-again" >
+											取消订单
+                                        </a>
+									#elseif("05"==${orderTable.orderStatus})	
+										<a href="$basePath/center/updateOrderStatus?id=$orderTable.id&orderStatus=07" onclick="return confirm('您确认发起返修/退换货申请?')" class="btn-again" >
+											退换货
+                                        </a>
+									#end
+            						<!--a href="http://club.jd.com/JdVote/TradeComment.aspx?ruleid=9626701953&amp;ot=22&amp;payid=4&amp;shipmentid=70" target="_blank">评价晒单</a>
+									<br --> 
+    									<!--a href="/p/${orderTable}" class="btn-again" target="_blank">
+    										<b></b>立即购买
+    									</a>  <br -->
+            					</div>
+            				</td>
+						#end
+					</tr>
+    				
+				#end
+			#end
+			</tbody>
+		</table>
+
+		<div class="mt20">
+			<div class="pagin fr">
+				<span class="prev-disabled">上一页<b></b></span> <a class="current">1</a>
+				<span class="next-disabled">下一页<b></b></span>
+			</div>
+			<div class="clr"></div>
+		</div>
+	</div>
+</div>
+
+<div class="mod-main mod-comm" id="guessing-liked" style="">
+	<div class="mt">
+		<h3>猜你喜欢</h3>
+		<div class="extra-r">
+			<div class="switch-items">
+				<a class="curr" data-widget="tab-item" href="#none">1</a> <a
+					href="#none" data-widget="tab-item">2</a> <a href="#none"
+					data-widget="tab-item">3</a>
+			</div>
+		</div>
+	</div>
+	<div class="mc">
+		<div class="goods-list">
+			<!-- 猜你喜欢 -->
+		</div>
+	</div>
+</div>
+<div class="mod-main">
+	<!-- 广告投放-->
+</div>

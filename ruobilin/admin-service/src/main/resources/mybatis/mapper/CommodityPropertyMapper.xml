@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.admin.mapper.CommodityPropertyMapper">
+	<insert id="insertCommodityProperty" parameterType="com.ruobilin.mall.admin.entity.CommodityProperty">
+		insert into commodityProperty (
+			id,
+			commodityId,
+			propertyId,
+			propertyValue
+		)
+		values(
+			#{id},
+			#{commodityId},
+			#{propertyId},
+			#{propertyValue}
+		)
+	</insert>
+	<insert id="insertCommodityPropertyList" parameterType="java.util.Map">
+		insert into commodityProperty (
+			id,
+			commodityId,
+			propertyId,
+			propertyValue,
+			commodityBasicId
+		)
+		values
+		<foreach collection="list" item="commodityProperty"  index="index" separator=",">
+		(
+		<![CDATA[replace(uuid(),'-','')]]>,
+		#{commodityProperty.commodityId},
+		#{commodityProperty.propertyId},
+		#{commodityProperty.propertyValue},
+		#{commodityBasicId}
+		)
+		</foreach>
+	</insert>
+	<update id="updateCommodityProperty" parameterType="com.ruobilin.mall.admin.entity.CommodityProperty">
+		update commodityProperty
+		set 
+		<if test="commodityId!=null">
+			commodityId=#{commodityId},
+		</if>
+		<if test="propertyId !=null">
+			propertyId=#{propertyId},
+		</if>
+		<if test="propertyValue !=null">
+			propertyValue=#{propertyValue},
+		</if>
+		id=#{id}
+		where id=#{id}
+	</update>
+	<delete id="delCommodityProperty" parameterType="String">
+		delete from commodityProperty
+		where id=#{id}
+	</delete>
+	<delete id="delCommodityPropertyAndcommodityId" parameterType="String">
+		delete from commodityProperty
+		where commodityId=#{commodityId}
+	</delete>
+	<delete id="delCommodityPropertyAndcommodityBasicId" parameterType="String">
+		delete from commodityProperty
+		where commodityBasicId=#{commodityBasicId}
+	</delete>
+	<select id="queryListCommodityProperty" parameterType="String" resultType="com.ruobilin.mall.admin.entity.CommodityProperty">
+		select a.*,b.value from commodityProperty a
+		LEFT JOIN propertyValueInfo b on a.propertyValue=b.id
+		where a.commodityBasicId=#{commodityBasicId}
+	</select>
+</mapper>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.admin.mapper.CommodityImageMapper">
+	<insert id="insertCommodityImage" parameterType="com.ruobilin.mall.admin.entity.CommodityImage">
+		insert into commodityImage(
+			id,
+			commodityId,
+			imageUrl,
+			smallUrl,
+			type
+		) values(
+			#{id},
+			#{commodityId},
+			#{imageUrl},
+			#{smallUrl},
+			#{type}
+		)
+	</insert>
+	<insert id="insertCommodityImageList" parameterType="java.util.Map">
+		insert into commodityImage(
+			id,
+			commodityId,
+			imageUrl,
+			smallUrl,
+			type,
+			commodityBasicId
+		) values
+		<foreach collection="list" item="commodityImage"  index="index" separator=",">
+    		(<![CDATA[replace(uuid(),'-','')]]>,
+    		#{commodityImage.commodityId},
+    		#{commodityImage.imageUrl},
+    		#{commodityImage.smallUrl},
+    		#{commodityImage.type},
+    		#{commodityBasicId}
+    		)
+    	</foreach>
+	</insert>
+	<update id="updateCommodityImage" parameterType="com.ruobilin.mall.admin.entity.CommodityImage">
+		update commodityImage
+		set 
+		<if test="commodityId !=null">
+		 commodityId=#{commodityId},
+		</if>
+		<if test="imageUrl !=null">
+		 imageUrl=#{imageUrl},
+		</if>
+		<if test="smallUrl !=null">
+		 smallUrl=#{smallUrl},
+		</if>
+		<if test="type !=null">
+			type=#{type},
+		</if>
+		id=#{id}
+		where id=#{id}
+	</update>
+	<delete id="delCommodityImage" parameterType="String">
+		delete from commodityImage
+		where id=#{id}
+	</delete>
+	<delete id="delCommodityImageAndcommodityId" parameterType="String">
+		delete from commodityImage
+		where commodityId=#{commodityId}
+	</delete>
+	<delete id="delCommodityImageAndcommodityBasicId" parameterType="String">
+		delete from commodityImage
+		where commodityBasicId=#{commodityBasicId}
+	</delete>
+	<select id="queryListCommodityImage" parameterType="String" resultType="com.ruobilin.mall.admin.entity.CommodityImage">
+		select * from commodityImage
+		where commodityBasicId=#{commodityBasicId}
+		ORDER BY type
+	</select>
+</mapper>

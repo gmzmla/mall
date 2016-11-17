@@ -1,0 +1,771 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.css" rel="stylesheet">
+	<link href="$basePath/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+	<link rel="stylesheet" href="$basePath/js/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+	<script src="$basePath/js/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+	<script src="$basePath/js/uploader/fineuploader-3.0.js"></script>
+	<script src="$basePath/js/ke/kindeditor-min.js"></script>
+	<script type=text/javascript src="$basePath/js/Base64new.js"></script>
+	<script type="text/javascript" >
+		var priceSelected, expressSelected;
+		function selectGroup() {
+			var str = "";
+			$("#groupModal .modal-body input:checked").each(function(i) {
+				str += $(this).attr("name") + ":" + $(this).val() + ",";
+			});
+			if (str == "") {
+				$(priceSelected).html("默认");
+				$(priceSelected).next().val("0");
+			} else {
+				$(priceSelected).html(str);
+				$(priceSelected).next().val(str);
+			}
+			$("#groupModal").modal("hide");
+		}
+		function showGroup(obj) {
+			priceSelected = obj;
+			var gs = new Object();
+			var e = $("#groupModal .modal-body");
+			e.html("");
+			$("#cpTable tr").each(function(i) {
+				var t = $(this).find("input[name='ptypes']");
+				if (t[0] == null) {
+					t = $(this).find("select[name='ptypes']");
+				}
+				if (t.val() != "price")
+					return;
+				var p = $(this).find("input[name='pproperties']").val();
+				var v = $(this).find("input[name='pvalues']").val();
+				if (p == "" || v == "")
+					return;
+				if (gs[p] == null) {
+					gs[p] = new Array();
+				}
+				gs[p].push(v);
+			});
+			for(var g in gs){
+				if (typeof(g) == 'function')
+					continue;
+				
+				var ps = gs[g];
+				if (ps == null || ps.length < 1)
+					continue;
+				
+				var str = '<label class="col-md-offset-1 col-sm-2">'+g+'</label><div class="col-sm-7">';
+				for (var i=0; i<ps.length; i++) {
+					str += '<input type="radio" name="'+g+'" value="'+ps[i]+'" />' + ps[i] + '&nbsp;&nbsp;';
+				}
+				str += '</div>';
+				e.append(str);
+			}
+			$("#groupModal").modal();
+		}
+		function loadCategoryProperties(id) {
+			jQuery.getJSON("$basePath/category/item/" + id, function(json) {
+				if (json.categoryProperties == null || json.categoryProperties.length < 1)
+					return;
+				
+				for (var i=0; i<json.categoryProperties.length; i++) {
+					var p = json.categoryProperties[i];
+					addProperty(p.id, p.type, p.property, "", p.extend, false);
+				}
+			});
+		}
+		function onCategoryClick(event, treeId, treeNode, clickFlag) {
+			$('#categoryModal').modal('hide');
+			$("tr").remove(".propertyTR");
+			loadCategoryProperties(treeNode.id);
+			$("#categoryText").val(treeNode.name);
+			$("#categoryId").val(treeNode.id);
+		}
+		function convertNodes(json) {
+			var nodes = new Array();
+			for (var i=0; i<json.length; i++) {
+				nodes[i] = new Object();
+				nodes[i].id = json[i].id;
+				nodes[i].name = json[i].name;
+				nodes[i].pId = json[i].parentId;
+				nodes[i].open = true;
+			}
+			return nodes;
+		}
+		function showModel() {
+			var setting = {
+    			data: {
+    				simpleData: {
+    					enable: true
+    				}
+    			},
+    			callback: {
+    				onClick: onCategoryClick
+    			}
+    		};
+    
+			jQuery.getJSON("$basePath/category/list/json", function(json) {
+				var zNodes = convertNodes(json);
+				$.fn.zTree.init($("#category"), setting, zNodes);
+				$('#categoryModal').modal();
+			});
+		}
+		function removeElement(obj) {
+			$(obj).parent().parent().remove();
+		}
+		function addImage(url, surl) {
+			var str = '<tr>';
+			str += '<td><image src="'+url+'" class="upimg"/></td>';
+			str += '<td><input type="text" name="imgUrls" value="'+url+'" size="40"/><input type="hidden" name="smallUrls" value="'+surl+'" size="40"/></td>';
+			str += '<td><select name="imgTypes"><option value="1">展示图片</option><option value="0">列表图片</option></select></td>';
+			str += '<td><a href="javascript:void(0)" onclick="removeElement(this)">X</a></td>';
+			str += '</tr>';
+			$("#imgTable").append(str);
+		}
+		function addPrice(group, price, inventory) {
+			var str = '<tr>';
+			str += '<td>';
+			if (group == "0" || group == "") {
+				str += '<a href="javascript:void(0)" onclick="showGroup(this)">默认</a>';
+				str += '<input type="hidden" name="groups" value="0" size="8" />';
+			} else {
+				str += '<a href="javascript:void(0)" onclick="showGroup(this)">'+group+'</a>';
+				str += '<input type="hidden" name="groups" value="'+group+'" size="8"/></td>';
+			}
+			str += '<td><input type="text" name="pprices" value="'+price+'" size="8"/></td>';
+			str += '<td><input type="text" name="inventories" value="'+inventory+'" size="8"/></td>';
+			str += '<td><a href="javascript:void(0)" onclick="removeElement(this)">X</a></td>';
+			str += '</tr>';
+			$("#priceTable").append(str);
+		}
+		function selectExpressCity() {
+			var types = $("input[name='etype']:checked").val();
+			var tnames = "";
+			if (types == "0") {
+				types = "t:0";
+				tnames = "默认";
+			} else if (types == "1") {
+				types = "t:1";
+				tnames = "本市";
+			} else {
+				types = "";
+				$("input[name='ecity']:checked").each(function(i) {
+					types += $(this).val() + ",";
+					if (tnames.length > 10 && tnames.length <= 13) {
+						tnames += "...";
+					} else if (tnames.length < 10) {
+						tnames += $(this).attr("ename") + ",";
+					}
+				});
+			}
+			$(expressSelected).html(tnames);
+			$(expressSelected).next().val(types);
+			$('#expressModal').modal('hide');
+		}
+		function convertProvinces(json) {
+			var str = "";
+			if (json[0].provinces != null && json[0].provinces.length > 0) {
+				for (var i=0; i<json[0].provinces.length; i++) {
+					str += '<input type="checkbox" name="ecity" value="'+json[0].provinces[i].id+'" ename="'+json[0].provinces[i].cnName+'"/>'+json[0].provinces[i].cnName+'&nbsp;&nbsp;';
+				}
+			}
+			return str;
+		}
+		function checkByProvinces() {
+			var ps = $(expressSelected).next().val();
+			if (ps == null || ps == "")
+				return;
+			var ss = ps.split(",");
+			for (var i=0; i<ss.length; i++) {
+				if (ss[i] == "")
+					continue;
+				$("#eprovince").find("input[value='"+ss[i]+"']").attr("checked", "checked");
+			}
+		}
+		function showProvinces() {
+			if ($("input[name='etype']:checked").val() == "2") {
+				jQuery.getJSON("$basePath/area/tree", {type:1}, function(json) {
+					$("#eprovince").html(convertProvinces(json)).show();
+					checkByProvinces();
+				});
+			} else {
+				$("#eprovince").hide();
+			}
+		}
+		function showPropertyList(obj) {
+			$('#expressModal').modal();
+			expressSelected = obj;
+			var type = $(expressSelected).next().val();
+			if (type == null || type == "") {
+				type = "t:0";
+			}
+			if (type == "t:0") {
+				$("input[name='etype']")[0].checked = true;
+			} else if (type == "t:1") {
+				$("input[name='etype']")[1].checked = true;
+			} else {
+				$("input[name='etype']")[2].checked = true;
+			}
+			showProvinces();
+		}
+		function selectPtype(obj) {
+			if ($(obj).val() == "express") {
+				var str = '<a href="javascript:void(0)" onclick="showPropertyList(this)">选择</a><input type="hidden" name="pproperties" value=""/>';
+				$(obj).parent().parent().find("span[name='propspan']").html(str);
+			} else {
+				$(obj).parent().parent().find("span[name='propspan']").html('<input type="text" name="pproperties" value="" size="8"/>');
+			}
+		}
+		function addProperty(cpid, type, property, value, extend, changed) {
+			var str='';
+    		if(changed){
+				str = '<tr>';
+    		}else{
+				str = '<tr class="propertyTR">';
+			}
+			str += '<td><input type="hidden" name="cpids" value="'+cpid+'" />';
+			if (!changed) {
+				if (type == "head") {
+					str += "商品参数";
+				} else if (type == "price") {
+					str += "价格参数";
+				} else if (type == "express") {
+					str += "配送费";
+				} else {
+					str += "其他";
+				}
+				
+				str += '<input type="hidden" name="ptypes" value="'+type+'" />';
+			} else {
+				str += '<select name="ptypes" onchange="selectPtype(this)"><option value="price">价格参数</option><option value="head">商品参数</option><option value="express">配送费</option><option value="other">其他</option></select>';
+			}
+			str += '</td>';
+			str += '<td>';
+			str += extend == 1 ? '是' : '否';
+			str += '<input type="hidden" name="pextends" value="'+extend+'" /></td>';
+			str += '<td><span name="propspan"><input type="text" name="pproperties" value="'+property+'" size="8"';
+			if (!changed) {
+				str += ' readonly ';
+			} else {
+				str += ' ';
+			}
+			str += '/></span></td>';
+			if(!changed){
+				str += '<td><input type="text" name="pvalues" value="'+value+'" size="8" id="'+cpid+'" onclick=onPvalues("'+cpid+'") readonly/></td>';
+			}else{
+				str += '<td><input type="text" name="pvalues" value="'+value+'" size="8"/></td>';
+			}
+			str += '<td>';
+			if (changed) {
+				str += '<a href="javascript:void(0)" onclick="removeElement(this)">X</a>';
+			}
+			str += '</td>';
+			str += '</tr>';
+			$("#cpTable").append(str);
+		}
+		function onPvalues(cpid){
+			$("#tableTRId").empty();
+			$.ajax({
+				url:"$basePath/category/queryCategoryPropertyValueList",
+				type:"POST",
+				data:{propertyPId:cpid},
+				success:function(data){
+					var tr="";
+					for(var i=0;i<data.length;i++){
+						tr+="<tr onclick=onTr('"+data[i].name+"','"+cpid+"') ><td>";
+						tr+=data[i].name;
+                        tr+="</td></tr>";
+					}
+					$("#tableTRId").append(tr);
+				}
+			});
+			$('#onPvaluesModal').modal();
+		}
+		function onTr(name,pid){
+			$("#"+pid).val(name);
+			$('#onPvaluesModal').modal('hide');
+		}
+		
+		var uploader = null;
+        $().ready(function() {
+            uploader = new qq.FineUploader({
+              	element: document.getElementById('fine-uploader'),
+        		request: {
+        			endpoint: '$basePath/product/upload'
+        		},
+        		text: {
+                    uploadButton: '<i class="icon-upload icon-white"></i>选择图片',
+                    failUpload: '上传失败。'
+                },
+                template: '<div class="qq-uploader">' +
+                              '<pre class="qq-upload-drop-area span5"><span>拖拽到此区域上传。</span></pre>' +
+                              '<div class="qq-upload-button btn btn-success control-label offset1" style="width: auto;">{uploadButtonText}</div>' +
+                              '<ul class="qq-upload-list" style="margin-top: 10px; text-align: center;"></ul>' +
+                            '</div>',
+                fileTemplate: '<li id="{id}">' +
+                            '<div class="qq-progress-bar"></div>' +
+                            '<span class="qq-upload-spinner"></span>' +
+                            '<span class="qq-upload-finished"></span>' +
+                            '<span class="qq-upload-file"></span>&nbsp;' +
+                            '<span class="qq-upload-size"></span>' +
+                            '<span class="qq-upload-status-text">{statusText}</span>' +
+                            '<a class="qq-upload-cancel" href="#">{cancelButtonText}</a>' +
+                            '</li>',
+                classes: {
+                    success: 'alert alert-success',
+                    fail: 'alert alert-error'
+                },
+                validation: {
+                    allowedExtensions: ['jpeg', 'jpg', 'png'],
+                    sizeLimit: 2297152
+                },
+                messages: {
+                    typeError: "只支持上传如下格式的图片：{extensions}。",
+                    sizeError: "只能上传{sizeLimit}大小的图片。"
+                },
+                callbacks: {
+                	onSubmit: function(id, fileName) {
+                		if (this.uploaded == null) {
+                			this.uploaded = 0;
+                		}
+                		if (this.uploaded > 5) {
+                			return false;
+                		}
+                		if (this.uploaded == 5) {
+                			this.uploaded ++;
+                			alert('最多能上传5张图片。');
+                			return false;
+                		}
+                		this.uploaded ++;
+                		return true;
+                	},
+                    onComplete: function(id, fileName, responseJSON) {
+        				if (responseJSON.success) {
+    					//	editor.appendHtml('<img src="'+url+'" />');
+							addImage(responseJSON.url, responseJSON.surl);
+        				}
+                    }
+                },
+        		debug: true
+            });
+			
+        });
+		var editor;
+    	KindEditor.ready(function(K) {
+            	editor= K.create('#content', {
+                    uploadJson : '$basePath/product/upload_json',
+					fileManagerJson : '$basePath/product/upload',
+                    allowFileManager : true,
+					formatUploadUrl:false,
+					afterUpload : function(url) {
+                        alert(url);
+                	}
+           	 	});
+    		});
+		function funSubmit(){
+		  var categoryText=$("#categoryText").val();
+		  var shopName=$("#shopName").val();
+		  var name=$("#name").val();
+		  var productNo=$("#productNo").val();
+		  var originalPrice=$("#originalPrice").val();
+		 var expiryDate= $("#expiryDate").val();
+		 var userName= $("#userName").val();
+		  var status=$("#status").val();
+		  var content=$("#content").val();
+		  var imgUrls=$("#imgUrls").val();
+		  if(categoryText == null || categoryText == ""){
+		    alert("分类不能为空");
+		  }else if(shopName == null || shopName == ""){
+		    alert("店铺不能为空");
+		  }else if(name == null || name == ""){
+		    alert("商品名称不能为空");
+		  }else if(productNo == null || productNo == ""){
+		    alert("商品编号不能为空");
+		  }else if(originalPrice == null || originalPrice == ""){
+		    alert("产品原价不能为空");
+		  }else if(expiryDate == null || expiryDate == ""){
+		    alert("过期事件不能为空");
+		  }else if(userName == null || userName == ""){
+		    alert("发布者不能为空");
+		  }else if(status == null || status == ""){
+		    alert("状态不能为空");
+		  }else  if(content == null || content == ""){
+		    alert("描述不能为空");
+		  }else  if(imgUrls == null || imgUrls == ""){
+		    alert("图片不能为空");
+		  }else {
+		  var content=encode64(editor.html());
+			$("#formSub").attr("action","$basePath/product/editSave?content="+content);
+			$("#formSub").submit();
+		  }
+		}
+		
+    </script>
+</head>
+<body>
+	<div class="ex-panel">
+		#if($product.id)<h3>编辑产品</h3>#else<h3>添加产品</h3>#end
+		<form class="form-horizontal" id="formSub" action="" method="post">
+			<input type="hidden" name="id" value="$!product.id" />
+			<div class="form-group">
+				<label for="categoryId" class="col-sm-2 control-label">分类<span style="color:red">*</span></label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="categoryText" value="$!product.categoryText"  placeholder="选择分类"  onclick="showModel()" required="required">
+					<input type="hidden"  id="categoryId" name="categoryId" value="$!product.categoryId">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="shopId" class="col-sm-2 control-label">店铺<span style="color:red">*</span></label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="shopName" name="shopName" placeholder="店铺" value="$!product.shopName" readonly>
+					<input type="hidden" class="form-control" id="shopId" name="shopId" value="$!shopId">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="name" class="col-sm-2 control-label">名称<span style="color:red">*</span></label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="name" name="name" placeholder="名称" value="$!product.name">
+					<input type="hidden" class="form-control" id="saled" name="saled" placeholder="出售数量" value="$!product.saled">
+					<input type="hidden" class="form-control" id="grade" name="grade" placeholder="评论数" value="$!product.grade">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="productNo" class="col-sm-2 control-label">编号<span style="color:red">*</span></label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="productNo" name="productNo" placeholder="编号" value="$!product.productNo">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="originalPrice" class="col-sm-2 control-label">产品原价<span style="color:red">*</span></label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="originalPrice" name="originalPrice" placeholder="产品原价" value="$!math.div($!product.originalPrice,100)">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="expiryDate" class="col-sm-2 control-label">过期时间<span style="color:red">*</span></label>
+				<div class="col-sm-6">
+					<input type="text"  id="expiryDate" name="expiryDate" placeholder="过期时间" value="$!date.format("yyyy-MM-dd", $!product.expiryDate)" readonly class="form-control">
+              	</div>
+            </div>
+
+			<div class="form-group">
+				<label for="userId" class="col-sm-2 control-label">发布者<span style="color:red">*</span></label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="userName" name="userName" placeholder="发布者" value="$!product.userName" readonly >
+					<input type="hidden" name="userId" value="$!product.userId" />
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="status" class="col-sm-2 control-label">状态<span style="color:red">*</span></label>
+				<div class="col-sm-6">
+					<select name="status" class="form-control">
+						#foreach($status in $PRODUCT_STATUS)
+							#set($i=$math.sub($velocityCount,1))
+							<option value="$i" #if($product.status == $i) selected #end>$status</option>
+						#end
+                    </select>
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="content" class="col-sm-2 control-label">描述<span style="color:red">*</span></label>
+				<div class="col-sm-8">
+					<textarea id="content" rows="20" style="width:680px;height:40px">$!product.content</textarea>
+					<div id="fine-uploader"></div>
+					<div id="uploaded" class="upload-panel"></div>
+              	</div>
+            </div>
+			
+			<div class="form-group">
+				<div class="col-md-offset-4 col-sm-2"><b>产品图片<span style="color:red">*</span></b></div>
+				<div class="col-md-offset-1 col-sm-8">
+					<table class="table table-striped">
+            			<thead>
+            				<tr>
+            					<th>图片预览</th>
+            					<th>图片地址</th>
+            					<th>类型</th>
+								<th>操作</th>
+            				</tr>
+            			</thead>
+            			<tbody id="imgTable">
+							#foreach($images in $product.images)
+								<tr>
+									<td><img src="$!images.imageUrl" class="upimg"></td>
+									<td>
+										<input name="imgUrls" value="$!images.imageUrl" size="40" type="text">
+										<input name="smallUrls" value="$!images.smallUrl" size="40" type="hidden">
+									</td>
+									<td>
+										<select name="imgTypes">
+											<option value="1" 
+												#if("1"==$!images.type)
+												selected 
+												#end
+												>展示图片</option>
+											<option value="0"
+												#if("0"==$!images.type)
+												selected 
+												#end
+												>列表图片</option>
+										</select>
+									</td>
+									<td><a href="javascript:void(0)" onclick="removeElement(this)">X</a></td>
+								</tr>
+							#end
+            			</tbody>
+            		</table>
+              	</div>
+            </div>
+			<div class="form-group">
+				<div class="col-md-offset-4 col-sm-2"><b>产品属性&nbsp;<a href="javascript:void(0)" onclick="addProperty(0, '', '', '', 0, true)">添加自定义属性</a></b></div>
+				<div class="col-md-offset-1 col-sm-8">
+					<table class="table table-striped">
+            			<thead>
+            				<tr>
+            					<th>属性类型</th>
+            					<th>是否必填</th>
+            					<th>属性名</th>
+								<th>属性值</th>
+								<th>操作</th>
+            				</tr>
+            			</thead>
+            			<tbody id="cpTable">
+							#foreach($propertis in $product.propertis)
+								#if('0'!=$!propertis.categoryPropertyId)
+									<tr class="propertyTR">
+                                        <td>
+    										<input name="cpids" value="$!propertis.categoryPropertyId" type="hidden">其他
+											<input name="ptypes" value="$!propertis.type" type="hidden">
+    									</td>
+                                        <td>
+    										#if($!propertis.extend==1)
+												是
+											#else
+												否
+											#end
+											<input name="pextends" value="$!propertis.extend" type="hidden">
+    									</td>
+                                        <td>
+    										<span name="propspan">
+												<input name="pproperties" value="$!propertis.property" size="8" readonly="" type="text">
+											</span>
+    									</td>
+                                        <td><input name="pvalues" value="$!propertis.value" size="8" type="text"></td>
+                                        <td></td>
+									</tr>
+								#else
+								<tr>
+									<td>
+										<input name="cpids" value="$!propertis.categoryPropertyId" type="hidden">
+											<select name="ptypes" onchange="selectPtype(this)">
+												<option value="price" 
+													#if("price"==$!propertis.type)
+													selected
+													#end
+													>价格参数</option>
+												<option value="head"
+													#if("head"==$!propertis.type)
+													selected
+													#end
+													>商品参数</option>
+												<option value="express"
+													#if("express"==$!propertis.type)
+													selected
+													#end
+													>配送费</option>
+												<option value="other"
+													#if("other"==$!propertis.type)
+													selected
+													#end
+													>其他</option>
+											</select>
+                                    </td>
+									<td>
+										<input name="pextends" value="0" type="hidden">否
+                                    </td>
+									<td>
+										<span name="propspan">
+											#if("express"==$!propertis.type)
+												<a href="javascript:void(0)" onclick="showPropertyList(this)">
+													#if(""!=$propertis.property)
+														 
+														#if("t:1"==$propertis.property)
+															本市
+														#elseif("t:0"==$propertis.property)
+															默认
+														#else 
+															$propertis.property
+														#end
+													#else 选择 
+													#end
+												</a>
+												<input name="pproperties" value="$!propertis.property" type="hidden">
+											#else
+												<input name="pproperties" value="$!propertis.property" size="8" type="text">
+											#end
+										</span>
+                                    </td>
+									<td>
+										#if("express"==$!propertis.type)
+											<input name="pvalues" value="$!math.div($!propertis.value,100)" size="8" type="text">
+										#else
+											<input name="pvalues" value="$!propertis.value" size="8" type="text">
+										#end
+									</td>
+									<td>
+										<a href="javascript:void(0)" onclick="removeElement(this)">X</a>
+                                    </td>
+                                </tr>
+								#end
+								#end
+            			</tbody>
+            		</table>
+              	</div>
+            </div>
+			<div class="form-group">
+				<div class="col-md-offset-4 col-sm-2"><b>产品价格&nbsp;<a href="javascript:void(0)" onclick="addPrice('', '0', '1')">添加价格</a></b></div>
+				<div class="col-md-offset-1 col-sm-8">
+					<table class="table table-striped">
+            			<thead>
+            				<tr>
+            					<th>价格条件</th>
+            					<th>价格</th>
+            					<th>初始库存</th>
+								<th>操作</th>
+            				</tr>
+            			</thead>
+            			<tbody id="priceTable">
+							#foreach($prices in $product.prices)
+								<tr>
+									<td>
+										<a href="javascript:void(0)" onclick="showGroup(this)">
+											#if(""!=$prices.propertyGroup and "0"!=$prices.propertyGroup)
+												$prices.propertyGroup
+											#else
+												默认
+											#end
+											</a><input name="groups" value="$!prices.propertyGroup" size="8" type="hidden">
+									</td>
+									<td>
+										<input name="pprices" value="$!math.div($!prices.price,100)" size="8" type="text">
+									</td>
+									<td>
+										<input name="inventories" value="$!prices.inventory" size="8" type="text">
+									</td>
+									<td>
+										<a href="javascript:void(0)" onclick="removeElement(this)">X</a>
+									</td>
+								</tr>
+							#end
+            			</tbody>
+            		</table>
+              	</div>
+            </div>
+			
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-6">
+                <button type="button" onclick="funSubmit()" class="btn btn-default">保存</button>
+              </div>
+            </div>
+      </form>
+	</div>
+	<div id="categoryModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">选择分类</h4>
+          </div>
+          <div class="modal-body">
+				<ul id="category" class="ztree"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+	<div id="expressModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">选择配送地</h4>
+          </div>
+          <div class="modal-body">
+				<input type="radio" name="etype" value="0" onclick="showProvinces()"/>默认
+				&nbsp;&nbsp;
+				<input type="radio" name="etype" value="1" onclick="showProvinces()"/>本市
+				&nbsp;&nbsp;
+				<input type="radio" name="etype" value="2" onclick="showProvinces()"/>选择省
+				<br />
+				<hr />
+				<div id="eprovince"></div>
+          </div>
+		  <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" onclick="selectExpressCity()">选择</button>
+          </div>
+        </div>
+      </div>
+    </div>
+	<div id="groupModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">选择价格组合</h4>
+          </div>
+          <div class="modal-body">
+          </div>
+		  <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" onclick="selectGroup()">选择</button>
+          </div>
+        </div>
+      </div>
+    </div>
+	<div id="onPvaluesModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">选择属性值</h4>
+          </div>
+          <div class="modal-body">
+			<table class="table table-striped">
+    			<thead>
+        			<tr>
+        				<th>属性名称</th>
+        			</tr>
+                </thead>
+				<tbody id="tableTRId">
+					
+                </tbody>
+			</table>
+          </div>
+		  <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+          </div>
+        </div>
+      </div>
+    </div>
+<script src="$basePath/js/bootstrap-datetimepicker.min.js"></script>
+<script src="$basePath/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+    $("#expiryDate").datetimepicker({
+	format: 'yyyy-mm-dd',
+	language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0});
+</script>	
+</body>
+</html>

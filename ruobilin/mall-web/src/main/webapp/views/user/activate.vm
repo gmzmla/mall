@@ -1,0 +1,18 @@
+#set($basePath=$request.contextPath)
+#set($layout = "/layout/nolayout.vm") 
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>List</title>
+	</head>
+	<body>
+		<form action="$basePath/login" method="post">
+		<h2>Login</h2>
+		<p>Email<input type="text" name="email" /></p>
+		<p>Password<input type="password" name="password" /></p>
+		<p>$!message</p>
+		<p><input type="submit" value="Login" /></p>
+		</form>
+	</body>
+</html>

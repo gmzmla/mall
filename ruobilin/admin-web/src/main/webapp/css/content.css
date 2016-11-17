@@ -1,0 +1,137 @@
+body {
+	background-color: #FFFFFF;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	scrollbar-3dlight-color: #F0F0EE;
+	scrollbar-arrow-color: #676662;
+	scrollbar-base-color: #F0F0EE;
+	scrollbar-darkshadow-color: #DDDDDD;
+	scrollbar-face-color: #E0E0DD;
+	scrollbar-highlight-color: #F0F0EE;
+	scrollbar-shadow-color: #F0F0EE;
+	scrollbar-track-color: #F5F5F5;
+	/* padding-top: 70px; */
+}
+
+td {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+}
+
+pre {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+}
+
+.example1 {
+	font-weight: bold;
+	font-size: 14px
+}
+
+.example2 {
+	font-weight: bold;
+	font-size: 12px;
+	color: #FF0000
+}
+
+.tablerow1 {
+	background-color: #BBBBBB;
+}
+
+
+/* Basic formats */
+
+.bold {
+	font-weight: bold;
+}
+
+.italic {
+	font-style: italic;
+}
+
+.underline {
+	text-decoration: underline;
+}
+
+/* Global align classes */
+
+.left {
+	text-align: inherit;
+}
+
+.center {
+	text-align: center;
+}
+
+.right {
+	text-align: right;
+}
+
+.full {
+	text-align: justify
+}
+
+/* Image and table specific aligns */
+
+img.left, table.left {
+	float: left;
+	text-align: inherit;
+}
+
+img.center, table.center {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: inherit;
+}
+
+img.center {
+	display: block;
+}
+
+img.right, table.right {
+	float: right;
+	text-align: inherit;
+}
+
+.ex-panel {
+	margin-left: 20px;
+	margin-right: 20px;
+	background-color: #fff;
+	border-width: 1px;
+	border-color: #ddd;
+	border-radius: 4px 4px 0 0;
+	box-shadow: none;
+	border-style: solid;
+	padding: 10px 10px 20px 10px;
+}
+
+.ex-href {
+	float: right;
+	margin-top: 10px;
+	font-size: 20px;
+}
+
+.center {
+  width: auto;
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.upimg {
+	width: 40px;
+	height: 40px;
+	margin: 10px;
+	border: 1px solid;
+	border-color: #333333;
+}
+
+.deleteImg{
+	position: relative;
+    z-index: 1;
+    background: #FFF url("../img/20130606B.png") no-repeat scroll -18px -48px;
+    width: 18px;
+	height: 17px;
+	left: 53px;
+	top: -71px;
+}

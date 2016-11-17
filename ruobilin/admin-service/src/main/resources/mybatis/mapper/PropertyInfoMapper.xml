@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.admin.mapper.PropertyInfoMapper">
+	<insert id="insertPropertyInfo" parameterType="com.ruobilin.mall.admin.entity.PropertyInfo">
+		insert into propertyInfo
+		(id,commodityBasicId,name,mark)values
+		(
+		#{id},
+		#{commodityBasicId},
+		#{name},
+		#{mark}
+		)
+	</insert>
+	<insert id="insertPropertyInfoList" parameterType="java.util.Map">
+		insert into propertyInfo
+		(id,commodityBasicId,name,mark)values
+		<foreach collection="list" item="propertyInfo"  index="index" separator=",">
+		(
+			#{propertyInfo.id},
+			#{commodityBasicId},
+			#{propertyInfo.name},
+			#{propertyInfo.mark}
+		)
+		</foreach>
+	</insert>
+	<update id="updatePropertyInfo" parameterType="com.ruobilin.mall.admin.entity.PropertyInfo">
+		update propertyInfo
+		set 
+		<if test="commodityId !=null">commodityId=#{commodityId},</if>
+		<if test="name !=null">name=#{name},</if>
+		<if test="mark !=null">mark=#{mark},</if>
+		id=#{id}
+		where id=#{id}
+	</update>
+	<delete id="delPropertyInfo" parameterType="String">
+		delete from propertyInfo
+		where id=#{id}
+	</delete>
+	<delete id="delPropertyInfoAndCommodityId" parameterType="String">
+		delete from propertyInfo
+		where commodityBasicId=#{commodityBasicId}
+	</delete>
+	
+	<select id="querListPropertyInfo" parameterType="String" resultType="com.ruobilin.mall.admin.entity.PropertyInfo">
+		select * from propertyInfo
+		where commodityBasicId=#{commodityBasicId}
+	</select>
+</mapper>

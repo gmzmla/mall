@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.OrderTableMapper">
+   <insert id="insertOrderTable"  keyProperty="id" useGeneratedKeys="true" parameterType="com.ruobilin.mall.entity.OrderTable">
+   		<selectKey resultType="String" keyProperty="id" order="AFTER">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+   		insert into orderTable (orderNumber,total,orderStatus,userId,consignee,consigneeAddress,phoneNumber,submitTime,modePayment)
+   		values (#{orderNumber},#{total},#{orderStatus},#{userId},#{consignee},#{consigneeAddress},#{phoneNumber},#{submitTime},#{modePayment})
+   </insert>
+   
+   <insert id="insertListOfGoods" parameterType="com.ruobilin.mall.entity.ListOfGoods">
+   		insert into listOfGoods (id,orderId,commodityId,imgUrl,price,Number,name,tableName)
+   		values
+   		<foreach collection="list" item="listOfGoods"  index="index" separator=",">
+    		(#{listOfGoods.id},#{listOfGoods.orderId},#{listOfGoods.commodityId},#{listOfGoods.imgUrl},#{listOfGoods.price}
+    		,#{listOfGoods.Number},#{listOfGoods.name},#{listOfGoods.tableName})
+    	</foreach>
+   </insert>
+   
+   <select id="queryOrderTable" parameterType="String" resultType="com.ruobilin.mall.entity.OrderTable">
+   		select * from orderTable
+   		where id = #{orderId}
+   </select>
+   <select id="queryOrderTableList" parameterType="java.util.Map" resultType="com.ruobilin.mall.entity.OrderTable">
+   		select * from orderTable
+   		where userId =#{userId}
+   		<if test="searchParam !=null">
+   			and (
+   				orderNumber like #{searchParam}
+   			)
+   		</if>
+   		order by orderStatus,submitTime DESC
+   </select>
+   <select id="queryListOfGoods" parameterType="String" resultType="com.ruobilin.mall.entity.ListOfGoods">
+   		select a.* from listOfGoods a
+		RIGHT JOIN orderTable b on a.orderId=b.id
+		where b.userId=#{userId}
+		and a.id is not NULL
+   </select>
+   <select id="queryListOfGoodsId" parameterType="String" resultType="com.ruobilin.mall.entity.ListOfGoods">
+   		select * from listOfGoods
+   		where orderId=#{orderId}
+   </select>
+   
+   <update id="updateOrderStatus"	parameterType="java.util.Map">
+   		update orderTable
+   		set 
+   			orderStatus=#{orderStatus}
+   			<if test="cancelTime !=null">
+   				,cancelTime=#{cancelTime}
+   			</if>
+   		where 1=1
+   			<if test="id !=null">
+   				and id=#{id}
+   			</if>
+   			<if test="orderNumber !=null">
+   				and orderNumber=#{orderNumber}
+   			</if>
+   </update>
+</mapper>

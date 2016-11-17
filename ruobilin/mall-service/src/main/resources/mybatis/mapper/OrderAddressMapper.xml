@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.OrderAddressMapper">
+    <insert id="insert" parameterType="OrderAddress">
+        insert into orderAddress(orderId,name,type,phone,address,cityId,areaId,mail,contactId) 
+		values(#{orderId},#{name},#{type},#{phone},#{address},#{cityId},#{areaId},#{mail},#{contactId})
+    </insert>
+    
+    <select id="getByOrderId" resultType="OrderAddress" parameterType="java.lang.String">
+        select *
+		from orderAddress 
+		where orderId=#{value}
+    </select>
+</mapper>

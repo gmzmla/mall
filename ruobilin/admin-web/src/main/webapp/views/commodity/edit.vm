@@ -1,0 +1,108 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+	<script type="text/javascript" >
+	function commod() {
+		$('#categoryModal').modal();
+	}
+	function dianji(obj1,id,tableName){
+		$("#dityid").val(obj1);
+		$("#namem").val($("#nameId"+id).val());
+		$("#tableName").val(tableName);
+		$('#categoryModal').modal('hide');
+	}
+	function onSelect(){
+		var param=$("#condition").val();//得到查询参数
+		jQuery.getJSON("$basePath/commodity/findAlls", {name:param},function(json) {
+		$("#tableTRId").empty();
+				for (var i=0; i<json.length; i++) {
+					var tr="<tr onclick=dianji('"+json[i].id+"','"+i+"')>"
+					+"<input type=\"hidden\" id=\"nameId"+i+"\" value=\""+json[i].name+"\">";
+					$("#tableTRId").append(tr+"<td>"+i+"</td><td>"+json[i].name+"</td></tr>");
+				}
+				$('#categoryModal').modal();
+			});
+	}
+	</script>
+</head>
+<body>
+	<div class="ex-panel">
+		#if(!$commodity.id)<h3>编辑</h3>#else<h3>添加</h3>#end
+		<form class="form-horizontal" method="post">
+			<input type="hidden" name="id" value="$!commodity.id" />
+			<input type="hidden" name="tableName" id="tableName" value="$!commodity.tableName" />
+			<div class="form-group">
+				<label for="name" class="col-sm-2 control-label">商品名称</label>
+				<div class="col-sm-6">
+					<input type="hidden"  id="dityid" name="dityid" value="$!commodity.dityid">
+					<input type="text" class="form-control" id="namem" name="name" value="$!commodity.name"  placeholder="商品名称"  onclick="commod()">
+              	</div>
+            </div>
+			<!-- div class="form-group">
+				<label for="shopName" class="col-sm-2 control-label">商铺名称</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="shopName" name="shopName" placeholder="商铺名称">
+              	</div>
+            </div -->
+            <!-- div class="form-group">
+				<label for="type" class="col-sm-2 control-label">推荐类型</label>
+				<div class="col-sm-6">
+					<select name="type" class="form-control">
+						<option value="1" #if($commodity.type == 1) selected #end>推荐1</option>
+                    </select>
+              	</div>
+            </div -->
+			<div class="form-group">
+				<label for="ordet" class="col-sm-2 control-label">推荐顺序</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="ordet" name="ordet" placeholder="推荐顺序" value="$!commodity.ordet">
+              	</div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-6">
+                <button type="submit" class="btn btn-default">保存</button>
+              </div>
+            </div>
+		</form>
+		
+			<div id="categoryModal" class="modal fade">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+            				<table class="table table-striped">
+                    			<thead>
+                					 <tr><th colspan="3" align="center" >
+                							<form >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                								<input type="text" id="condition" name="name" />&nbsp;
+                								<input type="button" value="查询" onclick="onSelect()" size="20"/>
+                                            </form>
+                                    </th></tr>
+                    				<tr>
+                    					<th>商品id</th>
+                						<th>商品名称</th>
+                    				</tr>
+                                   
+                    			</thead>
+                    			<tbody id="tableTRId">
+                					#foreach($jsonss in $jsonssList)
+                    					<tr onclick=dianji('$jsonss.id','$velocityCount','$jsonss.tableName')>
+                							<input type="hidden" id="nameId$velocityCount" value="$jsonss.name">
+                    						<td>$velocityCount</td>
+                    						<td>$jsonss.name</td>
+                    					</tr>
+                    				#end
+                    			</tbody>
+        					</table>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+</body>
+</html>

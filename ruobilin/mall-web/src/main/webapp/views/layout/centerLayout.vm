@@ -1,0 +1,203 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$!page_title - Mall</title>
+	<link href="$basePath/css/getOrderInfo.css" rel="stylesheet" type="text/css">
+	<link href="$basePath/css/myCenter/user-myjd-2015.css" rel="stylesheet" type="text/css">
+	<SCRIPT src="$basePath/js/jquery-2.1.0.js"></SCRIPT>
+	<script type="text/javascript">
+	var basePath='$basePath';
+    </script>
+	<script src="$basePath/js/cart.js"></script>
+</head>
+<body>
+	<div id="shortcut-2014">
+	<div class="w">
+		<ul class="fl lh">
+			<li class="fore1 ld"><b></b><a href="javascript:addToFavorite()" rel="nofollow">收藏</a></li>
+		</ul>
+		<ul class="fr lh">
+			<!-- javascript:login();-->
+			<li class="fore1" id="loginbar">
+				#if($!session.getAttribute("userInfo"))
+					$!session.getAttribute("userInfo").name
+					&nbsp;&nbsp;<a href="$basePath/u/logout">退出</a>
+				#else
+					<a href="$basePath/u/login" class="link-login">你好，请登录</a>
+					&nbsp;&nbsp;<a href="$basePath/u/register" class="link-regist style-red">免费注册</a>
+				#end
+					</li>
+			<li class="fore2 ld">
+				<s></s>
+				<a href="$basePath/center/list" rel="nofollow">我的订单</a>
+			</li>
+			<li style="padding-left: 12px;" class="fore2-1 ld" id="jd-vip"><s></s><a target="_blank" rel="nofollow" href="javascript:void(0)">商城会员</a></li>
+		</ul>
+		<span class="clr"></span>
+	</div>
+</div>
+<div id="nav">	
+	<div class="w">		
+		<div class="logo">			
+			<a href="$basePath/" target="_blank" class="fore1"></a>			
+			<a href="javascript:void(0);" target="_self" class="fore2">我的比邻</a>			
+			<a href="$basePath/" target="_blank" class="fore3">返回比邻首页</a>		
+		</div>		
+		<div class="navitems">			
+			<ul>				
+				<li class="fore-1">					
+					<a target="_self" href="$basePath/">首页</a>				
+				</li>				<li class="fore-3">					
+					<div class="dl" clstag="click|keycount|myhome|hsz">						
+						<div class="dt">							
+							<span class="myjd-set">账户设置</span>							
+							<b></b>						
+						</div>						
+						<div class="dd">														
+							<a tid="_MYJD_info" clstag="Homeyser" href="javascript:void(0);" target="_self"><span>个人信息</span></a>
+							<a tid="_MYJD_safe" clstag="Homesafe" href="javascript:void(0);" target="_self"><span>账户安全</span></a>							
+							<a tid="_MYJD_accbinde" clstag="Homezhbd" href="javascript:void(0);" target="_self"><span>账号绑定</span></a>
+							<a tid="_MYJD_grade" clstag="Homegrade" href="javascript:void(0);" target="_self"><span>我的级别</span></a>
+							
+							<a tid="_MYJD_comments" clstag="homeadd" href="javascript:void(0);" target="_self"><span>收货地址</span></a>	
+							<a tid="_MYJD_share" clstag="Homeshare" href="javascript:void(0);" target="_self"><span>分享绑定</span></a>
+							<a tid="_MYJD_rss" clstag="Homeedm" href="javascript:void(0);" target="_self"><span>邮件订阅</span></a>
+							<a tid="_MYJD_recor" clstag="Homeedm" href="javascript:void(0);" target="_self"><span>消费记录</span></a>
+							<a tid="_MYJD_app" clstag="Homeedm" href="javascript:void(0);" target="_blank"><span>应用授权</span></a>
+							<a tid="_MYJD_pay" clstag="Homequick" href="javascript:void(0);" target="_blank"><span>快捷支付</span></a>
+							<a tid="_MYJD_zpzz" clstag="Homezpzz" href="javascript:void(0);" target="_self"><span>增票资质</span></a>
+													
+						</div>					
+					</div>				
+				</li>				
+				<li class="fore-4">					
+					<div class="dl myjd-info" clstag="click|keycount|myhome|hsq">	
+                        <div class="dt ">							
+                        	<span>社区</span>							
+                        	<b></b>						
+						</div>						
+						<div class="dd">							
+							<a tid="_MYJD_me" clstag="hgr" href="javascript:void(0);" target="_blank"><span>个人主页</span></a>	
+							<a tid="_MYJD_activities" clstag="Homeclub" href="javascript:void(0);" target="_self"><span>我的活动</span></a>
+							<a tid="_MYJD_circle" clstag="Homejoincircle" href="javascript:void(0);" target="_self"><span>我的圈子</span></a>
+							<a tid="_MYJD_mycollect" clstag="Homethread" href="javascript:void(0);" target="_self"><span>我的帖子</span></a>
+						</div>					
+					</div>				
+				</li>				
+				<li class="fore-5">					
+					<a tid="_MYJD_joy" href="javascript:void(0)" target="_self">消息<i>0</i></a>
+				</li>			
+			</ul>		
+		</div>		
+		<div class="nav-r">			
+			<div id="search-2014">					
+				<ul id="shelper" class="hide"></ul>					
+				<div class="form">						
+					<input onkeydown="javascript:if(event.keyCode==13) search('key');" autocomplete="off" id="key" accesskey="s" class="text" type="text">
+					<button onclick="search('key');return false;" class="button cw-icon" type="button"><i></i>搜索</button>					
+				</div>			    
+			</div>			    
+		<!--my360buy end-->
+		<div id="settleup-2014"  class="dorpdown" onmouseover="MM_over()" onmouseout="MM_out()" >
+			<script  type="text/javascript">
+            	function MM_over() {
+					if($("#shopping-amount").html() <1){
+						$(".prompt").show();
+					}else{
+						$("#settleup-content").show();
+					}
+                }
+                function MM_out() {
+					$("#settleup-content").hide();
+					$(".prompt").hide();
+                }
+            </script>
+			<div class="cw-icon">						
+				<i class="ci-left"></i>						
+				<i class="ci-right">&gt;</i>
+				<i class="ci-count" id="shopping-amount">0</i>						
+				<a target="_blank" href="$basePath/account">我的购物车</a>					
+			</div>	
+			<div class="dorpdown-layer">
+					<div class="spacer"></div>
+					<div id="settleup-content">
+						<div class="smt">
+    						<h4 class="fl">最新加入的商品</h4>
+    					</div>
+						<div class="smc" id="smc">
+    					</div>
+    					<div class="smb sumPrice">共<b id="munCart">$!munCart</b>件商品　共计
+    						￥<em>0</em>
+    						<br>
+    						<a href="$basePath/account" title="去购物车结算" id="btn-payforgoods">去购物车结算</a>
+    					</div>
+					</div>
+				</div>
+		</div>
+		<!--settleup end-->
+			</div>		
+			<div class="clr"></div>	
+		</div>
+	</div>
+<div id="container">
+	<div class="w">
+		<div id="content">
+			<div id="sub">
+				<!--左侧导航栏-->
+				<div id="menu">
+					<dl class="fore1">
+						<dt id="_MYJD_order">订单中心</dt>
+						<dd class="fore1_1 curr" id="_MYJD_ordercenter">
+							<a href="$basePath/center/list" target="_self">我的订单</a>
+						</dd>
+						<dd class="fore1_5" id="_MYJD_comments">
+							<a href="javascript:void(0)" target="_self">评价晒单</a>
+						</dd>
+						<dd class="fore1_6" id="_MYJD_refundment">
+							<a href="javascript:void(0)">取消订单记录</a>
+						</dd>
+					</dl>
+					<dl class="fore6">
+						<dt id="_MYJD_sz">设置</dt>
+						<dd class="fore6_1" id="_MYJD_info">
+							<a href="$basePath/u/info" target="_self">个人信息</a>
+						</dd>
+						<dd class="fore6_2" id="_MYJD_add">
+							<a href="$basePath/address/queryList" target="_self">收货地址</a>
+						</dd>
+					</dl>
+				</div>
+				
+				<div id="menu-ads">
+					<!--广告全部放这里-->
+					<div>
+						<a href="javascript:void(0);" target="_blank">
+							<img alt="" app="image:poster" src="http://img11.360buyimg.com/da/jfs/t1741/74/60283315/12570/1b57b0f5/55cb084fN18e10149.gif" height="70" width="90">
+						</a>
+					</div>
+				</div>
+			</div>
+			<!-- 个人中心主要内容-->
+				<div id="main">
+					$screen_content
+                </div>
+		</div>
+	</div>
+</div>
+
+
+
+</body>
+<div class="w"> 
+        <div id="footer-2013">
+            <div class="links">
+				<!-- <a rel="nofollow" target="_blank" href="javascript:void(0);">关于我们</a>|<a rel="nofollow" target="_blank" href="javascript:void(0);">联系我们</a>|<a rel="nofollow" target="_blank" href="javascript:void(0);">人才招聘</a>|<a rel="nofollow" target="_blank" href="javascript:void(0);">商家入驻</a>|<a rel="nofollow" target="_blank" href="javascript:void(0);">广告服务</a>|<a rel="nofollow" target="_blank" href="javascript:void(0);">手机商城</a>|<a target="_blank" href="javascript:void(0);">友情链接</a>|<a target="_blank" href="javascript:void(0);">销售联盟</a>|<a href="javascript:void(0);" target="_blank">商城社区</a>|<a href="javascript:void(0);" target="_blank">商城公益</a>
+				-->
+			</div>
+            <div class="copyright">Copyright©2004-2015&nbsp;&nbsp;商城SC.com&nbsp;版权所有</div>
+        </div>
+</div>
+</html>

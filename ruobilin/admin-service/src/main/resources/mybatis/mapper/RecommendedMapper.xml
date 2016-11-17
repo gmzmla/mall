@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.admin.mapper.RecommendedMapper">
+
+<!-- 根据逐渐id查询所有 -->
+<select id="getById" parameterType="java.lang.Integer" resultType="com.ruobilin.mall.admin.entity.Recommended">
+ SELECT TBL.id,TBL.parentId,TBL.name,TBL.status,TBL.level,TBL.createTime,TBL.endTime
+ FROM recommended TBL
+ WHERE TBL.id=#{id}
+ </select>
+ 
+ <!-- 查询所有 -->
+ <select id="findAll" resultType="com.ruobilin.mall.admin.entity.Recommended">
+ SELECT TBL.id,TBL.parentId,TBL.name,TBL.status,TBL.level,TBL.createTime,TBL.endTime
+ FROM recommended TBL
+ ORDER BY TBL.parentId,TBL.level
+ </select>
+ 
+ <!-- 新增 -->
+ <insert id="addRecommended" parameterType="com.ruobilin.mall.admin.entity.Recommended">
+  INSERT INTO recommended(parentId,name,status,level,createTime,endTime)
+  VALUES(#{parentId},#{name},#{status},#{level},#{createTime},#{endTime})
+ </insert>
+ 
+ <!-- 根据逐渐id更新 -->
+ <update id="updateRecommended" parameterType="com.ruobilin.mall.admin.entity.Recommended">
+    UPDATE recommended
+    SET name=#{name}, parentId=#{parentId},status=#{status},level=#{level},createTime=#{createTime},endTime=#{endTime}
+    WHERE id=#{id}
+ </update>
+ 
+ <!-- 根据逐渐id删除 -->
+ <delete id="deleteRecommendedById" parameterType="java.lang.Integer">
+   DELETE FROM recommended
+   WHERE id=#{id}
+ </delete>
+ 
+ <!-- 根据id批量删除 -->
+ <delete id="deleteRecommendedByIds" parameterType="java.lang.Integer">
+ DELETE FROM RECOMMENDED 
+ WHERE id IN 
+  <foreach collection="array" open="(" close=")" separator="," item="id">#{id}</foreach>
+ </delete>
+</mapper>

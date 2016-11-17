@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.admin.mapper.CommodityBasicMapper">
+	<insert id="insertCommodityBasicInfo" parameterType="com.ruobilin.mall.admin.entity.CommodityBasicInfo">
+		insert into commodityBasicInfo
+		(
+			id,
+			name,
+			promotionWord,
+			shopId,
+			userId,
+			created,
+			status,
+			content,
+			categoryId
+		)
+		values(
+			#{id},
+			#{name},
+			#{promotionWord},
+			#{shopId},
+			#{userId},
+			#{created},
+			#{status},
+			#{content},
+			#{categoryId}
+		)
+	</insert>
+	<update id="updateCommodityBasicInfo" parameterType="com.ruobilin.mall.admin.entity.CommodityBasicInfo">
+		update commodityBasicInfo
+		set 
+		<if test="name !=null">
+		name=#{name},
+		</if>
+		<if test="promotionWord !=null">
+		promotionWord=#{promotionWord},
+		</if>
+		<if test="shopId !=null">
+		shopId=#{shopId},
+		</if>
+		<if test="userId !=null">
+		userId=#{userId},
+		</if>
+		<if test="status !=null">
+		status=#{status},
+		</if>
+		content=#{content},
+		<if test="categoryId !=null">
+		categoryId=#{categoryId},
+		</if>
+		id=#{id}
+		where id=#{id}
+	</update>
+	<delete id="delCommodityBasicInfo" parameterType="String">
+		delete from commodityBasicInfo
+		where id=#{id}
+	</delete>
+	
+	<select id="queryListCommodity" resultType="com.ruobilin.mall.admin.entity.CommodityBasicInfo">
+		select * from commodityBasicInfo
+	</select>
+	
+	<select id="queryCommodityBasicInfo" parameterType="String" resultType="com.ruobilin.mall.admin.entity.CommodityBasicInfo">
+		select a.*,b.name as categoryName from commodityBasicInfo a
+		LEFT JOIN category b on a.categoryId=b.id
+		where a.id=#{id}
+	</select>
+</mapper>

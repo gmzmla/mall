@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+	
+	<task:annotation-driven />
+	
+	<task:scheduled-tasks>
+		<task:scheduled ref="taskService" method="updateProjectStatusSuccess" cron="0 5 0 * * ?"/><!-- 每天00:00调用 -->
+	</task:scheduled-tasks>
+	<!-- 
+		按顺序依次为 
+		秒（0~59） 
+		分钟（0~59） 
+		小时（0~23） 
+		天（月）（0~31，但是你需要考虑你月的天数）
+		月（0~11） 
+		天（星期）（1~7 1=SUN 或 SUN，MON，TUE，WED，THU，FRI，SAT） 
+		
+		特殊字符 意义 
+		* 表示所有值； 
+		? 表示未说明的值，即不关心它为何值； 
+		- 表示一个指定的范围； 
+		, 表示附加一个可能值； 
+		/ 符号前表示开始时间，符号后表示每次递增的值；
+	 -->
+</beans>

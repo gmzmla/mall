@@ -1,0 +1,43 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <link rel="shortcut icon" href="$basePath/img/favicon.ico" mce_href="$basePath/img/favicon.ico" type="image/x-icon"/>
+    <link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+    <link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+			<div class="row">
+				<div class="col-md-offset-2 col-md-8">
+					<h2 class="text-center">登录</h2>
+					<p>$!message</p>
+					<form role="form" action="$basePath/user/login" method="post">
+                      <div class="form-group">
+                        <label for="email">邮箱</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="邮箱">
+                      </div>
+                      <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="密码">
+                      </div>
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" name="remember" checked> 记住我
+                        </label>
+                      </div>
+                      <div class="text-center">
+							<button type="submit" class="btn btn-default">登录</button>
+					  </div>
+                    </form>
+				</div>
+			</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,202 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+	<link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+	<link rel="stylesheet" href="$basePath/js/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+	<script src="$basePath/js/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+	<script type="text/javascript" >
+		var selected;
+		var mode;
+		function onClick(event, treeId, treeNode, clickFlag) {
+			if (clickFlag == 1) {
+				selected = new Object();
+				selected.id = treeNode.id;
+				selected.pid = treeNode.pId;
+				selected.name = treeNode.name;
+				
+				$("#pname").val(selected.name);
+			}
+			else {
+				selected = null;
+				$("#pname").val("");
+			}
+		}
+		function addNode() {
+			if (selected == null) {
+				alert("先选择节点。");
+				return;
+			}
+			mode = 0;
+			$("#edit-panel input[type='text']").each(function(i) {
+				$(this).val("");
+			});
+			$("#edit-panel").show();
+		}
+		function editNode() {
+			if (selected == null) {
+				alert("先选择节点。");
+				return;
+			}
+			mode = 1;
+			jQuery.getJSON("$basePath/menu/item/" + selected.id, function(menu) {
+					$("#name").val(menu.name);
+					$("#url").val(menu.url);
+					$("#level").val(menu.level);
+					$("#type").val(menu.type);
+					$("#status").val(menu.status);
+					$("#edit-panel").show();
+				}
+			);
+		}
+		function deleteNode() {
+			if (confirm("确定删除？"))
+			{
+			
+				$("#delId").attr("href","$basePath/menu/del?id=" + selected.id);
+				return true;
+			}else{
+				return;
+			}
+			
+			
+		}
+		function saveNode() {
+			var name = $("#name").val();
+			var url = $("#url").val();
+			var level = $("#level").val();
+			var type = $("#type").val();
+			var status = $("#status").val();
+			if (name == null || name == "" || url == null || level == null || level == "") {
+				alert("必须全部输入。");
+				return;
+			}
+			var pid = mode == 0 ? selected.id : selected.pid;
+			var data = {name:name, url:url, level:level, parentId:pid, type:type, status:status};
+			if (mode == 1) {
+				data.id = selected.id;
+			}
+			
+			jQuery.post(
+				"$basePath/menu/edit",
+                data,
+				function(data) {
+					if (data == "0") {
+						alert("添加成功。");
+						selected = null;
+						$("#edit-panel").hide();
+					}
+					else {
+						alert("添加失败。");
+					}
+				}
+			);
+			/*
+			jQuery.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "$basePath/menu/edit",
+                data: {name:name, url:url, level:level, parentId:pid, type:type, status:status},
+                dataType: "json",
+                success: function (data) {
+                    if (data == "0") {
+						alert("添加成功。");
+						selected = null;
+						$("#edit-panel").hide();
+					}
+					else {
+						alert("添加失败。");
+					}
+                }
+            });*/
+		}
+		var setting = {
+			data: {
+				key: {
+					title:"t"
+				},
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				onClick: onClick
+			}
+		};
+
+		var zNodes =[
+			#foreach($m in $menus)
+			{ id:$m.id, pId:$m.parentId, name:"$m.name", open:true},
+			#end
+		];
+
+		$(document).ready(function(){
+			$.fn.zTree.init($("#menu"), setting, zNodes);
+		});
+    </script>
+</head>
+<body>
+	<div class="content_wrap">
+    	<div class="ex-panel zTreeDemoBackground left col-sm-4">
+    		<ul id="menu" class="ztree"></ul>
+    	</div>
+		<div class="ex-panel col-sm-6">
+			<div class="col-sm-6">父节点<input type="text" id="pname" readonly /></div>
+			<div class="col-sm-4"><a href="javascript:void(0)" onclick="addNode()">添加</a>&nbsp;<a href="javascript:void(0)" onclick="editNode()">修改</a>&nbsp;<a href="javascript:void(0)" id="delId" onclick="deleteNode()">删除</a></div>
+			<div id="edit-panel" class="ex-panel" style="display:none;margin-top: 40px;">
+				<h4>添加节点</h4>
+				<form class="form-horizontal" role="form" method="post" onsubmit="return false;">
+        			<div class="form-group">
+        				<label for="name" class="col-sm-2 control-label">节点名称</label>
+        				<div class="col-sm-6">
+        					<input type="text" class="form-control" id="name" name="name" placeholder="节点名称">
+                      	</div>
+                    </div>
+                    <div class="form-group">
+        				<label for="url" class="col-sm-2 control-label">URL</label>
+        				<div class="col-sm-6">
+        					<input type="text" class="form-control" id="url" name="url" placeholder="URL">
+                      	</div>
+                    </div>
+					<div class="form-group">
+        				<label for="level" class="col-sm-2 control-label">顺序</label>
+        				<div class="col-sm-6">
+        					<input type="text" class="form-control" id="level" name="level" placeholder="顺序">
+                      	</div>
+                    </div>
+        			<div class="form-group">
+        				<label for="type" class="col-sm-2 control-label">类型</label>
+        				<div class="col-sm-6">
+        					<select name="type" id="type" class="form-control">
+                              <option value="0">树节点</option>
+							  <option value="1">页面节点</option>
+							  <option value="2">其他节点</option>
+                            </select>
+                      	</div>
+                    </div>
+        			<div class="form-group">
+        				<label for="status" class="col-sm-2 control-label">状态</label>
+        				<div class="col-sm-6">
+        					<select name="status" id="status" class="form-control">
+                              <option value="0">可用</option>
+                              <option value="1">禁用</option>
+                            </select>
+                      	</div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-offset-2 col-sm-6">
+                        <button type="submit" class="btn btn-default" onclick="saveNode()">保存</button>
+                      </div>
+                    </div>
+              </form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

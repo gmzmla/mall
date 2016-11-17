@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.CategoryPropertyValueMapper">
+    <delete id="deleteByCategoryValueId" parameterType="java.lang.String">
+    	delete from categoryPropertyValue where categoryPropertyId=#{value} 
+    </delete>
+    
+    <delete id="delete" parameterType="java.lang.String">
+    	delete from categoryPropertyValue where id=#{value} 
+    </delete>
+    
+    <insert id="insertCategoryPropertyValue" parameterType="CategoryPropertyValue" useGeneratedKeys="true"  keyProperty="id">
+        insert into categorypropertyvalue(categoryPropertyId,name,code) 
+		values(#{categoryPropertyId},#{name},#{code})
+    </insert>
+    <update id="updateCategoryPropertyValue" parameterType="CategoryPropertyValue">
+    	update categorypropertyvalue 
+    	set 
+    	<if test="categoryPropertyId !=null">
+    		categoryPropertyId=#{categoryPropertyId},
+    	</if>
+    	name=#{name},code=#{code}
+    	where id =#{id}
+    </update>
+    <select id="queryCategoryPropertyValueList" resultType="CategoryPropertyValue" parameterType="java.lang.String">
+    	select * from categorypropertyvalue
+    	where categoryPropertyId=#{propertyId}
+    </select>
+    
+    <select id="findCategoryPropertyValue" resultType="CategoryPropertyValue" parameterType="java.lang.String">
+    	select * from categorypropertyvalue
+    	where id=#{propertyId}
+    </select>
+</mapper>

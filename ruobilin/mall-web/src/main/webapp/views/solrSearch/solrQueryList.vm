@@ -1,0 +1,163 @@
+#set($page_title=$!category.name)
+#set($basePath=$request.contextPath)
+<link href="$basePath/css/list.css" rel="stylesheet" type="text/css">
+	<script type=text/javascript src="$basePath/js/jquery-2.1.0.min.js"></script>
+	<script type=text/javascript src="$basePath/js/Base64new.js"></script>
+	<script src="$basePath/js/com.js"></script>
+	<script type="text/javascript">
+	var basePath='$basePath';
+	var keyWord = '${keyWord}';
+	
+	
+function closeQuery(obj,categoryPropertyId){
+	$(obj).remove();
+	if(categoryPropertyId !=null){
+		$("#sl-wrap"+categoryPropertyId).show();
+	}
+	onQueryList(null,null,null,null);
+}
+    </script>
+	<script type="text/javascript" src="$basePath/js/solrSearch/solrQueryList.js"></script>
+<div class="selectNumberScreen">
+<div class="w">
+    <div class="crumbs-bar clearfix">
+		<div class="crumbs-nav">
+			<div class="crumbs-nav-main clearfix">
+				<div class="crumbs-nav-item">
+            		<div class="selector-set">
+						#foreach($param in $listProperties)
+                			<a href="javascript:void(0)" title="$param.propertisValues" class="ss-item" onclick="closeQuery(this,'$param.categoryPropertyId')">
+								<input type="hidden" name="propertisParam" value="$param.id:$param.property:$param.value:$param.categoryPropertyId"/>
+                				<b>$param.property：</b><em>$param.value</em><i></i>
+                			</a>
+						#end
+            		</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="J_searchWrap" class="w">
+	
+	<div class="hasBeenSelected">
+		<dl>
+		  <dt>已选条件：</dt>
+		  <dd style="DISPLAY: none" class=clearDd>
+		  <div class=clearList></div>
+		  <div style="DISPLAY: none" class="eliminateCriteria">清除筛选条件</div>
+		</dd></dl>
+	</div>
+	
+		<div id="J_selector" class="selector">
+			<div clstag="thirdtype|keycount|thirdtype|select" class="s-title">
+				<h3><b>$!keyWord</b><em>&nbsp;商品筛选</em></h3>
+			</div>
+			#foreach($p in $categoryProperties)
+			<div class="sl-wrap" id="sl-wrap${p.id}" style="display:block">
+            	<div class="sl-key">
+            		<span>$!p.property：</span>
+            	</div>
+    				<div class="sl-value">
+    					<div class="sl-v-list">
+    						<ul style="" class="J_valueList">
+    							#foreach($pv in $CategoryPropertyValues)
+    								#if($pv.categoryPropertyId==$p.id)
+                						<li style="">
+                							<a onclick="onQueryList('$pv.id','$p.id','$pv.name','$p.property')" href="javascript:void(0)" rel="nofollow"><i></i>$pv.name</a>
+                						</li>
+    								#end
+    							#end
+    						</ul>
+    					</div>
+    				</div>
+			 </div>
+			#end
+		</div>
+		
+		<!-- 商品列表 -->
+		<div id="J_main" class="g-main2">
+            <div class="m-list">
+               <div class="ml-wrap">
+					<!-- 查询条件-->
+					<div id="J_filter" class="filter">
+						<div class="f-line top">
+							<div class="f-sort">
+								<a href="javascript:void(0);" title="价格" class="price" onclick="order(0)" style="display:block;margin-left:20px;">价格<i></i></a>
+								<a href="javascript:void(0)"  class="time" onclick="order(1)" style="display:block;margin-left:20px;">上架时间<i></i></a>
+							</div>
+							<div class="f-search">
+								<input id="resultSearchTxt" value="在结果中搜索" class="input-txt" onfocus="onTxtFocus(this)" onblur="onTxtBlur(this)">
+									<a id="resultSearchBtn" onclick="onResultSearchBtn('$!category.code')" href="javascript:void(0);" class="btn btn-default">确定</a>
+							</div>
+						</div>
+					</div>
+					
+					
+					<!-- 商品展示列-->
+					<div id="plist" class="goods-list-v1 J-goods-list">
+						<ul class="gl-warp clearfix">
+							#foreach ($p in $pagination.list)
+							<li class="gl-item">
+								<div class="gl-i-wrap j-sku-item">
+									<!-- 图片-->
+									<div class="p-img">
+										<a href="$basePath/p/${p.id}">
+											#if($!p.images.size()!=0)
+												<img src="$!p.images[0].imageUrl" width="220px" height="220px"/>
+											#end
+										</a>
+									</div>
+									<!-- 商品名称-->
+                                    <div class="p-name">
+									<a href="$basePath/p/${p.id}">$p.name</a>
+									</div>
+									<!-- 价钱-->
+									<div class="p-price">
+										<strong class="J_price">
+											<em>¥</em><i>$!p.originalPrice</i>
+										</strong>
+									</div>
+									<!-- 评分-->
+									<div class="extra">
+                                		<span class="star"><span class="star-white"><span id="star-827069" class="star-yellow h5">&nbsp;</span></span></span>
+                                		<a id="comment-827069" target="_blank" href="javascript:void(0)" >已有11961人评价</a>
+                                	</div>
+									<!-- 该地区有无货物-->
+									<div class="stocklist">
+                                		<span class="st33">有货
+										<b>下单后2-6天发货</b>
+										</span>
+                                	</div>
+									 <!-- 按钮：加入购物车、关注、对比-->
+    								 <div class="btns">
+                                		<a  class="btn-buy">加入购物车</a>
+                                		<a id="coll827069" class="btn-coll">关注</a>
+                                		<a class="btn-compare btn-compare-s" id="comp_827069"><span></span>对比</a>
+									 </div>
+								 </div>
+							</li>
+							#end
+						</ul>
+					</div>
+                 
+               </div>
+    		</div>
+		</div>
+		
+		<!-- 商品列表结束-->
+		<!-- 分页-->
+		 <div class="page pb15" style="text-align:right;">
+            <span class="r inb_a page_b">
+                #foreach($page in $pagination.pageView)
+                    $!page
+                #end
+            </span>
+        </div>
+	</div>
+</div>
+
+	
+    </div>
+
+</div>

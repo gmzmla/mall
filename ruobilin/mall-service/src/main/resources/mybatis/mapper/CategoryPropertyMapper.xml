@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.CategoryPropertyMapper">
+    <select id="findByCategoryId" resultType="CategoryProperty" parameterType="java.lang.Long">
+        select *
+		from categoryProperty 
+		where categoryId=#{value}
+		order by id
+    </select>
+    
+    <insert id="insert" parameterType="CategoryProperty" useGeneratedKeys="true"  keyProperty="id">
+        insert into categoryProperty(type,property,categoryId,dataType,extend) 
+		values(#{type},#{property},#{categoryId},#{dataType},#{extend})
+    </insert>
+	<update id="update" parameterType="CategoryProperty">
+		update  categoryProperty
+		set type=#{type},property=#{property},categoryId=#{categoryId},
+		dataType=#{dataType},extend=#{extend}
+		where id=#{id}
+	</update>
+	<update id="updateCategoryPropertyList" parameterType="map">
+		update  categoryProperty
+		set categoryId=#{categoryId}
+		where categoryId=#{pId}
+	</update>
+    <delete id="deleteByCategoryId" parameterType="java.lang.Long">
+    	delete from categoryProperty where categoryId=#{value} 
+    </delete>
+    
+    <delete id="deleteByCategoryPropertyId" parameterType="java.lang.String">
+    	delete from categoryProperty where id=#{value} 
+    </delete>
+    
+    <select id="findCategoryCodeQueryProperty" resultType="java.util.Map" parameterType="String">
+    	SELECT * from categoryProperty p
+		where 
+		(p.categoryId in (SELECT id FROM category where code=#{code})
+		or p.categoryId in (SELECT id FROM category where parentId in (SELECT id FROM category where code=#{code}))
+		or p.categoryId in (SELECT id FROM category where parentId in (SELECT id FROM category where parentId in (SELECT id FROM category where code=#{code})))
+		)
+    </select>
+    <select id="findCategoryCodeQueryPropertyValue" resultType="java.util.Map" parameterType="String">
+    	select v.* from categorypropertyvalue v
+		RIGHT JOIN categoryProperty p on p.id=v.categoryPropertyId 
+		where p.categoryId in (SELECT id FROM category where code=#{code})
+    </select>
+    
+    <select id="findCategoryProperty" resultType="CategoryProperty" parameterType="String">
+        select *
+		from categoryProperty 
+		where id=#{value}
+    </select>
+</mapper>

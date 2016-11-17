@@ -1,0 +1,3 @@
+$('.node').live('click',function(){
+
+});

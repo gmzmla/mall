@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ruobilin.mall</groupId>
+    <artifactId>search-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>search-parent</name>
+	<url>http://www.ruo-bilin.com</url>
+
+    <modules>
+		<module>search-util</module>
+<!-- 		<module>search-entity</module>  -->
+<!-- 		<module>search-core</module> -->
+<!-- 		<module>search-service</module> -->
+		<module>mall-entity</module>
+		<module>mall-service</module>
+<!-- 		<module>search-processor</module> -->
+		<module>mall-web</module>
+		<module>admin-entity</module>
+		<module>admin-service</module>
+		<module>admin-web</module>
+    </modules>
+
+     <properties>
+     	<project.build.version>1.0-SNAPSHOT</project.build.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-version>4.0.0.RELEASE</spring-version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

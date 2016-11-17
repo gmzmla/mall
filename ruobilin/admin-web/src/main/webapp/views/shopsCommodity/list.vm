@@ -1,0 +1,53 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+	<link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div>
+		<div class="ex-panel">
+			<div class="ex-href"><a href="$basePath/shopsCommodity/addCommodity">添加</a></div>
+			<div><h3>商品列表</h3></div>
+    		<table class="table table-striped">
+    			<thead>
+    				<tr>
+    					<th>#</th>
+    					<th>商品名称</th>
+						<th>商品推广词</th>
+    					<th>商品状态</th>
+						<th>操作</th>
+    				</tr>
+    			</thead>
+    			<tbody>
+        		#foreach($commodity in $commodityList)
+    				<tr>
+						<td>$velocityCount</td>
+						<td>$!commodity.name</td>
+						<td>$!commodity.promotionWord</td>
+						<td>$!commodity.status</td>
+						<td>
+							<a href="$basePath/shopsCommodity/editCommodity?id=$commodity.id">修改</a>
+						</td>
+    				</tr>
+    			#end
+    			</tbody>
+               
+    		</table>
+		</div>
+		<div id="pager">
+		<form method="post" id="pageFromId" action="$basePath/shopsCommodity/queryListCommodity?id=$id">
+			#pagebar($shops.getPaginator(),'pageFromId')
+        </form>
+	</div>
+
+	
+    </div>
+</body>
+</html>

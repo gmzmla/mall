@@ -1,0 +1,89 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+	<link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+	/*function queryGoods(obj){
+  var param = $("#condition").val();
+  $. ajax({
+    type:"POST",
+	url : "$basePath/recommendedGoods/list",
+	data : "{goodsName : param}",
+	dataType : "json",
+	success : function(rgList){
+	    $("#tableTRId").empty();
+	     for(var i=0; i<rgList.length; i++){
+		    var tr="<tr>";
+			$("#tableTRId").append(tr+"<td>"+rgList[i].id+"</td><td>"+rgList[i].name+"</td><td>"+rgList[i].type+"</td></tr>");
+		 }
+		$('#categoryModal').modal();
+	}
+  });
+}*/
+	
+function deleteBrand(id){
+	var id=id;
+	if(confirm('您确定删除吗?')){
+	  $ .ajax({
+	     type :"GET",
+		 url:"$basePath/recommendedGoods/delete?id="+id,
+		 dataType:"text",
+		 success:function(data){
+		   if(data == 'success'){
+		   		alert("删除成功");
+				location.reload() ;
+		   }
+		   else {
+		   		alert("删除失败");
+		   }
+		 }
+	  });
+	  }
+	}
+	
+	
+
+    </script>
+</head>
+<body>
+	          
+									
+				<table  class="table table-striped" width="100%" id="goodsTable">
+					<thead >
+					           <tr>
+								             <th>序号</th>
+                        					<th align="center">商品名称</th>
+                    						<th align="center">商品所在表</th>
+											<th align="center">操作</th>
+					          </tr>
+                   </thead>
+                        	 
+					<tbody >
+						                     #set($k=1)
+											#foreach($rg in $rgList)
+												<tr>
+												<td>$k</td>
+                        						<td>$rg.goodsName</td>
+												<td>$rg.tableName</td>
+												<td>
+												<a  onclick="deleteBrand('$rg.id')" class="del" href="javascript:void(0)">删除</a>
+												</td>
+                        					</tr>
+											#set($k=$k+1)
+											#end
+					</tbody>
+                </table>
+			</div>
+		</div>
+				
+				
+				
+</body>
+</html>

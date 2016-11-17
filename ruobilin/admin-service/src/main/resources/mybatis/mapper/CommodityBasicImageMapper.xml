@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.admin.mapper.CommodityBasicImageMapper">
+	<insert id="insertCommodityBasicImageList" parameterType="java.util.Map">
+		insert into commodityBasicImage(
+			id,
+			commodityBasicId,
+			imageUrl,
+			smallUrl,
+			type
+		) values
+		<foreach collection="list" item="commodityBasicImage"  index="index" separator=",">
+    		(<![CDATA[replace(uuid(),'-','')]]>,
+    		#{commodityBasicId},
+    		#{commodityBasicImage.imageUrl},
+    		#{commodityBasicImage.smallUrl},
+    		#{commodityBasicImage.type})
+    	</foreach>
+	</insert>
+	<select id="queryListCommodityBasicImage" parameterType="String" resultType="com.ruobilin.mall.admin.entity.CommodityBasicImage">
+		select * from commodityBasicImage
+		where commodityBasicId=#{commodityBasicId}
+	</select>
+	<delete id="delListCommodityBasicImage" parameterType="String">
+		delete from commodityBasicImage
+		where commodityBasicId=#{commodityBasicId}
+	</delete>
+</mapper>

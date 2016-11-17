@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.ShopMapper">
+    <select id="getById" resultType="Shop" parameterType="java.lang.Long">
+        select *
+		from shop 
+		where id=#{value}
+    </select>
+    <select id="findAll" resultType="Shop" parameterType="java.lang.String">
+        select *
+		from shop 
+		where status=0 
+		<if test="value != null">
+			and name=#{value}
+		</if>
+    </select>
+    
+      <select id="findlist" resultType="java.util.Map" >
+        select *
+		from shop 
+		where name=#{value}
+    </select>
+    
+    <insert id="insert" parameterType="Shop">
+        insert into shop(name,phone,created,userId,grade,status,email,photoUrl,smallUrl,provinceId,cityId,address) 
+		values(#{name},#{phone},now(),#{userId},#{grade},#{status},#{email},#{photoUrl},#{smallUrl},#{provinceId},#{cityId},#{address})
+    </insert>
+    <update id="update" parameterType="Shop">
+        update shop 
+        set name=#{name},status=#{status},phone=#{phone},grade=#{grade},photoUrl=#{photoUrl},smallUrl=#{smallUrl},
+        	provinceId=#{provinceId},cityId=#{cityId},address=#{address}
+		where id=#{id}
+    </update>
+    <delete id="deleteById" parameterType="java.lang.Long">
+    	delete from shop where id=#{value} 
+    </delete>
+    
+    <select id="getProductByShopId" parameterType="java.lang.Long" resultType="com.ruobilin.mall.entity.Product">
+      select * from product p
+      left join shop s on s.id=p.shopId
+      where p.shopId=#{value}
+    </select>
+  
+</mapper>

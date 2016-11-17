@@ -1,0 +1,224 @@
+#set($page_title=$product.name)
+#set($basePath=$request.contextPath)
+<link href="$basePath/css/css.css" rel="stylesheet" type="text/css">
+<link href="$basePath/css/lrtk.css" rel="stylesheet" type="text/css">
+<link href="$basePath/css/item.css" rel="stylesheet" type="text/css">
+<link href="$basePath/css/jquery.spinner.css" rel="stylesheet" type="text/css">
+<link href="$basePath/css/select.css" rel="stylesheet" type="text/css">
+<SCRIPT src="$basePath/js/marquee.js" type=text/javascript></SCRIPT>
+<SCRIPT src="$basePath/js/zzsc.js" type=text/javascript></SCRIPT>
+<SCRIPT src="$basePath/js/jquery.spinner.js" type=text/javascript></SCRIPT>
+<SCRIPT src="$basePath/js/jQuery-shopping.js"></SCRIPT>
+<script type=text/javascript>
+var basePath='$basePath';
+</script>
+<SCRIPT src="$basePath/js/shopsCommodity/shoppingCar.js"></SCRIPT>
+<div class="p-box"">
+<div class="w">
+<div class="m-item-grid clearfix">
+<div class="row row-offcanvas row-offcanvas-right">
+	<div class="col-xs-4">
+		<div id=preview>
+	<div class=jqzoom id=spec-n1>
+		#if($product.listCommodityImage.size()!=0)
+			<IMG height=350 src="$!product.listCommodityImage[0].imageUrl" jqimg="$!product.listCommodityImage[0].imageUrl" width=350>
+		#end
+	</div>
+	<div id=spec-n5>
+		<div class=control id=spec-left>
+			<img src="$basePath/images/sgp/left.gif" />
+		</div>
+		<div id=spec-list>
+			<ul class=list-h>
+				#foreach($imgs in $product.listCommodityImage)
+					<li><img src="$!imgs.imageUrl"> </li>
+				#end
+			</ul>
+		</div>
+		<div class=control id=spec-right>
+			<img src="$basePath/images/sgp/right.gif" />
+		</div>
+		
+    </div>
+</div>
+<SCRIPT type=text/javascript>
+	$(function(){			
+	   $(".jqzoom").jqueryzoom({
+			xzoom:400,
+			yzoom:400,
+			offset:10,
+			position:"right",
+			preload:1,
+			lens:1
+		});
+		$("#spec-list").jdMarquee({
+			deriction:"left",
+			width:350,
+			height:56,
+			step:2,
+			speed:4,
+			delay:10,
+			control:true,
+			_front:"#spec-right",
+			_back:"#spec-left"
+		});
+		$("#spec-list img").bind("mouseover",function(){
+			var src=$(this).attr("src");
+			$("#spec-n1 img").eq(0).attr({
+				src:src.replace("\/n5\/","\/n1\/"),
+				jqimg:src.replace("\/n5\/","\/n0\/")
+			});
+			$(this).css({
+				"border":"2px solid #ff6600",
+				"padding":"1px"
+			});
+		}).bind("mouseout",function(){
+			$(this).css({
+				"border":"1px solid #ccc",
+				"padding":"2px"
+			});
+		});				
+	})
+	</SCRIPT>
+	
+    </div>
+<div class="m-item-inner">
+	<div id="itemInfo">
+		<div id="name">
+			<h1>$!product.name</h1>
+			<div id="p-ad" class="p-ad J-ad-1272256">$!product.promotionWord</div>
+		</div>
+		<div id="summary">
+            <div id="summary-price">
+				<div class="dt">
+					价格：
+                </div>
+				<div class="dd">
+					<strong class="p-price" id="jd-price">￥
+					<span id="price">
+						$!product.price
+					</span>
+					</strong>
+					&nbsp;&nbsp;&nbsp;剩余库存<span id="inventory">$!product.stock</span>
+                </div>
+			</div>
+            <div id="summary-stock">
+				<div class="dt">配 送 至：</div>
+				<div class="dd clearfix">
+            		<div id="store-selector">
+            			<div class="text"><div></div><b></b></div>                   
+            			<div onclick="$('#store-selector').removeClass('hover')" class="close"></div>
+            		</div>
+    				<!--store-selector end-->
+            		<div id="store-prompt"><strong></strong></div>
+    				<!--store-prompt end--->
+    			</div>
+					<SCRIPT src="$basePath/js/location.js"></SCRIPT>
+			</div>
+            <div id="summary-service"">
+				<div class="dt">服务由： </div>
+                <div class="dd">由<a href="#">&nbsp;商城&nbsp;</a>从&nbsp;北京&nbsp;发货</div>
+	        </div>
+			<!--
+    		<div class="col-xs-12" style="display:none">
+    			<input type="hidden" id="productId" value="$product.id" />
+					价格<span id="price">XXX</span>&nbsp;剩余<span id="inventory">XXX</span><br />
+    				 配送费
+    				</div>
+    		</div -->
+		</div>
+	<div id="choose" class="clearfix p-choose-wrap">
+		<!-- 在此处动态添加属性-->
+		#foreach($property in $!product.listCommodityProperty)
+			<div id="choose-version" class="li p-choose">
+				<div class="dt">${property.name}：</div>
+				<div class="dd">
+					#foreach($values in ${property.values})
+						<div class="item ${values.selected}" onclick="queryCommodityId(this)" sgp="${property.propertyId}:${values.propertyValue}:${values.commodityBasicId}">
+							<b></b>
+							<a href="javascript:void(0)" title="${values.value}">${values.value}</a>
+						</div>
+					#end
+				</div>
+			</div>
+		#end
+			<div id="choose-btns" class="li">
+				<div class="fl" style="margin-top: 17px">
+					<input type="text" class="spinnerExample"/>
+				</div>
+				<div class="btn" id="choose-btn-append">
+					<!-- addToCart(1) onAddShoppingCar('$!product.id')-->
+					<a href="javascript:void(0)" onclick="onAddShoppingCar('$!product.id','${product.tableName}')" class="btn-append">加入购物车<b ></b>
+					</a>
+				</div>
+			</div>
+	</div>
+</div>
+</div>
+	<div class="m-item-ext J-ext-trigger">
+        <div class="extInfo" id="extInfo">
+        <div class="brand-logo">
+            <a href="http://lantianfeiyang.jd.com" target="_blank">
+                <img src="http://img30.360buyimg.com/popshop/jfs/t208/252/2199986348/9187/a81b03fd/53c75192N39131726.jpg" title="$!product.shop.name">
+            </a>
+            </div>
+                <div class="seller-infor">
+                <a class="name" href="http://lantianfeiyang.jd.com" target="_blank" title="$!product.shop.name">$!product.shop.name</a>
+				<!-- i class="arrow-show-more J-show-score-detail"></i-->
+            </div>
+            <div class="seller-pop-box">
+				<div class="J-pop-score">         
+					<div class="pop-shop-detail" style="display:block">            
+						<div class="item">                
+							<span class="label">商铺名称：</span>
+							<span class="text J-shop-name">$!product.shop.name</span>            
+						</div>            
+						<div class="item">               
+							<span class="label">所&nbsp;在&nbsp;地：</span>
+							<span class="text J-shop-address">$!product.shop.address</span>            
+						</div>            
+						<div class="item hide">                
+							<span class="label">联系电话：</span>
+							<span class="text J-shop-phone">$!product.shop.phone</span>            
+						</div>        
+					</div>
+					<div class="item" style="display: block;padding-left:9px;padding-bottom:5px;">
+						<span class="label">客服：</span>
+						<span class="text J-shop-phone">$!product.shop.phone</span>
+					</div>
+				</div>
+			</div>
+        	<dl class="customer-service clearfix">
+				<dt class="label">在线客服：</dt>
+				<dd class="service">
+					<span id="J-im-btn">
+						<!-- span data-domain="chat.jd.com" data-code="1" data-seller="$!product.shop.name" title="联系客服" class="item">
+							<a id="j-im" class="jd-im" href="#none"><b>联系客服</b></a>
+						</span -->
+					</span>
+					<span id="J-jimi-btn" clstag="shangpin|keycount|product|jimi_2"></span>
+				</dd>
+			</dl>    
+			<div class="pop-shop-enter">
+                <!-- a href="http://lantianfeiyang.jd.com" class="btn-gray btn-shop-access J-enter-shop">进入店铺</a>
+                <a href="#none" class="btn-gray btn-shop-follower J-follow-shop" data-vid="75802">关注店铺</a -->
+            </div>
+        
+            <dl style="display: none;" class="jd-service"><dt id="suport-icons">服务支持：</dt></dl>
+        </div>
+      </div>
+</div>
+
+</div>
+</div>
+</div>
+<!-- 介绍开始 -->
+<div class="row row-offcanvas row-offcanvas-right">
+	<div class="col-xs-12" style="text-align:center">
+		$product.content
+    </div>
+</div>
+
+<script type="text/javascript" >
+ $('.spinnerExample').spinner({value:1, min:1});
+</script>

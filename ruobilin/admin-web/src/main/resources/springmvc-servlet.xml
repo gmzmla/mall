@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+            http://www.springframework.org/schema/beans/spring-beans.xsd  
+            http://www.springframework.org/schema/context  
+            http://www.springframework.org/schema/context/spring-context.xsd  
+            http://www.springframework.org/schema/tx  
+            http://www.springframework.org/schema/tx/spring-tx.xsd  
+            http://www.springframework.org/schema/jdbc  
+            http://www.springframework.org/schema/jdbc/spring-jdbc.xsd 
+            http://www.springframework.org/schema/mvc 
+			http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:db.properties</value>
+				<value>classpath:conf.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<import resource="classpath*:/spring-service.xml" />
+	<import resource="classpath*:/spring-admin-service.xml" />
+	<import resource="spring-task.xml" />
+	<mvc:annotation-driven />
+
+	<!-- 自动搜索@Controller标注的类 -->
+	<context:component-scan base-package="com.ruobilin.mall.admin.controller" />
+
+	<bean id="velocityEngine"
+		class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+		<property name="resourceLoaderPath">
+			<value>/views/</value>
+		</property>
+		<property name="velocityProperties">
+			<props>
+				<prop key="input.encoding">UTF-8</prop>
+				<prop key="output.encoding">UTF-8</prop>
+				<prop key="default.contentType">text/html; charset=UTF-8</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="velocityConfig"
+		class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+		<property name="configLocation" value="classpath:velocity.properties" />
+		<property name="velocityEngine" ref="velocityEngine" />
+	</bean>
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityLayoutViewResolver ">
+		<property name="cache" value="true" />
+		<property name="prefix" value="" />
+		<property name="suffix" value=".vm" />
+		<property name="requestContextAttribute" value="request"/> 
+		
+		<!-- if you want to use the Spring Velocity macros, set this property to true -->
+		<property name="exposeSpringMacroHelpers" value="true" />
+		<property name="exposeRequestAttributes" value="true"></property>
+		<property name="contentType" value="text/html;charset=UTF-8"></property>
+
+		<property name="toolboxConfigLocation">
+			<value>/WEB-INF/toolbox.xml</value>
+		</property>
+		<property name="layoutUrl" value="layout/nolayout.vm"/>
+	</bean>
+
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource"
+		p:basename="i18n/messages" />
+
+<!-- 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> -->
+<!-- 		<property name="maxUploadSize" value="2097152" /> -->
+<!-- 	</bean> -->
+
+	<bean id="rolesOrAuthorizationFilter" class="com.ruobilin.mall.admin.realm.RolesOrAuthorizationFilter" />
+
+	<bean id="shiroSecurityFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- shiro的核心安全接口 -->
+		<property name="securityManager" ref="securityManager" />
+		<!-- 要求登录时的链接 -->
+		<property name="loginUrl" value="/user/login" />
+		<!-- 登陆成功后要跳转的连接 -->
+		<property name="successUrl" value="/" />
+		<!-- 未授权时要跳转的连接 -->
+		<property name="unauthorizedUrl" value="/user/login" />
+		<property name="filters">  
+            <map>
+                <entry key="rolesOr" value-ref="rolesOrAuthorizationFilter"/>  
+            </map>
+        </property>
+		<!-- shiro连接约束配置 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/user/login = authc
+				/user/logout = logout
+				/menu/** = authc, roles[admin]
+				/category/** = authc, rolesOr[admin,operator]
+				/shop/** = authc, rolesOr[admin,operator]
+				/area/** = authc, rolesOr[admin,operator]
+				/user/** = authc, roles[admin]
+				/ = authc
+				/** = anon
+			</value>
+		</property>
+	</bean>
+
+	<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />
+	<bean id="userRealm" class="com.ruobilin.mall.admin.realm.UserAuthorizingRealm">
+	</bean>
+
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="userRealm" />
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+	
+	<bean id="imageDisposer" class="com.ruobilin.search.utils.image.JavaImageDisposer" />
+	<bean id="imageFactory" class="com.ruobilin.mall.admin.utils.ImageFactory">
+		<property name="imageDisposer" ref="imageDisposer" />
+		<property name="maxSize" value="${image.size}" />
+		<property name="maxSmallSize" value="${image.small_size}" />
+		<property name="uploadPath" value="${image.upload_path}" />
+		<property name="uploadUrl" value="${image.upload_url}" />
+		<property name="tmpUploadPath" value="${image.tmp_path}" />
+		<property name="imageSite" value="${image.site}" />
+		<property name="imageService" value="${image.service.path}" />
+	</bean>
+	
+	<!-- 配置Solr服务器 SorlJ 实现类 -->
+	<bean id="solrServer" class="org.apache.solr.client.solrj.impl.HttpSolrServer">
+		<constructor-arg>
+			<value>http://124.127.250.167:8080/solr</value>
+		</constructor-arg>
+	</bean>
+</beans>
+	

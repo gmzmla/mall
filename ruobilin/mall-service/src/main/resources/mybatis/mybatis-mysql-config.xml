@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <setting name="cacheEnabled" value="false"/>
+        <setting name="useGeneratedKeys" value="true"/>
+        <setting name="defaultExecutorType" value="REUSE"/>
+        <setting name="autoMappingBehavior" value="FULL"/>
+        <setting name="defaultStatementTimeout" value="20000" />
+    </settings>
+    <typeAliases>
+    	<package name="com.ruobilin.mall.entity"/>
+    </typeAliases>
+    <plugins>
+        <plugin interceptor="com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor">
+            <property name="dialectClass" value="com.github.miemiedev.mybatis.paginator.dialect.MySQLDialect"/>
+        </plugin>
+    </plugins>
+    
+    <mappers>
+    	<mapper resource="mybatis/mapper/CategoryMapper.xml"/>
+    	<mapper resource="mybatis/mapper/CategoryPropertyMapper.xml"/>
+    	<mapper resource="mybatis/mapper/CategoryPropertyValueMapper.xml"/>
+    	<mapper resource="mybatis/mapper/OrderAddressMapper.xml"/>
+    	<mapper resource="mybatis/mapper/OrderMapper.xml"/>
+    	<mapper resource="mybatis/mapper/OrderPaymentMapper.xml"/>
+    	<mapper resource="mybatis/mapper/OrderProductMapper.xml"/>
+    	<mapper resource="mybatis/mapper/ProductPriceMapper.xml"/>
+    	<mapper resource="mybatis/mapper/ProductCommentMapper.xml"/>
+    	<mapper resource="mybatis/mapper/ProductImageMapper.xml"/>
+    	<mapper resource="mybatis/mapper/ProductMapper.xml"/>
+    	<mapper resource="mybatis/mapper/ProductPropertyMapper.xml"/>
+    	<mapper resource="mybatis/mapper/UserCouponMapper.xml"/>
+        <mapper resource="mybatis/mapper/UserMapper.xml"/>
+        <mapper resource="mybatis/mapper/ContactMapper.xml"/>
+        <mapper resource="mybatis/mapper/ShopMapper.xml"/>
+        <mapper resource="mybatis/mapper/AreaMapper.xml"/>
+        <mapper resource="mybatis/mapper/SequenceMapper.xml"/>
+        <mapper resource="mybatis/mapper/CommodityMapper.xml"/>
+        <mapper resource="mybatis/mapper/CartMapper.xml"/>
+        <mapper resource="mybatis/mapper/CarProductMapper.xml"/>
+        <mapper resource="mybatis/mapper/CarProductPropertyMapper.xml"/>
+        <mapper resource="mybatis/mapper/DispatchingMapper.xml"/>
+        <mapper resource="mybatis/mapper/MailingAddressMapper.xml"/>
+        <mapper resource="mybatis/mapper/OrderTableMapper.xml"/>
+        <mapper resource="mybatis/mapper/FrontRecommendedMapper.xml"/>
+        <mapper resource="mybatis/mapper/ShopsCommodityMapper.xml"/>
+    </mappers>
+</configuration>

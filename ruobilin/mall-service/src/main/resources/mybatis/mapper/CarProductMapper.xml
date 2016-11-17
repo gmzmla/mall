@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.CartProductMapper"> 
+    <insert id="insertCartProduct" keyProperty="id" useGeneratedKeys="true" parameterType="com.ruobilin.mall.entity.CartProduct" >
+   		<selectKey resultType="String" keyProperty="id" order="AFTER">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+    	insert into cartproduct(cartId,productId,productCount)
+    	values
+    		(#{cartId},#{productId},#{productCount})
+    </insert>
+    
+    <select id="queryCartProduct" resultType="com.ruobilin.mall.entity.CartProduct" parameterType="String">
+    	select* from cartProduct
+    	where cartId=#{cartId}
+    </select>
+    
+    <update id="updateCartProduct" parameterType="java.util.Map">
+    	update cartproduct
+		set productCount= 
+		<if test="productCount !=null">
+			ROUND(productCount+#{productCount})
+		where productId=#{productId}
+			and cartId=#{cartId}
+		</if>
+		<if test="productCount ==null">
+			<if test="munCart!=null">
+				#{munCart}
+				where id=#{id}
+			</if>
+		</if>
+    </update>
+    
+    <update id="updateCartProductCount" parameterType="java.util.Map">
+    	update cartproduct
+    	set productCount=#{productCount}
+    	where id=#{id}
+    </update>
+    
+    <delete id="deleteCartProduct" parameterType="java.util.Map">
+    	delete from cartproduct
+    	where id=#{id}
+    </delete>
+</mapper>

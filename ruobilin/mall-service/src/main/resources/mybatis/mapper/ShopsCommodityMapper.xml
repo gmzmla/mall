@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.ShopsCommodityMapper"> 
+    
+    <select id="findByCategoryId" resultType="java.util.Map" parameterType="java.util.Map">
+	    select 
+		CASE WHEN a.id is null THEN b.id ELSE a.id END as id,
+		CASE WHEN a.name='' or a.name is null THEN b.`name` ELSE a.name END as name,
+		CASE WHEN a.price is null THEN b.price ELSE a.price END as price,
+		CASE WHEN d.imageUrl is null THEN e.imageUrl ELSE d.imageUrl END as imageUrl,
+		CASE WHEN a.id is null THEN 'commodityBasicInfo' ELSE 'commodityTable' END as tableName,
+		b.created
+		from commodityTable a 
+		RIGHT JOIN commodityBasicInfo b on a.commodityBasicId=b.id
+		LEFT JOIN commodityImage d on a.id=d.commodityId and d.type=0
+		LEFT JOIN commodityBasicImage e on b.id=e.commodityBasicId and e.type=0
+		WHERE 1=1
+		<if test="idsList !=null">
+		and
+			<foreach collection="idsList" item="idsObj" separator="and" open="(" close=")">
+				(select count(*) from categoryBasicProperty a
+				where a.propertyId=#{idsObj.propertisIds} 
+				and a.valueId in  
+					<foreach collection="idsObj.propertisValueIds" item="valueId" separator="," open="(" close=")">
+						#{valueId}
+					</foreach>
+				and b.id=a.commodityBasicId ) <![CDATA[>]]> 0
+			</foreach>
+		</if>
+		and (b.categoryId=#{categoryId} 
+			or (b.categoryId in (select a.id from category a where a.parentId=#{categoryId}))
+			or (b.categoryId in(select b.id from category b where b.parentId in (select c.id from category c where c.parentId=#{categoryId}))))
+		<if test="productName !=null">
+			and (b.name like #{productName} or a.`name` like #{productName})
+		</if>
+		GROUP BY id
+    </select>
+    
+    <select id="homeProducts" resultType="java.util.HashMap" parameterType="java.util.Map">
+    		select 
+				CASE WHEN a.id is null THEN b.id ELSE a.id END as id,
+				CASE WHEN a.name='' or a.name is null THEN b.`name` ELSE a.name END as name,
+				CASE WHEN d.imageUrl is null THEN e.imageUrl ELSE d.imageUrl END as imageUrl,
+				c.tableName
+			from commodityTable a 
+			RIGHT JOIN commodityBasicInfo b on a.commodityBasicId=b.id
+			RIGHT JOIN commodity c on (c.dityid=b.id or a.id=c.dityid)
+			LEFT JOIN commodityImage d on a.id=d.commodityId and d.type=0
+			LEFT JOIN commodityBasicImage e on b.id=e.commodityBasicId and e.type=0
+			where b.id is not null
+			GROUP BY id
+			order by c.ordet
+    </select>
+    
+    <select id="queryCommodityBasicInfo" resultType="com.ruobilin.mall.entity.CommodityInfo" parameterType="java.lang.String">
+    	SELECT id,name,promotionWord,content,price,stock from commodityBasicInfo 
+    	where id=#{id}
+    </select>
+    <select id="queryCommodityBasicImage" resultType="java.util.Map" parameterType="java.lang.String">
+    	select id,imageUrl,type from commodityBasicImage
+    	where commodityBasicId=#{commodityBasicId}
+    </select>
+    
+    <select id="queryCommodityInfo" resultType="com.ruobilin.mall.entity.CommodityInfo" parameterType="java.lang.String">
+    	select a.id,a.commodityBasicId,
+		CASE WHEN a.name='' or a.name is null THEN b.`name` ELSE a.name END as name
+		,a.promotionWord,a.price,a.stock,b.content
+		from commodityTable a
+		left join commodityBasicInfo b on a.commodityBasicId=b.id
+		where a.id=#{id}
+    </select>
+    <select id="queryCommodityImage" resultType="java.util.Map" parameterType="java.lang.String">
+    	select id,imageUrl,type from commodityImage
+		where commodityId=#{commodityId}
+    </select>
+    <select id="queryCommodityProperty" resultType="java.util.Map" parameterType="java.util.Map">
+		select 
+		a.id as propertyId,a.name,b.id as propertyValue,b.value,a.commodityBasicId,
+		CASE WHEN c.id is null THEN '' ELSE 'selected' END as selected
+		from propertyInfo a
+		LEFT JOIN propertyValueInfo b on a.id=b.propertyId and b.mark='1'
+		LEFT JOIN commodityProperty c on a.id=c.propertyId 
+		and b.id=c.propertyValue and c.commodityBasicId=#{commodityBasicId} and c.commodityId=#{commodityId}
+    </select>
+    <select id="queryCommodityId" resultType="String" parameterType="java.util.ArrayList">
+    	SELECT a.id from commodityTable a
+    	where 1=1 
+    	<foreach collection="list" item="idsObj">
+			and (select id from commodityProperty where a.id=commodityId
+			and propertyId=#{idsObj.propertyId} and propertyValue=#{idsObj.propertyValue} and commodityBasicId=#{idsObj.commodityBasicId}
+			) is not null
+		</foreach>
+    </select>
+    <select id="findCommodityInfo" resultType="java.util.Map" parameterType="String">
+    	select a.id,
+		CASE WHEN a.name='' or a.name is null THEN b.name ELSE a.name END as name,
+		a.price,c.imageUrl,a.stock
+		from commodityTable a
+		LEFT JOIN commodityBasicInfo b on a.commodityBasicId=b.id
+		LEFT JOIN commodityImage c on a.id=c.commodityId and c.type=0
+		where a.id=#{id}
+    </select>
+    <select id="findCommodityBasicInfo" resultType="java.util.Map" parameterType="String">
+    	select a.id,a.name,a.price,b.imageUrl,a.stock
+		from commodityBasicInfo a
+		LEFT JOIN commodityBasicImage b on a.id=b.commodityBasicId and b.type=0
+		where a.id=#{id}
+    </select>
+</mapper>

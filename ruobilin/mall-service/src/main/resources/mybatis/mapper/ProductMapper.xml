@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.ProductMapper"> 
+    <select id="getById" resultType="Product" parameterType="String">
+        select a.*,b.name as categoryText,c.name as userName,d.name as shopName
+		from product a 
+		left join category b on b.id=a.categoryId
+		LEFT JOIN user c on c.id=a.userId
+		LEFT JOIN shop d on d.id=a.shopId
+		where a.id=#{value}
+    </select>
+    <select id="findByCategoryId" resultType="Product" parameterType="java.util.Map">
+        select * from product p
+		where 1=1
+		<if test="propertisIds !=null">
+			<foreach collection="propertisIds" item="valueList" >
+				and  
+				<foreach collection="valueList" item="values" separator="or" open="(" close=")">
+				  (select count(*) from productproperty where p.id=productId and value=#{values}) >0
+				</foreach>
+			</foreach>
+		</if>
+		<if test="propertisValues !=null">
+			
+		</if>
+		and p.status=0
+		<if test="productName !=null">
+			and p.name like #{productName}
+		</if>
+		and (p.categoryId=#{categoryId} 
+		or (p.categoryId in (select a.id from category a where a.parentId=#{categoryId}))
+		or (p.categoryId in(select b.id from category b where b.parentId in (select c.id from category c where c.parentId=#{categoryId}))))
+		order by 
+		<if test="orderSelect !=null">
+			created desc,
+		</if>
+		recommend desc,saled desc
+    </select>
+    <select id="findHotByCategoryId" resultType="Product">
+        select *
+		from product 
+		where status=0 and categoryId=#{0}
+		order by saled desc,created desc
+		limit #{1}
+    </select>
+    
+  <select id="findAlis" resultType="java.util.Map" parameterType="java.lang.String">
+        select t1.*,t2.name as shopName
+		from product t1 join shop t2 on t1.shopId=t2.id
+		where t1.name like #{value} or t2.name like #{value}
+		order by categoryId,t1.id
+    </select>
+    
+    
+    <select id="findRecommendByCategoryId" resultType="Product">
+        select *
+		from product  
+		where status=0 and categoryId=#{0}
+		order by recommend desc,saled desc,created desc
+		limit #{1}
+    </select>
+    <select id="findAll" resultType="Product" parameterType="java.util.Map">
+        select a.*,b.name as categoryText,c.name as userName,d.name as shopName
+		from product a
+		left join category b on b.id=a.categoryId
+		LEFT JOIN user c on c.id=a.userId
+		LEFT JOIN shop d on d.id=a.shopId
+		where 1=1 
+		<if test="shopId != null">
+			and a.shopId=#{shopId}
+		</if>
+		<if test="status != null">
+			and a.status=#{status}
+		</if>
+		order by a.created desc
+    </select>
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="Product">
+    	<selectKey resultType="long" keyProperty="id" order="AFTER">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+        insert into product(categoryId,name,content,productNo,shopId,userId,created,saled,grade,originalPrice,expiryDate,status,recommend) 
+		values(#{categoryId},#{name},#{content},#{productNo},#{shopId},#{userId},now(),#{saled},#{grade},#{originalPrice},#{expiryDate},#{status},#{recommend})
+    </insert>
+    <update id="update" parameterType="Product">
+        update product 
+        set name=#{name},categoryId=#{categoryId},content=#{content},productNo=#{productNo},originalPrice=#{originalPrice},expiryDate=#{expiryDate},status=#{status},recommend=#{recommend}
+		where id=#{id}
+    </update>
+     <delete id="deleteById" parameterType="java.lang.Long">
+    	delete from product where id=#{value} 
+    </delete> 
+    <select id="homeProducts" resultType="java.util.HashMap" parameterType="java.util.Map">
+       SELECT a.*,c.* from product a
+		RIGHT JOIN commodity b on a.id=b.dityid
+		left JOIN productimage c on a.id=c.productId
+		where a.id is not NULL
+		<if test="type!=null">
+			and c.id in (SELECT min(id) from productimage where type=0 GROUP BY productId)
+			and b.type=#{type}
+		</if> 
+		<if test="status !=null">
+			and a.status=#{status}
+		</if>
+		order by b.ordet 
+    </select>
+    <update id="updateAllProduct" parameterType="String">
+    	UPDATE product a 
+		SET a.status=#{status}
+		where a.expiryDate <![CDATA[< now() ]]>
+    </update>
+    
+    <!-- 根据关键字进行模糊查询 -->
+    <select id="getProductByKeyword" parameterType="java.lang.String" resultType="Product">
+     SELECT *
+     FROM product 
+     WHERE name LIKE  <![CDATA[ concat('%',concat(#{keyWord},'%')) ]]>
+    </select>
+    
+    <select id="getCategoryNameById" parameterType="java.lang.Long" resultType="String">
+     SELECT name
+     FROM category
+     WHERE id=#{value}
+    </select>
+    
+    <select id="getCategoryPropertyId" parameterType="java.util.Map" resultType="java.lang.Long">
+     SELECT cp.id
+	FROM categoryproperty cp
+	LEFT JOIN category c ON c.id=cp.categoryId
+	WHERE c.id=#{categoryId} and cp.property=#{categoryPropertyType}
+    </select>
+    
+    <select id="getCategoryPropertyValues" parameterType="java.lang.Long" resultType="com.ruobilin.mall.entity.CategoryPropertyValue">
+    SELECT cpv.*
+	FROM categorypropertyvalue cpv
+	LEFT JOIN categoryproperty cp ON cp.id=cpv.categoryPropertyId
+	LEFT JOIN category c ON c.id=cp.categoryId
+	WHERE c.id=#{value}
+    </select>
+    
+    <select id="getCategoryPropertyValueId" parameterType="java.util.Map" resultType="java.lang.Long">
+    SELECT cpv.id
+	FROM categorypropertyvalue cpv
+	LEFT JOIN categoryproperty cp ON cp.id=cpv.categoryPropertyId
+	LEFT JOIN category c ON c.id=cp.categoryId
+	WHERE c.id=#{categoryId} and cp.property=#{categoryPropertyType} and cpv.name=#{categoryPropertyValueName}
+    </select>
+    
+    <select id="getCategoryPropertyName" parameterType="java.util.Map" resultType="java.lang.String">
+    SELECT cp.property
+	FROM categoryproperty cp
+	LEFT JOIN categorypropertyvalue cpv ON cpv.categoryPropertyId = cp.id
+	WHERE cpv.categoryPropertyId=#{cpi} and cpv.name=#{cpvn}
+    </select>
+
+</mapper>

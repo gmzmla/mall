@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.AreaMapper">
+    <select id="findCountries" resultType="Country">
+        select *
+		from country 
+		order by id
+    </select>
+    
+    <select id="findProvinces" resultType="Province" parameterType="java.lang.Long">
+        select *
+		from province
+		<if test="value != null">
+			where countryId=#{value}
+		</if> 
+		order by sortId,id
+    </select>
+    
+    <select id="findCities" resultType="City" parameterType="java.lang.Long">
+        select *
+		from city 
+		<if test="value != null">
+			where provinceId=#{value}
+		</if> 
+		order by sortId,provinceId,id
+    </select>
+    
+    <select id="findAreas" resultType="Area" parameterType="java.lang.Long">
+        select *
+		from area 
+		<if test="value != null">
+			where cityId=#{value}
+		</if> 
+		order by cityId,id
+    </select>
+    
+    <select id="findIp" resultType="AreaIp" parameterType="java.util.Map">
+        select *
+		from areaIp 
+		where 1=1 
+		<if test="countryId != null">
+			and countryId=#{countryId}
+		</if> 
+		<if test="provinceId != null">
+			and provinceId=#{provinceId}
+		</if> 
+		<if test="cityId != null">
+			and cityId=#{cityId}
+		</if> 
+		<if test="areaId != null">
+			and areaId=#{areaId}
+		</if> 
+		order by provinceId,cityId,areaId,id
+    </select>
+    
+    <select id="getCountryById" resultType="Country" parameterType="java.lang.Long">
+        select *
+		from country 
+		where id=#{value}
+    </select>
+    
+    <select id="getCountryByECode" resultType="Country" parameterType="java.lang.String">
+        select *
+		from country 
+		where ecode=#{value}
+    </select>
+    
+    <select id="getProvinceById" resultType="Province" parameterType="java.lang.Long">
+        select *
+		from province 
+		where id=#{value}
+    </select>
+    
+    <select id="getCityById" resultType="City" parameterType="java.lang.Long">
+        select *
+		from city 
+		where id=#{value}
+    </select>
+    
+    <select id="getAreaById" resultType="Area" parameterType="java.lang.Long">
+        select *
+		from area 
+		where id=#{value}
+    </select>
+    
+    <select id="getAreaIpById" resultType="AreaIp" parameterType="java.lang.Long">
+        select *
+		from areaIp 
+		where id=#{value}
+    </select>
+    <insert id="insertCountry" parameterType="Country">
+        insert into country(enName,cnName,type,code,ecode) 
+		values(#{enName},#{cnName},#{type},#{code},#{ecode})
+    </insert>
+    <update id="updateCountry" parameterType="Country">
+        update country 
+        set enName=#{enName},cnName=#{cnName},type=#{type},code=#{code},ecode=#{ecode}
+		where id=#{id}
+    </update>
+    <delete id="deleteCountryById" parameterType="java.lang.Long">
+    	delete from country where id=#{value} 
+    </delete>
+    <insert id="insertProvince" parameterType="Province">
+        insert into province(enName,cnName,sortId,type,countryId,code) 
+		values(#{enName},#{cnName},#{sortId},#{type},#{countryId},#{code})
+    </insert>
+    <update id="updateProvince" parameterType="Province">
+        update province 
+        set enName=#{enName},cnName=#{cnName},sortId=#{sortId},type=#{type},countryId=#{countryId},code=#{code}
+		where id=#{id}
+    </update>
+    <delete id="deleteProvinceById" parameterType="java.lang.Long">
+    	delete from province where id=#{value} 
+    </delete>
+    <insert id="insertCity" parameterType="City">
+        insert into city(enName,cnName,sortId,provinceId,beginLongitude,beginLatitude,endLongitude,endLatitude,code) 
+		values(#{enName},#{cnName},#{sortId},#{provinceId},#{beginLongitude},#{beginLatitude},#{endLongitude},#{endLatitude},#{code})
+    </insert>
+    <update id="updateCity" parameterType="City">
+        update city 
+        set enName=#{enName},cnName=#{cnName},sortId=#{sortId},provinceId=#{provinceId},beginLongitude=#{beginLongitude},beginLatitude=#{beginLatitude},endLongitude=#{endLongitude},endLatitude=#{endLatitude},code=#{code}
+		where id=#{id}
+    </update>
+    <delete id="deleteCityById" parameterType="java.lang.Long">
+    	delete from city where id=#{value} 
+    </delete>
+    <insert id="insertArea" parameterType="Area">
+        insert into area(code,cnName,enName,cityId) 
+		values(#{code},#{cnName},#{enName},#{cityId})
+    </insert>
+    <update id="updateArea" parameterType="Area">
+        update area 
+        set code=#{code},cnName=#{cnName},enName=#{enName},cityId=#{cityId}
+		where id=#{id}
+    </update>
+    <delete id="deleteAreaById" parameterType="java.lang.Long">
+    	delete from area where id=#{value} 
+    </delete>
+    <insert id="insertAreaIp" parameterType="AreaIp">
+        insert into areaIp(countryId,provinceId,cityId,areaId,type,start,end,remark) 
+		values(#{countryId},#{provinceId},#{cityId},#{areaId},#{type},#{start},#{end},#{remark})
+    </insert>
+    <update id="updateAreaIp" parameterType="AreaIp">
+        update areaIp 
+        set countryId=#{countryId},provinceId=#{provinceId},cityId=#{cityId},areaId=#{areaId},type=#{type},start=#{start},end=#{end},remark=#{remark}
+		where id=#{id}
+    </update>
+    <delete id="deleteAreaIpById" parameterType="java.lang.Long">
+    	delete from areaIp where id=#{value} 
+    </delete>
+    <select id="getAreaIpForHit" resultType="AreaIp" parameterType="java.lang.Long">
+        select *
+		from areaIp 
+		where start&lt;=#{value} and end&gt;=#{value}
+    </select>
+</mapper>

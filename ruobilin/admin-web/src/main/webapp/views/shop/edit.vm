@@ -1,0 +1,106 @@
+#set($basePath=$request.contextPath)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>List</title>
+	<link href="$basePath/css/bootstrap.min.css" rel="stylesheet">
+    <link href="$basePath/css/content.css" rel="stylesheet">
+    <link href="$basePath/css/normalize.css" rel="stylesheet">
+    <script src="$basePath/js/jquery-2.1.0.min.js"></script>
+    <script src="$basePath/js/bootstrap.min.js"></script>
+	<script src="$basePath/js/ng/angular.min.js"></script>
+	<script type="text/javascript" >
+    function loadCities(obj) {
+    	jQuery.getJSON("$basePath/area/cities", {provinceId:$(obj).val()}, function(json) {
+    		if (json == null || json.length < 1)
+    			return;
+    		var str = "";
+    		for (var i=0; i<json.length; i++) {
+    			str += '<option value="'+json[i].id+'">'+json[i].cnName+'</option>';
+    		}
+    		$("#cityId").html(str);
+    		loadAreas($("#cityId")[0]);
+    	});
+    }
+    function loadProvinces() {
+    	jQuery.getJSON("$basePath/area/provinces", {countryId:1}, function(json) {
+    		if (json == null || json.length < 1)
+    			return;
+    		var str = "";
+    		for (var i=0; i<json.length; i++) {
+    			str += '<option value="'+json[i].id+'">'+json[i].cnName+'</option>';
+    		}
+    		$("#provinceId").html(str);
+    		loadCities($("#provinceId")[0]);
+    	});
+    }
+	$().ready(function() {
+    	loadProvinces();
+    });
+
+	</script>
+</head>
+<body>
+	<div class="ex-panel">
+		#if(!$shop.id)<h3>添加商铺</h3>#else<h3>编辑商铺</h3>#end
+		<form class="form-horizontal" role="form" method="post">
+			<input type="hidden" name="id" value="$!shop.id" />
+			<div class="form-group">
+				<label for="name" class="col-sm-2 control-label">名称</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="name" name="name" placeholder="名称" value="$!shop.name">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="phone" class="col-sm-2 control-label">电话</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="phone" name="phone" placeholder="电话" value="$!shop.phone">
+              	</div>
+            </div>
+            <div class="form-group">
+				<label for="email" class="col-sm-2 control-label">邮箱</label>
+				<div class="col-sm-6">
+					<input type="email" class="form-control" id="email" name="email" placeholder="邮箱" value="$!shop.email">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="shopKeeper" class="col-sm-2 control-label">店长</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" id="shopKeeper" name="shopKeeper" placeholder="店长" value="$!shop.shopKeeper">
+              	</div>
+            </div>
+			<div class="form-group">
+				<label for="address" class="col-sm-2 control-label">地址</label>
+    			<div class="form-inline col-sm-6">
+    				<div class="form-group">
+        				<select id="provinceId" name="provinceId" onchange="loadCities(this)">
+        				</select>
+        				<select id="cityId" name="cityId">
+        				</select>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    				</div>
+                    <div class="form-group">
+    					<input type="text" class="form-control" id="address" name="address" placeholder="地址" value="$!shop.address">
+    				</div>
+                </div>
+			</div>
+			<div class="form-group">
+				<label for="status" class="col-sm-2 control-label">状态</label>
+				<div class="col-sm-6">
+					<select name="status" class="form-control">
+						<option value="0" #if($shop.status == 0) selected #end>可用</option>
+						<option value="1" #if($shop.status == 1) selected #end>未审核</option>
+						<option value="2" #if($shop.status == 2) selected #end>禁用</option>
+                    </select>
+              	</div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-6">
+                <button type="submit" class="btn btn-default" onclick="CheckForm()">保存</button>
+              </div>
+            </div>
+      </form>
+	</div>
+</body>
+</html>

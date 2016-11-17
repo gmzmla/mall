@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>List</title>
+</head>
+<body>
+	<div>
+		#foreach($u in $list)
+		<p>$u.name - $u.email</p>
+		#end
+	</div>
+</body>
+</html>

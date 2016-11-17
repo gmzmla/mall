@@ -1,0 +1,105 @@
+#set($layout = "/layout/nolayout.vm")
+#set($basePath=$request.contextPath)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gbk">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>订单提交成功</title>
+    <link href="$basePath/css/base.css" rel="stylesheet" type="text/css">
+	<link href="$basePath/css/myCenter/purchase.css" rel="stylesheet" type="text/css">
+	<link href="$basePath/css/myCenter/purchase_002.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="shortcut-2013">
+	<div class="w">
+		<ul class="fl lh">
+			<li class="fore1 ld"><b></b><a href="javascript:addToFavorite()" rel="nofollow">收藏</a></li>
+		</ul>
+		<ul class="fr lh">
+			<!-- javascript:login();-->
+			<li class="fore1" id="loginbar">
+				#if($!session.getAttribute("org.apache.shiro.subject.support.DefaultSubjectContext_PRINCIPALS_SESSION_KEY"))
+					$!session.getAttribute("org.apache.shiro.subject.support.DefaultSubjectContext_PRINCIPALS_SESSION_KEY")
+					&nbsp;&nbsp;<a href="$basePath/u/logout">退出</a>
+				#else
+					<a href="$basePath/u/login" class="link-login">你好，请登录</a>
+					&nbsp;&nbsp;<a href="$basePath/u/register" class="link-regist style-red">免费注册</a>
+				#end
+					</li>
+			<li class="fore2 ld">
+				<s></s>
+				<a href="$basePath/center/list" rel="nofollow">我的订单</a>
+			</li>
+			<li style="padding-left: 12px;" class="fore2-1 ld" id="jd-vip"><s></s><a target="_blank" rel="nofollow" href="javascript:void(0)">商城会员</a></li>
+		</ul>
+		<span class="clr"></span>
+	</div>
+</div>
+<div class="w" id="headers">
+		<div id="logo"><a href="http://www.jd.com/"><img alt="比邻商城" src="$basePath/images/base/logo-201305.jpg"></a></div>
+		<ul class="step" id="step3">
+			<li class="fore1">1.我的购物车<b></b></li>
+			<li class="fore2">2.填写核对订单信息<b></b></li>
+			<li class="fore3">3.成功提交订单</li>
+		</ul>
+		<div class="clr"></div>
+</div>
+
+<div class="w main">
+	<div class="m m3 msop">
+		<div class="mt" id="success_tittle">
+			<s class="icon-succ02"></s>
+			<h3 class="ftx-02">感谢您，订单提交成功！</h3>
+		</div>
+		<div class="mc" id="success_detail">
+			<!-- 商品id串  -->
+			<ul class="list-order">
+				<li class="li-st">
+					<div class="fore1">
+						订单号：<a href="">${id}</a>
+					</div> <!-- 货到付款 -->
+					<div class="fore2">
+						货到付款：<strong class="ftx-01">${total}元</strong>
+					</div>
+					<div class="fore3">普通快递 &nbsp;  预计过两天就到 &nbsp;</div>
+				</li>
+			</ul>
+			<!-- 在线支付按钮  -->
+			<div id="bookDiv"></div>
+			<h5 class="d-tips"
+				style="color: #333; font-size: 14px; margin-bottom: 10px;">
+				<strong>重要提醒：</strong>比邻平台及销售商不会以<strong class="ftx-01">订单异常、系统升级</strong>等为由，要求您点击任何链接进行退款操作。
+			</h5>
+			<h5 class="d-tips"
+				style="text-indent: 75px; color: #333; font-size: 14px;">
+				请关注比邻平台 <a class="ftx-05" target="_blank"
+					href="http://www.jd.com/news.aspx?id=22399">“谨防诈骗公告声明”</a>
+			</h5>
+		</div>
+
+	</div>
+	<div class="o-mb">
+		完成支付后，您可以： <a href="http://order.jd.com/center/list.action">查看订单状态</a>&nbsp;&nbsp;<a
+			href="http://www.jd.com/">继续购物</a>&nbsp;&nbsp;<a
+			href="http://surveys.jd.com/index.php?r=survey/index/sid/264885/newtest/Y/lang/zh-Hans">问题反馈</a>
+		<span class="jl-jingdou"> <a
+			href="http://vip.jd.com/help_beansIntroduction.html" class="jl-la"
+			style="color: #7ABD54;" target="_blank">完成订单有机会奖励京豆</a> | 使用京豆更超值，请登录<a
+			href="http://vip.jd.com/" target="_blank">会员俱乐部</a>
+		</span>
+	</div>
+</div>
+
+<div class="w"> 
+        <div id="footer-2013">
+            <div class="links">
+				<!--
+				<a rel="nofollow" target="_blank" href="http://www.jd.com/intro/about.aspx">关于我们</a>|<a rel="nofollow" target="_blank" href="http://www.jd.com/contact/">联系我们</a>|<a rel="nofollow" target="_blank" href="http://zhaopin.jd.com/">人才招聘</a>|<a rel="nofollow" target="_blank" href="http://www.jd.com/contact/joinin.aspx">商家入驻</a>|<a rel="nofollow" target="_blank" href="http://www.jd.com/intro/service.aspx">广告服务</a>|<a rel="nofollow" target="_blank" href="http://app.jd.com/">手机商城</a>|<a target="_blank" href="http://club.jd.com/links.aspx">友情链接</a>|<a target="_blank" href="http://cps.jd.com/">销售联盟</a>|<a href="http://club.jd.com/" target="_blank">商城社区</a>|<a href="http://gongyi.jd.com/" target="_blank">商城公益</a>
+				-->
+			</div>
+            <div class="copyright">Copyright©2004-2015&nbsp;&nbsp;商城SC.com&nbsp;版权所有</div>
+        </div>
+    </div>
+</body>
+</html>

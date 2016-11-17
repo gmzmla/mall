@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruobilin.mall.mapper.OrderProductMapper">
+    <insert id="insert" parameterType="OrderProduct">
+        insert into orderProduct(productId,orderId,priceGroup,price,count,name,smallUrl,expressFee) 
+		values(#{productId},#{orderId},#{priceGroup},#{price},#{count},#{name},#{smallUrl},#{expressFee})
+    </insert>
+    
+    <select id="findByOrderId" resultType="OrderProduct" parameterType="java.lang.String">
+        select *
+		from orderProduct 
+		where orderId=#{value}
+    </select>
+</mapper>
