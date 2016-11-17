@@ -1,5 +1,5 @@
 function tipShow(idName){
-
+ 
 	var idObj = $(idName);
 	var idBgObj = $("#bgWindow");
 
